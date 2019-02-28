@@ -1,0 +1,25 @@
+{
+	"extends": [
+		"tslint:recommended",
+		"tslint-react",
+		"tslint-config-prettier"
+	],
+	"linterOptions": {
+		"exclude": [
+			"config/**/*.js",
+			"node_modules/**/*.ts",
+			"coverage/lcov-report/*.js"
+		]
+	},
+	"rules": {
+		"no-console": [
+			false
+		],
+		"no-var-requires": false,
+		"no-string-literal": false,
+		"max-classes-per-file": false,
+		"object-literal-sort-keys": false,
+		"interface-name": false,
+		"ordered-imports": false
+	}
+}

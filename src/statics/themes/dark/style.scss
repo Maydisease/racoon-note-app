@@ -1,0 +1,848 @@
+body[theme='dark'] {
+    background: RGBA(7, 7, 7, 1);
+    padding: 1px;
+    box-sizing: border-box;
+    position: relative;
+    #root {
+        width: 100%;
+        height: 100%;
+        background: RGBA(86, 87, 88, 1);
+        padding: 1px;
+        box-sizing: border-box;
+        #app {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            text-align: center;
+            box-sizing: border-box;
+            background: RGBA(30, 32, 34, 1);
+            #noteMain {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                text-align: left;
+                .categoryContainer {
+                    flex-shrink: 0;
+                    width: 220px;
+                    height: 100%;
+                    display: none;
+                    padding: 1px 0 1px 1px;
+                    border-right: 1px solid RGBA(0, 0, 0, 1);
+                    box-sizing: border-box;
+                    &.show {
+                        display: block;
+                    }
+                    .wrap {
+                        width: 100%;
+                        height: 100%;
+                        box-sizing: border-box;
+                        display: flex;
+                        flex-direction: column;
+                        flex-wrap: wrap;
+                        background: RGBA(44, 45, 47, 1);
+                        .action-bar {
+                            width: 100%;
+                            height: 30px;
+                            line-height: 30px;
+                            box-sizing: border-box;
+                            text-align: left;
+                            padding: 0 5px;
+                            overflow: hidden;
+                            background: RGBA(30, 32, 34, .3);
+                            border-top: 1px solid RGBA(0, 0, 0, .1);
+                            .line {
+                                width: 1px;
+                                height: 16px;
+                                margin-top: 6px;
+                                border-right: 1px solid RGBA(255, 255, 255, .07);
+                                &.left {
+                                    float: left;
+                                }
+                                &.right {
+                                    float: right;
+                                }
+                            }
+                            .fa-icon {
+                                width: 30px;
+                                height: 30px;
+                                padding: 8px;
+                                box-sizing: border-box;
+                                text-align: center;
+                                transition: color .2s;
+                                color: RGBA(255, 255, 255, .3);
+                                &:hover {
+                                    color: RGBA(255, 255, 255, .7);
+                                }
+                                &.left {
+                                    float: left;
+                                }
+                                &.right {
+                                    float: right;
+                                }
+                            }
+                            .logo-text {
+                                width: 100%;
+                                height: 30px;
+                                line-height: 30px;
+                                padding: 0 20px;
+                                color: RGBA(255, 255, 255, .7);
+                                display: inline-block;
+                                box-sizing: border-box;
+                                font-weight: bold;
+                                font-size: 16px;
+                                //background: RGBA(0, 0, 0, .8);
+                            }
+                        }
+                        .category-list {
+                            width: 100%;
+                            flex: 1;
+                            height: 0;
+                            overflow-x: hidden;
+                            overflow-y: auto;
+                            .item {
+                                width: 100%;
+                                display: block;
+                                margin: 0;
+                                padding: 0;
+                                font-size: 0;
+                                font-family: Arial, sans-serif;
+                                label {
+                                    width: 100%;
+                                    display: inline-block;
+                                    box-sizing: border-box;
+                                    &[current = 'true'] {
+                                        background: RGBA(39, 106, 179, 1);
+                                        .text {
+                                            color: RGBA(255, 255, 255, 1);
+                                        }
+                                        .icon {
+                                            color: RGBA(255, 255, 255, 1);
+                                        }
+                                    }
+                                }
+                                & .item > label {
+                                    padding-left: 20px;
+                                }
+                                & .item > .item > label {
+                                    padding-left: 40px;
+                                }
+                                & .item > .item > .item > label {
+                                    padding-left: 60px;
+                                }
+                                & .item > .item > .item > .item > label {
+                                    padding-left: 80px;
+                                }
+                                span {
+                                    height: 28px;
+                                    line-height: 28px;
+                                    display: inline-block;
+                                    float: left;
+                                }
+                                span.icon {
+                                    width: 25px;
+                                    font-size: 14px;
+                                    color: RGBA(255, 255, 255, .5);
+                                    &.icon-1 {
+                                        text-align: center;
+                                        transition: transform .2s;
+                                        &[close='true'] {
+                                            transform: rotate(90deg);
+                                        }
+                                    }
+                                    &.icon-2 {
+                                        text-align: left;
+                                    }
+                                }
+                                &.default {
+                                    span {
+                                        font-weight: bold;
+                                        color: RGBA(255, 255, 255, .8);
+                                        &.icon {
+                                            text-align: center;
+                                        }
+                                    }
+                                    
+                                }
+                                span.text {
+                                    font-size: 14px;
+                                    color: RGBA(255, 255, 255, .5);
+                                }
+                            }
+                        }
+                    }
+                }
+                .listContainer {
+                    flex-shrink: 0;
+                    width: 220px;
+                    height: 100%;
+                    padding: 1px 0 1px 0;
+                    border-right: 1px solid RGBA(0, 0, 0, 1);
+                    box-sizing: border-box;
+                    display: none;
+                    flex-direction: column;
+                    &.show {
+                        display: flex;
+                    }
+                    .searchContainer {
+                        width: 100%;
+                        height: 48px;
+                        background: RGBA(30, 32, 34, 1);
+                        box-sizing: border-box;
+                        border-bottom: 1px solid RGBA(0, 0, 0, 1);
+                        .wrap {
+                            width: 159px;
+                            height: 24px;
+                            margin-left: 15px;
+                            margin-top: 11px;
+                            padding: 3px 5px;
+                            display: inline-block;
+                            border-radius: 3px;
+                            box-sizing: border-box;
+                            overflow: hidden;
+                            transition: border .2s;
+                            vertical-align: text-top;
+                            background: RGBA(41, 43, 45, 1);
+                            border: 1px solid RGBA(56, 59, 61, 1);
+                            &.focus {
+                                border: 1px solid RGBA(39, 106, 179, 1);
+                            }
+                            .formBox {
+                                width: 100%;
+                                height: 100%;
+                                transition: transform .2s;
+                                transform: translateX(12%);
+                                &.focus {
+                                    transform: translateX(0);
+                                }
+                                .fa-icon {
+                                    width: 16px;
+                                    height: 16px;
+                                    line-height: 16px;
+                                    text-align: center;
+                                    display: inline-block;
+                                    color: RGBA(255, 255, 255, .3);
+                                    vertical-align: text-top;
+                                    &.icon-2 {
+                                        font-size: 14px;
+                                        border-radius: 50%;
+                                        color: RGBA(255, 255, 255, .2);
+                                        transition: color .3s;
+                                        cursor: pointer;
+                                        &:hover {
+                                            color: RGBA(39, 106, 179, 1);
+                                        }
+                                    }
+                                }
+                                input {
+                                    width: 105px;
+                                    height: 16px;
+                                    line-height: 16px;
+                                    margin-right: 5px;
+                                    margin-left: 5px;
+                                    color: RGBA(255, 255, 255, .8);
+                                    vertical-align: text-top;
+                                }
+                            }
+                        }
+                        .btn {
+                            width: 36px;
+                            height: 36px;
+                            line-height: 36px;
+                            margin-left: 5px;
+                            display: inline-block;
+                            text-align: center;
+                            font-size: 20px;
+                            margin-top: 3px;
+                            cursor: pointer;
+                            transition: color .2s;
+                            color: RGBA(255, 255, 255, .3);
+                            vertical-align: text-top;
+                            &:hover {
+                                color: RGBA(39, 106, 179, 1);
+                            }
+                            &.disable {
+                                color: RGBA(255, 255, 255, .1);
+                                pointer-events: none;
+                            }
+                        }
+                    }
+                    .article-list {
+                        flex: 1;
+                        height: 0;
+                        overflow-x: hidden;
+                        overflow-y: auto;
+                        scroll-behavior: smooth;
+                        -webkit-overflow-scrolling: touch;
+                        .not-data {
+                            width: 100%;
+                            height: 35px;
+                            line-height: 35px;
+                            padding: 0 10px;
+                            font-size: 12px;
+                            font-family: Arial, sans-serif;
+                            box-sizing: border-box;
+                            color: RGBA(255, 255, 255, .2);
+                        }
+                        .item {
+                            width: 220px;
+                            height: 96px;
+                            padding-left: 50px;
+                            box-sizing: border-box;
+                            position: relative;
+                            &.current {
+                                background: RGBA(25, 25, 28, 1);
+                                &:before {
+                                    content: '';
+                                    width: 5px;
+                                    height: 96px;
+                                    position: absolute;
+                                    left: 0;
+                                    top: 0;
+                                    background: RGBA(107, 202, 251, 1);
+                                }
+                            }
+                            .date {
+                                width: 50px;
+                                height: 96px;
+                                line-height: 35px;
+                                text-align: center;
+                                font-family: Arial, sans-serif;
+                                color: RGBA(255, 255, 255, .5);
+                                font-size: 14px;
+                                position: absolute;
+                                left: 0;
+                                top: 0;
+                            }
+                            .context {
+                                width: 100%;
+                                height: 96px;
+                                h2 {
+                                    width: calc(100% - 10px);
+                                    height: 35px;
+                                    line-height: 35px;
+                                    overflow: hidden;
+                                    font-size: 16px;
+                                    box-sizing: border-box;
+                                    -webkit-user-select: text;
+                                    font-family: Arial, 'Microsoft YaHei', sans-serif;
+                                    color: RGBA(255, 255, 255, .7);
+                                }
+                                .description {
+                                    width: 100%;
+                                    height: 61px;
+                                    padding-bottom: 10px;
+                                    overflow: hidden;
+                                    font-size: 12px;
+                                    line-height: 140%;
+                                    padding-right: 10px;
+                                    box-sizing: border-box;
+                                    font-family: Arial, 'Microsoft YaHei', sans-serif;
+                                    color: RGBA(255, 255, 255, .5);
+                                    border-bottom: 1px solid RGBA(0, 0, 0, 1);
+                                    dl {
+                                        height: 100%;
+                                        overflow: hidden;
+                                        -webkit-user-select: text;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .articleContainer {
+                    flex: 1;
+                    display: flex;
+                    flex-wrap: wrap;
+                    width: 0;
+                    flex-direction: column;
+                    .content-bar {
+                        width: 100%;
+                        display: flex;
+                        padding: 0 20px;
+                        box-sizing: border-box;
+                        background: RGBA(0, 0, 0, .1);
+                        .title {
+                            flex: 1;
+                            height: 48px;
+                            line-height: 48px;
+                            font-weight: 400;
+                            font-size: 18px;
+                            font-family: Arial, 'Microsoft YaHei', sans-serif;
+                            color: RGBA(255, 255, 255, .8);
+                            span {
+                                -webkit-user-select: text;
+                            }
+                        }
+                        input {
+                            width: 350px;
+                            height: 48px;
+                            line-height: 48px;
+                            font-weight: 400;
+                            font-size: 18px;
+                            font-family: Arial, 'Microsoft YaHei', sans-serif;
+                            color: RGBA(255, 255, 255, .5);
+                        }
+                        
+                        .menu {
+                            height: 48px;
+                            padding: 9px 0;
+                            position: relative;
+                            margin-right: 1px;
+                            box-sizing: border-box;
+                            .icon {
+                                width: 50px;
+                                height: 30px;
+                                padding: 8px 0;
+                                text-align: center;
+                                cursor: pointer;
+                                box-sizing: border-box;
+                                transition: color .3s;
+                                color: RGBA(255, 255, 255, .3);
+                                display: inline-block;
+                                position: relative;
+                                z-index: 100;
+                            }
+                            &.current .icon {
+                                color: RGBA(255, 255, 255, .8);
+                                background: RGBA(255, 255, 255, .1);
+                            }
+                            &.frameToggle .icon:before {
+                                transform: rotate(-10deg);
+                            }
+                        }
+                        
+                        .menus {
+                            width: 100px;
+                            padding: 9px 0;
+                            cursor: pointer;
+                            position: relative;
+                            box-sizing: border-box;
+                            .icon {
+                                width: 50px;
+                                height: 30px;
+                                padding: 8px 0;
+                                box-sizing: border-box;
+                                line-height: 30px;
+                                text-align: center;
+                                font-size: 18px;
+                                color: RGBA(255, 255, 255, .3);
+                                display: inline-block;
+                                position: relative;
+                                z-index: 100;
+                                transition: color .3s .1s;
+                                &.light {
+                                    color: RGBA(255, 255, 255, 1);
+                                }
+                            }
+                            &:before {
+                                content: '';
+                                width: 50px;
+                                height: 30px;
+                                position: absolute;
+                                left: 0;
+                                background: RGBA(39, 106, 179, 1);
+                            }
+                            &.edit:before {
+                                content: '';
+                                -webkit-animation-name: switchToEdit;
+                                -webkit-animation-duration: .1s;
+                                -webkit-animation-fill-mode: forwards;
+                                -webkit-animation-timing-function: linear;
+                            }
+                            &.browse:before {
+                                content: '';
+                                -webkit-animation-name: switchToBrowse;
+                                -webkit-animation-duration: .1s;
+                                -webkit-animation-fill-mode: forwards;
+                                -webkit-animation-timing-function: linear;
+                            }
+                            @keyframes switchToEdit {
+                                0% {
+                                    transform: translate3d(0, 0, 0)
+                                }
+                                100% {
+                                    transform: translate3d(100%, 0, 0)
+                                }
+                            }
+                            @keyframes switchToBrowse {
+                                0% {
+                                    transform: translate3d(100%, 0, 0)
+                                }
+                                100% {
+                                    transform: translate3d(0, 0, 0)
+                                }
+                            }
+                        }
+                    }
+                    .content {
+                        color: RGBA(255, 255, 255, .5);
+                        flex: 1;
+                        overflow-x: hidden;
+                        overflow-y: auto;
+                        box-sizing: border-box;
+                        padding-right: 15px;
+                        padding-top: 15px;
+                        padding-bottom: 5px;
+                        -webkit-user-select: text;
+                        position: relative;
+                        display: flex;
+                        .columns-line {
+                            width: 1px;
+                            background: RGBA(255, 255, 255, .05);
+                        }
+                        .wrap {
+                            flex: 1;
+                            height: 100%;
+                            display: block;
+                            box-sizing: border-box;
+                            overflow: hidden;
+                            &.browse-mod {
+                                flex-shrink: 0;
+                                padding: 15px 60px;
+                                box-sizing: border-box;
+                                overflow-x: hidden;
+                                overflow-y: auto;
+                                line-height: 140%;
+                                font-size: 14px;
+                                position: static;
+                                color: RGBA(255, 255, 255, .6);
+                                font-family: 'Microsoft YaHei', sans-serif;
+                                * {
+                                    -webkit-user-select: text;
+                                }
+                                & > *:not(pre):first-child {
+                                    margin-top: 0;
+                                    padding-top: 0;
+                                }
+                                h1 {
+                                    font-size: 24px;
+                                    &:before {
+                                        content: 'H1';
+                                        width: 20px;
+                                        font-size: 12px;
+                                        font-weight: normal;
+                                        display: inline-block;
+                                        color: RGBA(255, 255, 255, .3);
+                                    }
+                                }
+                                h2 {
+                                    font-size: 22px;
+                                    &:before {
+                                        content: 'H2';
+                                        width: 20px;
+                                        font-size: 12px;
+                                        font-weight: normal;
+                                        display: inline-block;
+                                        color: RGBA(255, 255, 255, .3);
+                                    }
+                                }
+                                h3 {
+                                    font-size: 20px;
+                                    &:before {
+                                        content: 'H3';
+                                        width: 20px;
+                                        font-size: 12px;
+                                        font-weight: normal;
+                                        display: inline-block;
+                                        color: RGBA(255, 255, 255, .3);
+                                    }
+                                }
+                                h4 {
+                                    font-size: 18px;
+                                    &:before {
+                                        content: 'H4';
+                                        width: 20px;
+                                        font-size: 12px;
+                                        font-weight: normal;
+                                        display: inline-block;
+                                        color: RGBA(255, 255, 255, .3);
+                                    }
+                                }
+                                h5 {
+                                    font-size: 16px;
+                                    &:before {
+                                        content: 'H5';
+                                        width: 20px;
+                                        font-size: 12px;
+                                        font-weight: normal;
+                                        display: inline-block;
+                                        color: RGBA(255, 255, 255, .3);
+                                    }
+                                }
+                                h6 {
+                                    font-size: 14px;
+                                    &:before {
+                                        content: 'H6';
+                                        width: 20px;
+                                        font-size: 12px;
+                                        font-weight: normal;
+                                        display: inline-block;
+                                        color: RGBA(255, 255, 255, .3);
+                                    }
+                                }
+                                h1, h2, h3, h4, h5, h6 {
+                                    padding-left: 0;
+                                    margin-top: 20px;
+                                    color: RGBA(255, 255, 255, .8);
+                                }
+                                h1, h2, h3, h4, h5, h6, hr, p {
+                                    box-sizing: border-box;
+                                    position: relative;
+                                    display: block;
+                                }
+                                
+                                & > p {
+                                    margin: 10px 0;
+                                    padding-left: 20px;
+                                }
+                                
+                                p > code {
+                                    padding: 0 3px;
+                                    margin: 0 2px;
+                                    color: RGBA(255, 255, 255, 1);
+                                    border-radius: 1px;
+                                    display: inline-block;
+                                    border: 1px solid RGBA(255, 255, 255, .15);
+                                }
+                                
+                                & > pre {
+                                    overflow-x: auto;
+                                }
+                                
+                                hr {
+                                    height: 1px;
+                                    border: none;
+                                    font-size: 0;
+                                    margin-top: 10px;
+                                    margin-bottom: 10px;
+                                    overflow: hidden;
+                                    background: RGBA(255, 255, 255, .3);
+                                }
+                                
+                                & ol {
+                                    counter-reset: field 0;
+                                }
+                                
+                                & ol > li {
+                                    list-style: none;
+                                    padding-left: 20px;
+                                    counter-increment: field;
+                                    position: relative;
+                                    box-sizing: border-box;
+                                    &:before {
+                                        content: counter(field) '.';
+                                        color: RGBA(74, 168, 251, 1);
+                                        width: 10px;
+                                        height: 100%;
+                                        position: absolute;
+                                        left: 0;
+                                        top: 50%;
+                                        font-size: 12px;
+                                        font-weight: bold;
+                                        font-family: Arial, sans-serif;
+                                        transform: translate(0, -50%);
+                                    }
+                                }
+                                
+                                & > ul {
+                                
+                                }
+                                
+                                & ul li {
+                                    padding-left: 20px;
+                                    position: relative;
+                                    list-style: none;
+                                    box-sizing: border-box;
+                                    font-weight: bold;
+                                    color: RGBA(255, 255, 255, .8);
+                                    &:before {
+                                        content: '';
+                                        width: 5px;
+                                        height: 5px;
+                                        border-radius: 50%;
+                                        position: absolute;
+                                        left: 1px;
+                                        top: 7px;
+                                        background: RGBA(74, 168, 251, 1);
+                                    }
+                                }
+                                
+                                blockquote {
+                                    padding-left: 20px;
+                                    margin-bottom: 10px;
+                                    position: relative;
+                                    list-style: none;
+                                    &:before {
+                                        content: '';
+                                        width: 2px;
+                                        height: 100%;
+                                        position: absolute;
+                                        left: 2px;
+                                        top: 0;
+                                        background: RGBA(74, 168, 251, 1);
+                                    }
+                                }
+                                
+                                a {
+                                    color: RGBA(74, 168, 251, 1);
+                                    text-decoration: none;
+                                    &:before {
+                                        color: RGBA(255, 255, 255, .3);
+                                        content: '[ ';
+                                    }
+                                    &:after {
+                                        color: RGBA(255, 255, 255, .3);
+                                        content: ' ]';
+                                    }
+                                }
+                                
+                                table {
+                                    border: 0;
+                                    margin-left: 20px;
+                                    padding: 0;
+                                    border-collapse: collapse;
+                                }
+                                
+                                table th {
+                                    background: RGBA(74, 168, 251, .1);
+                                }
+                                
+                                table td, th {
+                                    line-height: 25px;
+                                    padding: 0 5px;
+                                    font-size: 14px;
+                                    border: 1px solid RGBA(255, 255, 255, .15);
+                                }
+                                
+                                table td {
+                                    color: RGBA(255, 255, 255, .5);
+                                }
+                                
+                            }
+                            &.edit-mod {
+                            
+                            }
+                            .editor-container {
+                                width: calc(100% - 20px);
+                                height: calc(100% - 15px);
+                                margin: 10px 20px 5px 0;
+                                box-sizing: border-box;
+                            }
+                            textarea {
+                                width: 100%;
+                                height: 100%;
+                                position: absolute;
+                                left: 0;
+                                top: 0;
+                            }
+                        }
+                    }
+                }
+            }
+            #login {
+                width: 320px;
+                height: 300px;
+                box-sizing: border-box;
+                overflow: hidden;
+                -webkit-app-region: drag;
+                position: absolute;
+                display: inline-block;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                .login-container {
+                    width: 200px;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                }
+                h2 {
+                    width: 100%;
+                    text-align: center;
+                    color: RGBA(255, 255, 255, .7);
+                    padding-bottom: 20px;
+                }
+                h4 {
+                    font-size: 12px;
+                    font-weight: normal;
+                    text-align: center;
+                    margin-top: 10px;
+                    color: RGBA(255, 255, 255, .7);
+                    font-family: Arial, sans-serif;
+                    padding: 0;
+                    a {
+                        margin-left: 8px;
+                        cursor: pointer;
+                        font-style: normal;
+                        text-decoration: none;
+                        color: RGBA(39, 106, 179, 1);
+                        &:hover {
+                            color: RGBA(46, 132, 226, 1);
+                            text-decoration: underline;
+                        }
+                    }
+                }
+                .item {
+                    width: 100%;
+                    &.input {
+                        padding-bottom: 30px;
+                        position: relative;
+                        .wrap {
+                            width: 100%;
+                            background: RGBA(41, 43, 45, 1);
+                            height: 28px;
+                            box-sizing: border-box;
+                        }
+                        .verify-tips {
+                            color: RGBA(214, 85, 95, 1);
+                            top: 30px;
+                            line-height: 100%;
+                            font-size: 11px;
+                            position: absolute;
+                            font-family: Arial, sans-serif;
+                        }
+                    }
+                    .wrap {
+                        width: 100%;
+                        input {
+                            width: 100%;
+                            height: 28px;
+                            line-height: 28px;
+                            padding: 0 10px;
+                            box-sizing: border-box;
+                            border: none;
+                            background: none;
+                            color: RGBA(255, 255, 255, 1)
+                        }
+                        button {
+                            width: 100%;
+                            height: 30px;
+                            font-size: 12px;
+                            overflow: hidden;
+                            margin-top: 5px;
+                            cursor: pointer;
+                            font-weight: bold;
+                            border-radius: 3px;
+                            color: RGBA(255, 255, 255, 1);
+                            background: RGBA(39, 106, 179, 1);
+                            box-shadow: 1px 1px 5px RGBA(0, 0, 0, 1);
+                            &:hover {
+                                background: RGBA(46, 132, 226, 1);
+                            }
+                        }
+                    }
+                }
+            }
+            #defaultMain {
+                width: 100%;
+                height: 100%;
+                position: relative;
+            }
+        }
+    }
+    
+}
+

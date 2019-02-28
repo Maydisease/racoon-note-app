@@ -1,0 +1,1 @@
+type NoteCategoryService =  new (str: string) => any;

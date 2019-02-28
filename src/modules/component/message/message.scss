@@ -1,0 +1,47 @@
+#v-message {
+    width: 0;
+    height: 0;
+    .text {
+        max-width: 200px;
+        line-height: 120%;
+        padding: 8px 15px;
+        text-align: left;
+        position: absolute;
+        left: 50%;
+        top: 0;
+        font-size: 12px;
+        opacity: 0;
+        font-family: Arial, sans-serif;
+        color: RGBA(255, 255, 255, 1);
+        border-radius: 3px;
+        transform: translate(-50%, 0);
+        background: RGBA(0, 0, 0, .5);
+        box-shadow: 1px 2px 5px RGBA(0, 0, 0, 0.3);
+        -webkit-animation: v-message .3s forwards linear;
+        font-weight: bold;
+        z-index: 9999;
+        @keyframes v-message {
+            0% {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(20px);
+            }
+        }
+        &.error {
+            background: RGBA(210, 53, 62, 1);
+        }
+        &.success {
+            background: RGBA(38, 154, 118, 1);
+        }
+        &.warning {
+            background: RGBA(252, 83, 8, 1);
+        }
+        &.common {
+            color: RGBA(255, 255, 255, .7);
+            background: RGBA(50, 50, 50, 1);
+        }
+    }
+}

@@ -1,0 +1,47 @@
+* {
+    margin: 0;
+    padding: 0;
+    -webkit-user-select: none;
+}
+
+li {
+    list-style: none;
+}
+
+/* 设置滚动条的样式 */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+/* 滚动槽 */
+::-webkit-scrollbar-track {
+
+}
+
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: RGBA(255, 255, 255, .2);
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+input, textarea, button {
+    outline: none;
+    border: none;
+    background: none;
+}
+
+body {
+    background: RGBA(30, 32, 34, 1);
+    position: relative;
+}
+
+.body-component-container{
+    width: 0;
+    height: 0;
+}

@@ -1,0 +1,134 @@
+.app-logo {
+    width: 375px;
+    height: 375px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    .st0 {
+        fill: RGBA(255, 255, 255, 0);
+        stroke: #f0e2c9;
+        stroke-width: .5px;
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000px;
+    }
+    .st1 {
+        fill: RGBA(255, 255, 255, 0);
+        stroke: #f0e2c9;
+        stroke-width: .5px;
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000px;
+    }
+    svg {
+        transform: scale(1.5)
+    }
+    .left-hemisphere-anim {
+        animation: dash 5s linear forwards;
+    }
+    .right-hemisphere-anim {
+        animation: dash 5s linear forwards;
+        animation-delay: .7s;
+    }
+    .muzzle-base-anim {
+        animation: dash 6s linear forwards;
+        animation-delay: .5s;
+    }
+    .mouth-anim {
+        animation: dash 5s linear forwards, mouth-anim 1.5s forwards;
+        animation-delay: .57s, 5.5s;
+    }
+    .eyes-anim {
+        animation: glow 1s linear forwards;
+        animation-delay: 4s;
+    }
+    .teeth-anim {
+        animation: glow 1s linear forwards;
+        animation-delay: 3s;
+    }
+    .right-eyebrow-anim {
+        animation: dash 4s linear forwards;
+        animation-delay: 1.7s;
+    }
+    .left-eyebrow-anim {
+        animation: dash 4s linear forwards;
+        animation-delay: 1.5s;
+    }
+    @keyframes glow {
+        from {
+            fill: RGBA(255, 255, 255, 0);
+        }
+        to {
+            fill: #fff;
+        }
+    }
+    @keyframes mouth-anim {
+        0% {
+            transform: translateY(0)
+        }
+        50% {
+            transform: translateY(5px);
+            transform-origin: left top;
+        }
+        100% {
+            transform: rotate(0);
+        }
+    }
+    @keyframes dash {
+        0% {
+            stroke-dashoffset: 1000px;
+            fill: RGBA(255, 255, 255, 0);
+        }
+        40% {
+            fill: #312928;
+        }
+        45% {
+            fill: #f0e2c9;
+        }
+        100% {
+            stroke-dashoffset: 0;
+            fill: #f0e2c9;
+        }
+    }
+    @keyframes writing {
+        0% {
+            stroke-dasharray: 200px;
+            stroke-dashoffset: 200px;
+        }
+        30% {
+            stroke-width: 1.2px;
+        }
+        50% {
+            stroke-width: 1.5px;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @keyframes pulse {
+        0% {
+            transform: scale(.9);
+            fill: RGBA(255, 255, 255, 0);
+        }
+        15% {
+            transform: scale(1.1)
+        }
+        30% {
+            transform: scale(.8)
+        }
+        45% {
+            transform: scale(1)
+        }
+        60% {
+            transform: scale(.8)
+        }
+        75% {
+            transform: scale(1)
+        }
+        95% {
+            transform: scale(.8);
+        }
+        100% {
+            fill: #C0392B;
+        }
+    }
+}

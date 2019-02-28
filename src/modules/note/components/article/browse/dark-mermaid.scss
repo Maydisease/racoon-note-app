@@ -1,0 +1,53 @@
+.mermaid {
+    min-height: 100px;
+    margin-right: 10px;
+    color: RGBA(255, 255, 255, 0);
+    display: inline-block;
+    margin-top: 10px;
+    background: RGBA(0, 0, 0, 0.1);
+    position: relative;
+    &:before {
+        color: RGBA(255, 255, 255, .4);
+        content: 'loading ...';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        
+    }
+    .node rect,
+    .node circle,
+    .node ellipse,
+    .node polygon {
+        fill: #BDD5EA !important;
+        stroke: RGBA(255, 255, 255, 0) !important;
+        stroke-width: 4px !important;
+        stroke-dasharray: 5, 5 !important;
+    }
+    &[mermaid-render-state='true'] {
+        display: block;
+        &:before {
+            display: none;
+        }
+    }
+    .edgeLabels {
+        .edgeLabel {
+            border-radius: 5px;
+            padding: 0 2px;
+            font-size: 14px;
+            background-color: RGBA(31, 34, 35, 1) !important;
+        }
+        .label {
+            background: none;
+            span.edgeLabel {
+                color: RGBA(255, 255, 255, .5) !important;
+            }
+        }
+    }
+    
+    .cluster {
+        rect {
+            fill: RGBA(255, 255, 255, .1) !important;
+        }
+    }
+}
