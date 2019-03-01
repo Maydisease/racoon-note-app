@@ -34,7 +34,7 @@ class NoteMain extends React.Component {
                 if(this.searchWin && !this.searchWin.isDestroyed()){
 
                     if(this.searchWin.isVisible()){
-                        console.log(Service.Remote.getCurrentWindow().focus());
+                        Service.Remote.getCurrentWindow().focus();
                     }
 
                     this.searchWin.isVisible() ? this.searchWin.hide() : this.searchWin.show();
