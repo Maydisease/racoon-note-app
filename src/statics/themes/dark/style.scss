@@ -618,7 +618,8 @@ body[theme='dark'] {
                                     margin-top: 10px;
                                     margin-bottom: 10px;
                                     overflow: hidden;
-                                    background: RGBA(255, 255, 255, .3);
+                                    border-bottom: 1px dashed RGBA(255, 255, 255, .2);
+                                    background: RGBA(255, 255, 255, 0);
                                 }
                                 
                                 & ol {

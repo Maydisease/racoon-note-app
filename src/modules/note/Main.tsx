@@ -10,6 +10,7 @@ import {storeSubscribe}  from "../../store/middleware/storeActionEvent.middlewar
 
 class NoteMain extends React.Component {
 
+    public searchClass: any;
     public searchWin: any;
 
     constructor(props: any) {
@@ -26,14 +27,16 @@ class NoteMain extends React.Component {
 
         storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_SHIFT_F', () => {
 
-            console.log(Service.IPCRenderer.sendSync('getBrowserWindowList'));
+            console.log(789000, Service.IPCRenderer.sendSync('getBrowserWindowList').search);
 
             if (!Service.IPCRenderer.sendSync('getBrowserWindowList').search) {
                 console.log('进来了');
-                this.searchWin = new Service.WindowManages.search(true);
-                this.searchWin.created();
+                this.searchClass = new Service.WindowManages.search(true);
+                this.searchWin = this.searchClass.created();
             } else {
-                this.searchWin.destroy();
+                if(this.searchWin && !this.searchWin.isDestroyed()){
+                    this.searchWin.isVisible() ? this.searchWin.hide() : this.searchWin.show();
+                }
             }
 
         });

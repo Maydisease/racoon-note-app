@@ -247,8 +247,8 @@ class SuperSearch extends React.Component {
                     <span className={`find-type ${this.state.filterType === 0 ? 'type_1' : 'type_2'}`} onClick={this.switchFilterType}>
                         <em className={`slider ${this.state.filterType === 0 ? 'type_1' : 'type_2'}`}/>
                     </span>
-                    <span className="text">find path</span>
-                    <span className="find-path">/work/os/etois/tandongs.md</span>
+                    {/* <span className="text">find path</span>
+                    <span className="find-path">/work/os/etois/tandongs.md</span> */}
                 </div>
                 <div className="search-content">
                     <ul>

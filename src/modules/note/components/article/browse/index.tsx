@@ -43,8 +43,25 @@ class BrowseComponent extends React.Component {
         }, 200);
     }
 
+    public rewriteATagLink(){
+        setTimeout(() => {
+            const browseElement: HTMLElement | null = document.querySelector('#app .wrap.browse-mod');
+            console.log(999, browseElement);
+            if(browseElement){
+                const aTags: NodeListOf<Element> = browseElement.querySelectorAll('a');
+                aTags.forEach((element: HTMLElement) => {
+                    element.onclick = (e) => {
+                        console.log('----');
+                        return false;
+                    }
+                });
+            }
+        }, 200);
+    }
+
     public render() {
         this.renderMermaid();
+        this.rewriteATagLink();
         const ARTICLE_TEMP = (this.props as any).STORE_NOTE$ARTICLE_TEMP;
         return (<div className="wrap browse-mod" dangerouslySetInnerHTML={{__html: ARTICLE_TEMP.html_content}}/>);
     }

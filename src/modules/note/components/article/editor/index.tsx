@@ -45,7 +45,7 @@ class EditorComponent extends React.Component {
         super(props);
         this.saveContent = this.saveContent.bind(this);
         this.markdownIt  = new MarkdownIt({
-            breaks   : false,
+            breaks   : true,
             highlight: (str: any, lang: any) => {
                 let html;
 
@@ -58,16 +58,6 @@ class EditorComponent extends React.Component {
                 return html
             }
         }).use(markdownItMermaid);
-
-
-        console.log(this.markdownIt.render(`\`\`\`mermaid
-                    graph TD
-                        A[Christmas] -->|Get money| B(Go shopping)
-                        B --> C{Let me think}
-                        C -->|One| D[Laptop]
-                        C -->|Two| E[iPhone]
-                        C -->|Three| F[Car]
-                    \`\`\``))
 
     }
 
