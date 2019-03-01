@@ -27,14 +27,16 @@ class NoteMain extends React.Component {
 
         storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_SHIFT_F', () => {
 
-            console.log(789000, Service.IPCRenderer.sendSync('getBrowserWindowList').search);
-
             if (!Service.IPCRenderer.sendSync('getBrowserWindowList').search) {
-                console.log('进来了');
                 this.searchClass = new Service.WindowManages.search(true);
                 this.searchWin = this.searchClass.created();
             } else {
                 if(this.searchWin && !this.searchWin.isDestroyed()){
+
+                    if(this.searchWin.isVisible()){
+                        console.log(Service.Remote.getCurrentWindow().focus());
+                    }
+
                     this.searchWin.isVisible() ? this.searchWin.hide() : this.searchWin.show();
                 }
             }
