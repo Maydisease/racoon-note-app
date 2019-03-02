@@ -50,7 +50,7 @@ class EditorComponent extends React.Component {
 
                 let html: string;
                 let htmlStr: string;
-                let language: string;
+                let language: string; 
 
                 try {
                     language = lang;
