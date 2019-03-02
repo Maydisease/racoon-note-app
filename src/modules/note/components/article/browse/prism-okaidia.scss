@@ -9,7 +9,7 @@ pre[class*="language-"] {
     color: #f8f8f2;
     background: none;
     text-shadow: 0 1px rgba(0, 0, 0, 0.3);
-    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    font-family: 'Microsoft YaHei', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
     text-align: left;
     white-space: pre;
     word-spacing: normal;
@@ -25,6 +25,11 @@ pre[class*="language-"] {
     -moz-hyphens: none;
     -ms-hyphens: none;
     hyphens: none;
+    border: 1px solid RGBA(0, 0, 0, .08);
+}
+
+pre[class*="language-"] code{
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono','Microsoft YaHei', sans-serif;
 }
 
 /* Code blocks */
@@ -32,7 +37,16 @@ pre[class*="language-"] {
     padding: 1em;
     margin: .5em 0;
     overflow: auto;
+    position: relative;
     border-radius: 0.3em;
+    &:before{
+        right: 8px;
+        top: 6px;
+        font-size: 11px;
+        position: absolute;
+        color: RGBA(255, 255, 255, .2);
+        content: attr(language);
+    }
 }
 
 :not(pre) > code[class*="language-"],

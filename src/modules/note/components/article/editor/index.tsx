@@ -46,16 +46,23 @@ class EditorComponent extends React.Component {
         this.saveContent = this.saveContent.bind(this);
         this.markdownIt  = new MarkdownIt({
             breaks   : true,
-            highlight: (str: any, lang: any) => {
-                let html;
+            highlight: (str: string, lang: string) => {
+
+                let html: string;
+                let htmlStr: string;
+                let language: string;
 
                 try {
-                    html = '<pre class="language-' + lang + '"><code>' + Prism.highlight(str, Prism.languages[lang], lang) + '</code></pre>';
+                    language = lang;
+                    htmlStr = Prism.highlight(str, Prism.languages[language], language);
                 } catch (e) {
-                    html = '<pre class="language-textile"><code>' + Prism.highlight(str, Prism.languages['textile'], ('textile' as any)) + '</code></pre>';
+                    language = 'textile';
+                    htmlStr = Prism.highlight(str, Prism.languages[language], language);
                 }
 
-                return html
+                html = `<pre class="language-${language}" language="${language}"><code>${htmlStr}</code></pre>`;
+
+                return html;
             }
         }).use(markdownItMermaid);
 

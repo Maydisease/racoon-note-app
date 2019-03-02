@@ -601,10 +601,12 @@ body[theme='dark'] {
                                 p > code {
                                     padding: 0 3px;
                                     margin: 0 2px;
-                                    color: RGBA(255, 255, 255, 1);
-                                    border-radius: 1px;
+                                    border-radius: 5px;
+                                    color: RGBA(255, 255, 255, .5);
+                                    border-radius: 3px; 
                                     display: inline-block;
-                                    border: 1px solid RGBA(255, 255, 255, .15);
+                                    background: RGBA(0, 0, 0, 0.1);
+                                    border: 1px solid RGBA(0, 0, 0, .4);
                                 }
                                 
                                 & > pre {

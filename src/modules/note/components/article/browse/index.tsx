@@ -46,12 +46,10 @@ class BrowseComponent extends React.Component {
     public rewriteATagLink(){
         setTimeout(() => {
             const browseElement: HTMLElement | null = document.querySelector('#app .wrap.browse-mod');
-            console.log(999, browseElement);
             if(browseElement){
                 const aTags: NodeListOf<Element> = browseElement.querySelectorAll('a');
                 aTags.forEach((element: HTMLElement) => {
                     element.onclick = (e) => {
-                        console.log('----');
                         return false;
                     }
                 });
