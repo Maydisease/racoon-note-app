@@ -77,7 +77,7 @@ class SignInMain extends React.Component<Props, State> {
         if (signInResponse.result === 0 && signInResponse.messageCode === 2000) {
 
             // 那么把服务端的token，委托主线程存储至sqlite中
-            const signStateResponse: any = await Service.ClientCache('/user/signState').putSignState(signInResponse.data.token);
+            const signStateResponse: any = await Service.ClientCache('/user/signState').putSignState(signInResponse.data.token, signInResponse.data.private_space);
 
             // 存入成功，并向主渲染线程发送登录成功事件
             if (signStateResponse.raw > 0) {
