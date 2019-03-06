@@ -1,5 +1,6 @@
 import * as React                       from 'react';
 import NoteMain                         from './modules/note/Main';
+import Attached                         from './modules/common/attached';
 import NoteSuperSearch                  from './modules/note/components/super_search';
 import RSSMain                          from './modules/rss/Main';
 import TodoMain                         from './modules/todo/Main';
@@ -27,6 +28,7 @@ class App extends React.Component {
                     <Route path="/todo" component={TodoMain}/>
                     <Route path="/sign_in" component={SignInMain}/>
                     <Route path="/sign_up" component={SignUpMain}/>
+                    <Route path="/attached" component={Attached}/>
                 </div>
             </Router>
         );

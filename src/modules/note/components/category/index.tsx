@@ -9,6 +9,7 @@ import {VMessageService}   from "../../../component/message";
 import {FontAwesomeIcon}   from '@fortawesome/react-fontawesome';
 import {store}             from "../../../../store";
 import {AppCommandService} from "../../services/appCommand.service";
+import {AttachedService}   from '../../services/attached.server';
 
 interface CategoryItemEdit {
     state: boolean,
@@ -358,6 +359,11 @@ class CategoryContainer extends React.Component {
         this.setState(state);
     }
 
+    public openAttached() {
+        console.log('openAttached');
+        new AttachedService().open();
+    }
+
     public handleActionBar(actionType: string): void {
         switch (actionType) {
             case 'setting':
@@ -366,6 +372,9 @@ class CategoryContainer extends React.Component {
                 store.dispatch({'type': `WINDOW_KEYBOARD$CMD_OR_CTRL_SHIFT_F`});
                 break;
             case 'trash':
+                break;
+            case 'attached':
+                this.openAttached();
                 break;
             case 'signOut':
                 this.appCommandService.signOut();
@@ -397,6 +406,10 @@ class CategoryContainer extends React.Component {
                         <span className="line left"/>
                         <label onClick={this.handleActionBar.bind(null, 'search')}>
                             <FontAwesomeIcon className="fa-icon left" icon="search"/>
+                        </label>
+                        <span className="line left"/>
+                        <label onClick={this.handleActionBar.bind(null, 'attached')}>
+                            <FontAwesomeIcon className="fa-icon left" icon="paperclip"/>
                         </label>
                         <span className="line left"/>
                         <label onClick={this.handleActionBar.bind(null, 'trash')}>
