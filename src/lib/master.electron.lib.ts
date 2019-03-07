@@ -10,6 +10,7 @@ const Service = {
     AppReset        : masterModules.electron.remote.getGlobal('service').AppReset,
     SignOut         : masterModules.electron.remote.getGlobal('service').SignOut,
     Config          : masterModules.electron.remote.getGlobal('service').Config,
+    SelectFiles     : masterModules.electron.remote.getGlobal('service').SelectFiles,
 
     // 服务端代理
     ServerProxy: masterModules.electron.remote.getGlobal('service').ServerProxy,
