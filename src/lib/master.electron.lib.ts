@@ -13,8 +13,9 @@ const Service = {
     SelectFiles     : masterModules.electron.remote.getGlobal('service').SelectFiles,
 
     // 服务端代理
-    ServerProxy: masterModules.electron.remote.getGlobal('service').ServerProxy,
-    ClientCache: masterModules.electron.remote.getGlobal('service').ClientCache,
+    ServerProxy      : masterModules.electron.remote.getGlobal('service').ServerProxy,
+    ServerProxyUpload: masterModules.electron.remote.getGlobal('service').ServerProxyUpload,
+    ClientCache      : masterModules.electron.remote.getGlobal('service').ClientCache,
 
     // Process
     Process: masterModules.electron.remote.getGlobal('service').Process,
