@@ -9,7 +9,7 @@ class Attached extends React.Component {
     public fileWhiteList: string[];
 
     public state: any = {
-        isReadyTabStatus: false,
+        isReadyTabStatus: true,
         readyUploadList : []
     };
 
@@ -30,9 +30,18 @@ class Attached extends React.Component {
         const parentWin = Service.IPCRenderer.sendSync('getBrowserWindowList').master;
         const options   = {properties: ['openFile', 'multiSelections']};
         Service.SelectFiles(parentWin, options).then((files: any) => {
-            const state: any      = this.state;
-            state.readyUploadList = files;
-            this.setState(state);
+            if (typeof files === 'object' && files.length > 0) {
+                const state: any    = this.state;
+                const newFiles: any = [];
+                files.forEach((file: any) => {
+                    if (state.readyUploadList.findIndex((item: any) => item.path === file.path) < 0) {
+                        file.status = false;
+                        newFiles.push(file);
+                    }
+                });
+                state.readyUploadList = [...state.readyUploadList, ...newFiles];
+                this.setState(state);
+            }
         });
     }
 
@@ -44,13 +53,16 @@ class Attached extends React.Component {
                         <span onClick={this.handleTabsSwitch.bind(this, true)} className={`${this.state.isReadyTabStatus ? 'current' : ''}`}>ready</span>
                         <span onClick={this.handleTabsSwitch.bind(this, false)} className={`${this.state.isReadyTabStatus ? '' : 'current'}`}>finish</span>
                     </div>
-                    <div className="area-right">
+                    <div className="area-right" style={{display: this.state.isReadyTabStatus ? 'block' : 'none'}}>
                         <button className="select" onClick={this.handleSelectFiles}>select</button>
-                        <button className="upload disable">upload</button>
+                        <button className={`upload ${this.state.readyUploadList.length > 0 ? '' : 'disable'}`}>upload</button>
                     </div>
                 </div>
-                <div className="file-container">
-                    {this.state.isReadyTabStatus ? <ReadyList readyUploadList={this.state.readyUploadList}/> : <FinishList/>}
+                <div className="file-container" style={{display: this.state.isReadyTabStatus ? 'block' : 'none'}}>
+                    <ReadyList readyUploadList={this.state.readyUploadList}/>
+                </div>
+                <div className="file-container" style={{display: this.state.isReadyTabStatus ? 'none' : 'block'}}>
+                    <FinishList/>
                 </div>
                 <div className="status-bar"/>
             </div>
