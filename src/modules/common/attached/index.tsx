@@ -43,7 +43,7 @@ class Attached extends React.Component {
         const options   = {
             properties: ['openFile', 'multiSelections'],
             filters: [
-                { name: 'Images', extensions: ['jpg', 'png', 'gif'] }
+                { name: 'Images', extensions: ['jpg', 'jpeg', 'png', 'gif'] }
             ]
         };
 
