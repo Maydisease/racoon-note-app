@@ -1,8 +1,9 @@
-import * as React      from 'react';
-import * as CodeMirror from "codemirror";
-import {connect}       from 'react-redux';
-import {store}         from "../../../../../store";
-import * as MarkdownIt from 'markdown-it';
+import * as React           from 'react';
+import * as CodeMirror      from "codemirror";
+import {connect}            from 'react-redux';
+import {store}              from "../../../../../store";
+import * as MarkdownIt      from 'markdown-it';
+import {EditorToolsService} from '../../../services/editorTools.service';
 
 import {ArticleService} from "../../../services/article.service";
 import './codemirror.scss';
@@ -28,6 +29,7 @@ import 'prismjs/components/prism-bash';
 import 'prismjs/components/prism-sass';
 import 'prismjs/components/prism-scss';
 import 'prismjs/components/prism-textile';
+import {Service}        from "../../../../../lib/master.electron.lib";
 // import editorShortKeyMaps from '../../../../../config/editor/shortcutKey.conf';
 
 const markdownItMermaid = require('markdown-it-mermaid').default;
@@ -41,24 +43,26 @@ class EditorComponent extends React.Component {
     public state: any = {};
     public editor: any;
     public markdownIt: MarkdownIt;
+    public editorTools: EditorToolsService;
 
     constructor(props: any) {
         super(props);
-        this.saveContent = this.saveContent.bind(this);
-        this.markdownIt  = new MarkdownIt({
+        this.saveContent   = this.saveContent.bind(this);
+        this.insertContent = this.insertContent.bind(this);
+        this.markdownIt    = new MarkdownIt({
             breaks   : true,
             highlight: (str: string, lang: string) => {
 
                 let html: string;
                 let htmlStr: string;
-                let language: string; 
+                let language: string;
 
                 try {
                     language = lang;
-                    htmlStr = Prism.highlight(str, Prism.languages[language], language);
+                    htmlStr  = Prism.highlight(str, Prism.languages[language], language);
                 } catch (e) {
                     language = 'textile';
-                    htmlStr = Prism.highlight(str, Prism.languages[language], language);
+                    htmlStr  = Prism.highlight(str, Prism.languages[language], language);
                 }
 
                 html = `<pre class="language-${language}" language="${language}"><code>${htmlStr}</code></pre>`;
@@ -106,17 +110,21 @@ class EditorComponent extends React.Component {
             }, 200)
         });
 
-        // TODO 保留至编辑器内的markdown操作
-        // const extraEvents = {};
-        // const keyMap      = editorShortKeyMaps;
-        //
-        // extraEvents[keyMap.save] = async () => {
-        //     await this.saveContent();
-        // };
-        //
-        // this.editor.setOption("extraKeys", extraEvents);
         this.editor.setValue((this.props as any).STORE_NOTE$ARTICLE_TEMP.markdown_content);
+        this.editorTools = new EditorToolsService(this.editor);
 
+        Service.RenderToRender.subject('attached@editorInsertImage', async (event: any, params: any): Promise<boolean | void> => {
+            this.insertContent('image', params.data);
+        });
+
+    }
+
+    public insertContent(type: string, obj: any) {
+        switch (type) {
+            case 'image':
+                this.editorTools.insertImage(obj.imageTitle, obj.imageUrl);
+                break;
+        }
     }
 
     public render() {

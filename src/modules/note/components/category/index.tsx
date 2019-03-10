@@ -63,6 +63,7 @@ class CategoryContainer extends React.Component {
 
     public articleService: ArticleService;
     public appCommandService: AppCommandService;
+    public attachedService: AttachedService;
 
     constructor(readonly props: any) {
         super(props);
@@ -70,6 +71,7 @@ class CategoryContainer extends React.Component {
         this.contextMenuInit();
         this.categoryMenusElement = undefined;
         this.articleService       = new ArticleService();
+        this.attachedService      = new AttachedService();
         this.appCommandService    = new AppCommandService();
         this.closeRenamePanel     = this.closeRenamePanel.bind(this);
         this.confirmRenamePanel   = this.confirmRenamePanel.bind(this);
@@ -361,7 +363,7 @@ class CategoryContainer extends React.Component {
 
     public openAttached() {
         console.log('openAttached');
-        new AttachedService().open();
+        this.attachedService.open();
     }
 
     public handleActionBar(actionType: string): void {

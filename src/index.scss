@@ -10,7 +10,7 @@ li {
 
 /* 设置滚动条的样式 */
 ::-webkit-scrollbar {
-    width: 5px;
+    width: 3px;
     height: 5px;
 }
 
@@ -21,7 +21,7 @@ li {
 
 /* 滚动条滑块 */
 ::-webkit-scrollbar-thumb {
-    border-radius: 3px;
+    border-radius: 5px;
     background: RGBA(255, 255, 255, .2);
 }
 
@@ -41,7 +41,7 @@ body {
     position: relative;
 }
 
-.body-component-container{
+.body-component-container {
     width: 0;
     height: 0;
 }

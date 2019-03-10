@@ -3,7 +3,6 @@ import ArticleComponent  from './components/article';
 import CategoryComponent from './components/category';
 import ListComponent     from './components/list';
 import './interface/service.interface';
-// import '../../core/init/windowMenus.init';
 import {Service}         from '../../lib/master.electron.lib';
 import {store}           from "../../store";
 import {storeSubscribe}  from "../../store/middleware/storeActionEvent.middleware";
@@ -29,11 +28,11 @@ class NoteMain extends React.Component {
 
             if (!Service.IPCRenderer.sendSync('getBrowserWindowList').search) {
                 this.searchClass = new Service.WindowManages.search(true);
-                this.searchWin = this.searchClass.created();
+                this.searchWin   = this.searchClass.created();
             } else {
-                if(this.searchWin && !this.searchWin.isDestroyed()){
+                if (this.searchWin && !this.searchWin.isDestroyed()) {
 
-                    if(this.searchWin.isVisible()){
+                    if (this.searchWin.isVisible()) {
                         Service.Remote.getCurrentWindow().focus();
                     }
 
