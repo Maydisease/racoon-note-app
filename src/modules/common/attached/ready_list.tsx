@@ -46,7 +46,9 @@ class ReadyList extends React.Component {
         };
 
         return (
-            <div className="file-list ready">
+            <div
+                className="file-list ready"
+            >
                 <ul className="sort">
                     <li>
                         <span className="name">name</span>

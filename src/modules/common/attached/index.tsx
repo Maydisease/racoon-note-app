@@ -60,12 +60,16 @@ class Attached extends React.Component {
                 state.readyUploadList = [...state.readyUploadList, ...newFiles];
                 this.setState(state);
             }
+            Service.Remote.getCurrentWindow().focus();
         });
 
     }
 
     // 上传文件
     public async handleUploadFiles() {
+
+        console.log('----');
+        return false;
 
         // 预上传的文件个数
         let uploadLen = 0;

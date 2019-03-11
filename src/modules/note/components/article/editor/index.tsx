@@ -33,6 +33,9 @@ import {Service}        from "../../../../../lib/master.electron.lib";
 // import editorShortKeyMaps from '../../../../../config/editor/shortcutKey.conf';
 
 const markdownItMermaid = require('markdown-it-mermaid').default;
+const markdownItImsize  = require('markdown-it-imsize');
+
+console.log(555, markdownItImsize);
 
 declare var Prism: any;
 
@@ -69,7 +72,9 @@ class EditorComponent extends React.Component {
 
                 return html;
             }
-        }).use(markdownItMermaid);
+        })
+            .use(markdownItImsize)
+            .use(markdownItMermaid);
 
     }
 

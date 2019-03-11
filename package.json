@@ -66,6 +66,7 @@
     "codemirror": "^5.43.0",
     "css-hot-loader": "^1.4.3",
     "markdown-it": "^8.4.2",
+    "markdown-it-imsize": "^2.0.1",
     "markdown-it-mermaid": "^0.2.5",
     "mermaid": "^8.0.0",
     "node-sass": "^4.11.0",

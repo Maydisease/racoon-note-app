@@ -82,8 +82,8 @@ class FinishList extends React.Component {
                         this.state.finishAttachedList.map((item: any, index: number) => {
                             return (
                                 <div className="image-item" key={index}>
-                                    <div className="image-box">
-                                        <img src={`racoon://img/${item.path}`} onClick={this.handleClickImage.bind(this, item.name, item.path)}/>
+                                    <div className="image-box" onClick={this.handleClickImage.bind(this, item.name, item.path)}>
+                                        <img src={`racoon://img/${item.path}`}/>
                                     </div>
                                     <div className="image-text">
                                         <span className="name">{item.name}</span>
