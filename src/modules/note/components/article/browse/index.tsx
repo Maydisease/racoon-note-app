@@ -1,7 +1,8 @@
-import * as React from "react";
-import {connect}  from "react-redux";
+import * as React         from "react";
+import {connect}          from "react-redux";
 import './prism-okaidia.scss';
 import './dark-mermaid.scss';
+import {VLightBoxService} from "../../../../component/light_box";
 
 const mermaid = require('mermaid');
 
@@ -15,8 +16,11 @@ class BrowseComponent extends React.Component {
 
     public intersectionObserver: IntersectionObserver;
 
+    public $element: any;
+
     constructor(props: any) {
         super(props);
+        this.$element             = React.createRef();
         this.intersectionObserver = new IntersectionObserver(this.mermaidObserve);
     }
 
@@ -57,11 +61,23 @@ class BrowseComponent extends React.Component {
         }, 200);
     }
 
+    public bindImageLightBoxEvent() {
+        setTimeout(() => {
+            const BrowseImages: NodeListOf<HTMLImageElement> = (this.$element.current as HTMLElement).querySelectorAll('img');
+            BrowseImages.forEach((element: HTMLImageElement) => {
+                element.onclick = () => {
+                    new VLightBoxService({imageUrl: element.src}).init();
+                };
+            });
+        }, 200);
+    }
+
     public render() {
         this.renderMermaid();
         this.rewriteATagLink();
+        this.bindImageLightBoxEvent();
         const ARTICLE_TEMP = (this.props as any).STORE_NOTE$ARTICLE_TEMP;
-        return (<div className="wrap browse-mod" dangerouslySetInnerHTML={{__html: ARTICLE_TEMP.html_content}}/>);
+        return (<div ref={this.$element} className="wrap browse-mod" dangerouslySetInnerHTML={{__html: ARTICLE_TEMP.html_content}}/>);
     }
 }
 
