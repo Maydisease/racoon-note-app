@@ -21,6 +21,8 @@ class Attached extends React.Component {
         this.handleSelectFiles          = this.handleSelectFiles.bind(this);
         this.handleReadyListRemoveEvent = this.handleReadyListRemoveEvent.bind(this);
         this.handleUploadFiles          = this.handleUploadFiles.bind(this);
+        this.handleDropFiles            = this.handleDropFiles.bind(this);
+        this.uploadFilesMerge           = this.uploadFilesMerge.bind(this);
     }
 
     public handleTabsSwitch(readyTabStatus: boolean) {
@@ -36,33 +38,41 @@ class Attached extends React.Component {
         this.setState(state);
     }
 
+    public uploadFilesMerge(files: any) {
+        if (typeof files === 'object' && files.length > 0) {
+            const state: any    = this.state;
+            const newFiles: any = [];
+            files.forEach((file: any) => {
+                if (state.readyUploadList.findIndex((item: any) => item.path === file.path) < 0) {
+                    file.status = 0;
+                    newFiles.push(file);
+                }
+            });
+            state.readyUploadList = [...state.readyUploadList, ...newFiles];
+            this.setState(state);
+        }
+    }
+
     // 选择文件
     public handleSelectFiles() {
 
         const parentWin = Service.IPCRenderer.sendSync('getBrowserWindowList').master;
         const options   = {
             properties: ['openFile', 'multiSelections'],
-            filters: [
-                { name: 'Images', extensions: ['jpg', 'jpeg', 'png', 'gif'] }
+            filters   : [
+                {name: 'Images', extensions: ['jpg', 'jpeg', 'png', 'gif']}
             ]
         };
 
         Service.SelectFiles(parentWin, options).then((files: any) => {
-            if (typeof files === 'object' && files.length > 0) {
-                const state: any    = this.state;
-                const newFiles: any = [];
-                files.forEach((file: any) => {
-                    if (state.readyUploadList.findIndex((item: any) => item.path === file.path) < 0) {
-                        file.status = 0;
-                        newFiles.push(file);
-                    }
-                });
-                state.readyUploadList = [...state.readyUploadList, ...newFiles];
-                this.setState(state);
-            }
+            this.uploadFilesMerge(files);
             Service.Remote.getCurrentWindow().focus();
         });
 
+    }
+
+    public handleDropFiles(files: any) {
+        this.uploadFilesMerge(files);
     }
 
     // 上传文件 //
@@ -119,7 +129,11 @@ class Attached extends React.Component {
                     </div>
                 </div>
                 <div className="file-container" style={{display: this.state.isReadyTabStatus ? 'block' : 'none'}}>
-                    <ReadyList readyListRemoveEvent={this.handleReadyListRemoveEvent} readyUploadList={this.state.readyUploadList}/>
+                    <ReadyList
+                        dropFilesEvent={this.handleDropFiles}
+                        readyListRemoveEvent={this.handleReadyListRemoveEvent}
+                        readyUploadList={this.state.readyUploadList}
+                    />
                 </div>
                 {
                     !this.state.isReadyTabStatus ?
