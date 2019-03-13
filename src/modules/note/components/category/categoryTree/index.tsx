@@ -1,5 +1,6 @@
 import * as React        from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {store}           from "../../../../../store";
 
 class Index extends React.Component {
 
@@ -7,10 +8,25 @@ class Index extends React.Component {
 
     constructor(props: any) {
         super(props);
+        this.handelMoveArticleDrop = this.handelMoveArticleDrop.bind(this);
     }
 
     public shouldComponentUpdate(nextProps: any, nextState: any) {
         return !(this.props.data === nextProps.data);
+    }
+
+    public handelMoveArticleDragOver(event: any) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+
+    public handelMoveArticleDrop(item: any, event: any) {
+        console.log(item);
+        event.stopPropagation();
+        const moveArticleId = Number(event.dataTransfer.getData("moveArticle")) || undefined;
+        if (moveArticleId) {
+            store.dispatch({type: 'NOTE$MOVE_ARTICLE', playload: {moveArticleId, receiveCategoryId: item.id}});
+        }
     }
 
     public render() {
@@ -47,7 +63,12 @@ class Index extends React.Component {
                 const loop = (categoryDataTemps: any) => {
                     return categoryDataTemps.map((item: any) => {
                         return (
-                            <div className="item" key={item.id} data-menu-id={item.id} data-is-last={!item.children && 'true'}>
+                            <div
+                                onDragOver={this.handelMoveArticleDragOver}
+                                onDrop={this.handelMoveArticleDrop.bind(this, item)}
+                                className="item" key={item.id}
+                                data-menu-id={item.id} data-is-last={!item.children && 'true'}
+                            >
                                 <label>
                                     <span className={`icon extension ${item.children ? 'icon-1' : ''}`}>
                                         {item.children && <FontAwesomeIcon className="fa-icon" icon="angle-right"/>}

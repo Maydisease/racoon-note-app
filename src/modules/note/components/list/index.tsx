@@ -39,6 +39,7 @@ class ListComponent extends React.Component {
         this.clearItemSelectedState = this.clearItemSelectedState.bind(this);
         this.handleItemContextMenu  = this.handleItemContextMenu.bind(this);
         this.createdNote            = this.createdNote.bind(this);
+        this.handleDragStart        = this.handleDragStart.bind(this);
         this.contextMenu            = new Service.Menu();
         this.contextMenuInit();
     }
@@ -154,6 +155,11 @@ class ListComponent extends React.Component {
             await this.UpdateArticleListDom(this.state.currentCid);
         });
 
+        storeSubscribe('NOTE$MOVE_ARTICLE', (action: any) => {
+            const {moveArticleId, receiveCategoryId} = action.playload;
+            console.log(456666666666888, moveArticleId, receiveCategoryId);
+        });
+
 
         // 订阅搜索页面发送过来的选择搜索结果双击事件
         Service.RenderToRender.subject('search@searchListDoubleClick', async (event: any, params: any): Promise<boolean | void> => {
@@ -239,6 +245,14 @@ class ListComponent extends React.Component {
         await this.UpdateArticleListDom(this.state.currentCid);
     }
 
+    public handleDragEnter(event: any) {
+        console.log(event);
+    }
+
+    public handleDragStart(item: any, event: any) {
+        event.dataTransfer.setData("moveArticle", item.id);
+    }
+
     public render() {
 
         const ArticleItem = (props: any): any => {
@@ -248,6 +262,9 @@ class ListComponent extends React.Component {
                     articleList.map((item: any, index: number) => {
                         return (
                             <div
+                                draggable={item.selected && true}
+                                onDragEnter={this.handleDragEnter}
+                                onDragStart={this.handleDragStart.bind(this, item)}
                                 className={`item ${item.selected === true && 'current'}`}
                                 key={item.id}
                                 onClick={this.handleItemClick.bind(this, item)}

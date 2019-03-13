@@ -3,7 +3,9 @@ interface DefaultState {
     cid?: number | null,
     title?: string,
     markdown_content?: string,
-    html_content?: string
+    html_content?: string,
+    moveArticleId?: number,
+    receiveCategoryId?: number
 }
 
 declare type Playload = DefaultState;
@@ -54,6 +56,14 @@ export class ArticleReducer {
     // 选中日志STORE[事件传播]
     public SELECTED_ARTICLE(): DefaultState {
         return {...this.state};
+    }
+
+    // 移动日志STORE[事件传播]
+    public MOVE_ARTICLE(): DefaultState {
+        const {moveArticleId, receiveCategoryId} = this.playload;
+        this.body.moveArticleId                  = moveArticleId;
+        this.body.receiveCategoryId              = receiveCategoryId;
+        return {...this.state, ...this.body};
     }
 
     public Action(state: DefaultState = this.body, action: Action) {
