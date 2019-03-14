@@ -10,18 +10,33 @@ mermaid.initialize({
     theme: 'dark'
 });
 
-(window as any).editorCache = {};
+interface DefaultProps {
+    onRef?: any
+}
 
 class BrowseComponent extends React.Component {
 
     public intersectionObserver: IntersectionObserver;
 
+    public props: DefaultProps = {
+        onRef: ''
+    };
+
+    public state = {
+        isSearchModel: false
+    };
+
     public $element: any;
 
     constructor(props: any) {
         super(props);
+        this.props                = props;
         this.$element             = React.createRef();
         this.intersectionObserver = new IntersectionObserver(this.mermaidObserve);
+    }
+
+    public componentDidMount() {
+        this.props.onRef(this);
     }
 
     public mermaidObserve<IntersectionObserverCallback>(entries: IntersectionObserverEntry[]) {
@@ -47,10 +62,10 @@ class BrowseComponent extends React.Component {
         }, 200);
     }
 
-    public rewriteATagLink(){
+    public rewriteATagLink() {
         setTimeout(() => {
             const browseElement: HTMLElement | null = document.querySelector('#app .wrap.browse-mod');
-            if(browseElement){
+            if (browseElement) {
                 const aTags: NodeListOf<Element> = browseElement.querySelectorAll('a');
                 aTags.forEach((element: HTMLElement) => {
                     element.onclick = (e) => {
@@ -63,13 +78,21 @@ class BrowseComponent extends React.Component {
 
     public bindImageLightBoxEvent() {
         setTimeout(() => {
-            const BrowseImages: NodeListOf<HTMLImageElement> = (this.$element.current as HTMLElement).querySelectorAll('img');
-            BrowseImages.forEach((element: HTMLImageElement) => {
-                element.onclick = () => {
-                    new VLightBoxService({imageUrl: element.src}).init();
-                };
-            });
+            if (this.$element.current) {
+                const BrowseImages: NodeListOf<HTMLImageElement> = (this.$element.current as HTMLElement).querySelectorAll('img');
+                BrowseImages.forEach((element: HTMLImageElement) => {
+                    element.onclick = () => {
+                        new VLightBoxService({imageUrl: element.src}).init();
+                    };
+                });
+            }
         }, 200);
+    }
+
+    public setArticleContentSearchTag(searchKey: string) {
+        const state         = this.state;
+        state.isSearchModel = true;
+        this.setState(state);
     }
 
     public render() {
@@ -81,4 +104,4 @@ class BrowseComponent extends React.Component {
     }
 }
 
-export default connect((state: any) => state)(BrowseComponent);
+export default connect<{}, {}, DefaultProps>((state: any) => state)(BrowseComponent);

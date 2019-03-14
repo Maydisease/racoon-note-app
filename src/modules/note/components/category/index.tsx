@@ -179,10 +179,6 @@ class CategoryContainer extends React.Component {
                 return el;
             };
 
-            // const hasClass = (element: any, cls: any) => {
-            //     return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
-            // };
-
             // category分类menu节点事件处理(关闭/展开/选中)
             const categoryMenusEventBind = (event: MouseEvent, itemElement: HTMLElement, isContextMenu: boolean = false) => {
                 clearSelectedState();
@@ -224,8 +220,14 @@ class CategoryContainer extends React.Component {
                     itemElement.oncontextmenu = (event: MouseEvent) => {
                         const isCurrent = (itemElement.querySelector('label') as HTMLElement).getAttribute('current') === 'true';
                         if (isCurrent) {
-                            const isLast = itemElement.getAttribute('data-is-last');
+                            // const isLast = itemElement.getAttribute('data-is-last');
                             const items  = this.contextMenu.items;
+
+                            // item[0] Add article;
+                            // item[1] Created category;
+                            // item[2] Separator;
+                            // item[3] Rename category;
+
                             if (!this.state.categoryObj) {
                                 items[0].enabled = false;
                                 items[2].enabled = false;
@@ -236,11 +238,11 @@ class CategoryContainer extends React.Component {
                                 items[4].enabled = true;
                             }
 
-                            if (isLast === 'true') {
-                                items[0].enabled = isLast === 'true';
-                            } else {
-                                items[0].enabled = false;
-                            }
+                            // if (isLast === 'true') {
+                            //     items[0].enabled = isLast === 'true';
+                            // } else {
+                            //     items[0].enabled = false;
+                            // }
                             this.contextMenu.popup({window: Service.getWindow('master')});
                             categoryMenusEventBind(event, itemElement, true);
                         }
@@ -254,6 +256,7 @@ class CategoryContainer extends React.Component {
     // contextMenu初始化
     public contextMenuInit() {
         const $this: this = this;
+        // item[0];
         this.contextMenu.append(new Service.MenuItem({
             enabled    : true,
             accelerator: 'A',
@@ -261,6 +264,7 @@ class CategoryContainer extends React.Component {
                 $this.createdNote()
             }
         }));
+        // item[1];
         this.contextMenu.append(new Service.MenuItem({
             enabled    : true,
             accelerator: 'N',
@@ -268,6 +272,7 @@ class CategoryContainer extends React.Component {
                 $this.createdCategory()
             }
         }));
+        // item[2];
         this.contextMenu.append(new Service.MenuItem({
             enabled    : true,
             accelerator: 'R',
@@ -275,7 +280,9 @@ class CategoryContainer extends React.Component {
                 $this.renameCategory()
             }
         }));
+        // item[3];
         this.contextMenu.append(new Service.MenuItem({type: 'separator'}));
+        // item[4];
         this.contextMenu.append(new Service.MenuItem({
             enabled    : true,
             accelerator: 'D',

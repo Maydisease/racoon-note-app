@@ -6,6 +6,7 @@ import {store}           from "../../../../store";
 import {storeSubscribe}  from "../../../../store/middleware/storeActionEvent.middleware";
 import {ArticleService}  from "../../services/article.service";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {Service}         from "../../../../lib/master.electron.lib";
 
 class ArticleComponent extends React.Component {
 
@@ -24,13 +25,17 @@ class ArticleComponent extends React.Component {
     };
 
     public timer: any;
+    public props: any;
+    public browseComponentChild: any;
 
     constructor(props: any) {
         super(props);
+        this.props                  = props;
         this.switchEditState        = this.switchEditState.bind(this);
         this.handleTitleInputChange = this.handleTitleInputChange.bind(this);
         this.handleFrameToggle      = this.handleFrameToggle.bind(this);
         this.handleEditAndBrowse    = this.handleEditAndBrowse.bind(this);
+        this.browseComponentRef     = this.browseComponentRef.bind(this);
         this.timer                  = null;
     }
 
@@ -92,6 +97,16 @@ class ArticleComponent extends React.Component {
             this.handleFrameToggle();
         });
 
+        // 订阅搜索页面发送过来的选择搜索结果双击事件
+        Service.RenderToRender.subject('search@searchListDoubleClick', async (event: any, params: any): Promise<boolean | void> => {
+            if (params.data.searchType === 1) {
+                console.log(this.browseComponentChild);
+                setTimeout(() => {
+                    this.browseComponentChild.setArticleContentSearchTag(params.data.searchKey);
+                }, 200);
+            }
+        });
+
     }
 
     // 切换article区域全屏化状态[显示category，list/不显示]
@@ -110,6 +125,11 @@ class ArticleComponent extends React.Component {
         this.setState(state);
     }
 
+    public browseComponentRef(refs: React.ComponentClass) {
+        console.log(777, refs);
+        this.browseComponentChild = refs;
+    }
+
     public render() {
 
         const FRAME        = (this.props as any).STORE_NOTE$FRAME;
@@ -119,14 +139,14 @@ class ArticleComponent extends React.Component {
         return (
             <div className="articleContainer">
                 {ARTICLE.id &&
-                <div className="content-bar">
-                    <div className="title">
+				<div className="content-bar">
+					<div className="title">
                         {
                             this.state.editState ?
                                 <input name="title" value={this.state.form.title.value} onChange={this.handleTitleInputChange} placeholder="note title..."/> :
                                 <span>{ARTICLE_TEMP.title}</span>
                         }
-                    </div>
+					</div>
                     {this.state.editState && FRAME.layout === 0 &&
 					<div className={`menu ${this.state.editAndBrowse ? 'current' : ''}`}>
 						<i className='icon' onClick={this.handleEditAndBrowse}>
@@ -134,22 +154,22 @@ class ArticleComponent extends React.Component {
 						</i>
 					</div>
                     }
-                    <div className={`menu frameToggle ${FRAME.layout === 0 ? 'current' : ''}`}>
+					<div className={`menu frameToggle ${FRAME.layout === 0 ? 'current' : ''}`}>
 						<i className='icon' onClick={this.handleFrameToggle}>
 							<FontAwesomeIcon className={`${!this.state.editState ? 'light' : ''}`} icon="expand-arrows-alt"/>
 						</i>
-                    </div>
+					</div>
 					<div className={`menus icon-browse ${this.state.editState ? 'edit' : 'browse'}`} onClick={this.switchEditState}>
                         {/*<i className={`icon iconfont icon-browse ${!this.state.editState ? 'light' : ''} `}/>*/}
 						<FontAwesomeIcon className={`icon ${!this.state.editState ? 'light' : ''}`} icon="eye"/>
 						<FontAwesomeIcon className={`icon ${this.state.editState ? 'light' : ''}`} icon="edit"/>
-                    </div>
-                </div>
+					</div>
+				</div>
                 }
                 {ARTICLE.id &&
-                <div className="content">
+				<div className="content">
                     {
-                        this.state.editState ? <EditorComponent/> : <BrowseComponent/>
+                        this.state.editState ? <EditorComponent/> : <BrowseComponent onRef={this.browseComponentRef}/>
                     }
                     {
                         this.state.editAndBrowse && this.state.editState && FRAME.layout === 0 &&
@@ -158,11 +178,11 @@ class ArticleComponent extends React.Component {
 							<BrowseComponent/>
 						</React.Fragment>
                     }
-                </div>
+				</div>
                 }
             </div>
         );
     }
 }
 
-export default connect((state: any) => state)(ArticleComponent);
+export default connect<any>((state: any): any => state)(ArticleComponent);

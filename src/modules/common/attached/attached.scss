@@ -102,7 +102,6 @@
                                 background: RGBA(0, 0, 0, .8);
                             }
                             &:hover {
-                                background: RGBA(0, 0, 0, .5);
                                 &:before {
                                     display: inline-block;
                                 }
@@ -126,6 +125,7 @@
                             font-family: Arial, sans-serif;
                             color: RGBA(255, 255, 255, .6);
                             span {
+                                overflow: hidden;
                                 flex: 1;
                                 display: inline-block;
                             }

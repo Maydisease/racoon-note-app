@@ -14,7 +14,7 @@ class SuperSearch extends React.Component {
             }
         },
 
-        filterType: 0,
+        filterType: 0, // 0 title 1 content
         searchData: [],
     };
 
@@ -89,7 +89,7 @@ class SuperSearch extends React.Component {
     }
 
     // 搜索框状态
-    public handleInputActive(sourceState: any) {
+    public handleInputActive(sourceState: any): void {
         const state           = this.state;
         state.inputFocusState = !(!sourceState && this.state.from.searchKeys.value.length === 0);
         this.setState(state);
@@ -171,7 +171,9 @@ class SuperSearch extends React.Component {
     }
 
     public handleSearchListDoubleClick(item: any): void {
-        Service.RenderToRender.emit('master@searchListDoubleClick', {emitAuthor: 'search', data: item});
+        const searchKey  = this.state.from.searchKeys.value;
+        const searchType = this.state.filterType;
+        Service.RenderToRender.emit('master@searchListDoubleClick', {emitAuthor: 'search', data: {...item, searchKey, searchType}});
     }
 
     public render() {

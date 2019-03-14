@@ -64,6 +64,14 @@ class SignUpMain extends React.Component<Props, State> {
         this.handleSignUp = this.handleSignUp.bind(this);
     }
 
+    public componentDidMount(): void {
+        document.body.onkeydown = (async (event: KeyboardEvent) => {
+            if (event.code === 'Enter') {
+                await this.handleSignUp();
+            }
+        });
+    }
+
     // 用户注册提交
     public async handleSignUp(): Promise<object | void | boolean> {
 

@@ -189,6 +189,14 @@ class SignInMain extends React.Component<Props, State> {
         }
     }
 
+    public componentDidMount(): void {
+        document.body.onkeydown = (async (event: KeyboardEvent) => {
+            if (event.code === 'Enter') {
+                await this.handleSignIn();
+            }
+        });
+    }
+
     public render() {
 
         // 表单验证组件
