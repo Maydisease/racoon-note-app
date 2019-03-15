@@ -509,6 +509,10 @@ body[theme='dark'] {
                                 position: static;
                                 color: RGBA(255, 255, 255, .6);
                                 font-family: 'Microsoft YaHei', sans-serif;
+                                .sch-highlight {
+                                    color: RGBA(0, 0, 0, 1) !important;
+                                    background: RGBA(255, 150, 50, 1);
+                                }
                                 img {
                                     max-width: 800px;
                                     display: block;

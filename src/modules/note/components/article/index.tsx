@@ -139,46 +139,46 @@ class ArticleComponent extends React.Component {
         return (
             <div className="articleContainer">
                 {ARTICLE.id &&
-				<div className="content-bar">
-					<div className="title">
+                <div className="content-bar">
+                    <div className="title">
                         {
                             this.state.editState ?
                                 <input name="title" value={this.state.form.title.value} onChange={this.handleTitleInputChange} placeholder="note title..."/> :
                                 <span>{ARTICLE_TEMP.title}</span>
                         }
-					</div>
+                    </div>
                     {this.state.editState && FRAME.layout === 0 &&
-					<div className={`menu ${this.state.editAndBrowse ? 'current' : ''}`}>
-						<i className='icon' onClick={this.handleEditAndBrowse}>
-							<FontAwesomeIcon className={`${this.state.editAndBrowse ? 'light' : ''}`} icon="columns"/>
-						</i>
-					</div>
+                    <div className={`menu ${this.state.editAndBrowse ? 'current' : ''}`}>
+                        <i className='icon' onClick={this.handleEditAndBrowse}>
+                            <FontAwesomeIcon className={`${this.state.editAndBrowse ? 'light' : ''}`} icon="columns"/>
+                        </i>
+                    </div>
                     }
-					<div className={`menu frameToggle ${FRAME.layout === 0 ? 'current' : ''}`}>
-						<i className='icon' onClick={this.handleFrameToggle}>
-							<FontAwesomeIcon className={`${!this.state.editState ? 'light' : ''}`} icon="expand-arrows-alt"/>
-						</i>
-					</div>
-					<div className={`menus icon-browse ${this.state.editState ? 'edit' : 'browse'}`} onClick={this.switchEditState}>
+                    <div className={`menu frameToggle ${FRAME.layout === 0 ? 'current' : ''}`}>
+                        <i className='icon' onClick={this.handleFrameToggle}>
+                            <FontAwesomeIcon className={`${!this.state.editState ? 'light' : ''}`} icon="expand-arrows-alt"/>
+                        </i>
+                    </div>
+                    <div className={`menus icon-browse ${this.state.editState ? 'edit' : 'browse'}`} onClick={this.switchEditState}>
                         {/*<i className={`icon iconfont icon-browse ${!this.state.editState ? 'light' : ''} `}/>*/}
-						<FontAwesomeIcon className={`icon ${!this.state.editState ? 'light' : ''}`} icon="eye"/>
-						<FontAwesomeIcon className={`icon ${this.state.editState ? 'light' : ''}`} icon="edit"/>
-					</div>
-				</div>
+                        <FontAwesomeIcon className={`icon ${!this.state.editState ? 'light' : ''}`} icon="eye"/>
+                        <FontAwesomeIcon className={`icon ${this.state.editState ? 'light' : ''}`} icon="edit"/>
+                    </div>
+                </div>
                 }
                 {ARTICLE.id &&
-				<div className="content">
+                <div className="content">
                     {
                         this.state.editState ? <EditorComponent/> : <BrowseComponent onRef={this.browseComponentRef}/>
                     }
                     {
                         this.state.editAndBrowse && this.state.editState && FRAME.layout === 0 &&
-						<React.Fragment>
-							<div className="columns-line"/>
-							<BrowseComponent/>
-						</React.Fragment>
+                        <React.Fragment>
+                            <div className="columns-line"/>
+                            <BrowseComponent/>
+                        </React.Fragment>
                     }
-				</div>
+                </div>
                 }
             </div>
         );

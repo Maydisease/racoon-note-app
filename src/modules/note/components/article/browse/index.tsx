@@ -1,5 +1,6 @@
 import * as React         from "react";
 import {connect}          from "react-redux";
+import * as Mark          from 'mark.js';
 import './prism-okaidia.scss';
 import './dark-mermaid.scss';
 import {VLightBoxService} from "../../../../component/light_box";
@@ -30,9 +31,13 @@ class BrowseComponent extends React.Component {
 
     constructor(props: any) {
         super(props);
-        this.props                = props;
-        this.$element             = React.createRef();
-        this.intersectionObserver = new IntersectionObserver(this.mermaidObserve);
+        this.props                      = props;
+        this.$element                   = React.createRef();
+        this.intersectionObserver       = new IntersectionObserver(this.mermaidObserve);
+        this.unTagMark                  = this.unTagMark.bind(this);
+        this.setTagMark                 = this.setTagMark.bind(this);
+        this.setArticleContentSearchTag = this.setArticleContentSearchTag.bind(this);
+        this.setArticleContentSearchTag = this.setArticleContentSearchTag.bind(this);
     }
 
     public componentDidMount() {
@@ -89,10 +94,41 @@ class BrowseComponent extends React.Component {
         }, 200);
     }
 
+    public unTagMark() {
+        try {
+            const instance = new Mark(this.$element.current);
+            instance.unmark({
+                'element'  : 'span',
+                'className': 'sch-highlight',
+                'exclude'  : ['.hljs-line-numbers']
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    public setTagMark(searchKey: string) {
+        try {
+            const instance = new Mark(this.$element.current);
+            instance.mark(searchKey, {
+                'element'  : 'span',
+                'className': 'sch-highlight',
+                'exclude'  : ['.hljs-line-numbers']
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     public setArticleContentSearchTag(searchKey: string) {
-        const state         = this.state;
-        state.isSearchModel = true;
-        this.setState(state);
+        setTimeout(() => {
+            const state         = this.state;
+            state.isSearchModel = true;
+            this.setState(state);
+            this.unTagMark();
+            this.setTagMark(searchKey);
+        }, 100);
+
     }
 
     public render() {
