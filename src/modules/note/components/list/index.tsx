@@ -25,6 +25,7 @@ class ListComponent extends React.Component {
     };
 
     public contextMenu: any;
+    public searchTimer: number;
     public articleService: ArticleService;
 
     constructor(props: any) {
@@ -107,10 +108,19 @@ class ListComponent extends React.Component {
 
     // 表单修改时的数据同步
     public handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+
         const state                         = this.state;
         state.clearInputBtnState            = event.target.value.length > 0;
         state.from[event.target.name].value = event.target.value;
         this.setState(state);
+
+        if (this.searchTimer) {
+            clearTimeout(this.searchTimer)
+        }
+
+        this.searchTimer = window.setTimeout(async () => {
+            clearTimeout(this.searchTimer);
+        }, 200)
     }
 
     // 搜索框状态
@@ -285,12 +295,18 @@ class ListComponent extends React.Component {
                                 placeholder="Search Notes"
                                 onChange={this.handleChange}
                             />
-                            {this.state.clearInputBtnState && <i className="icon iconfont icon-2 icon-wrong" onClick={this.clearSearchKeys}/>}
+                            {
+                                this.state.clearInputBtnState &&
+								<label onClick={this.clearSearchKeys}>
+									<FontAwesomeIcon className="fa-icon" icon="times-circle"/>
+								</label>
+                                // <i className="icon iconfont icon-2 icon-wrong" onClick={this.clearSearchKeys}/>
+                            }
                         </div>
-                    </div>
-
-                    <div className={`btn ${!this.state.currentCid && 'disable'}`} onClick={this.createdNote}>
-                        <FontAwesomeIcon className="fa-icon" icon="plus"/>
+                        <div className='btn'>
+                            {/*<FontAwesomeIcon className="fa-icon" icon="folder"/>*/}
+                            <FontAwesomeIcon className="fa-icon" icon="sticky-note"/>
+                        </div>
                     </div>
                 </div>
                 <div className="article-list">
