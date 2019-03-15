@@ -24,7 +24,7 @@ class ListComponent extends React.Component {
         articleObj : null
     };
 
-    public contextMenu: any;
+    public listContextMenu: any;
     public searchTimer: number;
     public articleService: ArticleService;
 
@@ -40,14 +40,14 @@ class ListComponent extends React.Component {
         this.clearItemSelectedState = this.clearItemSelectedState.bind(this);
         this.handleItemContextMenu  = this.handleItemContextMenu.bind(this);
         this.createdNote            = this.createdNote.bind(this);
-        this.contextMenu            = new Service.Menu();
-        this.contextMenuInit();
+        this.listContextMenu        = new Service.Menu();
+        this.listContextMenuInit();
     }
 
     // contextMenu初始化
-    public contextMenuInit() {
+    public listContextMenuInit() {
         const $this: this = this;
-        this.contextMenu.append(new Service.MenuItem({
+        this.listContextMenu.append(new Service.MenuItem({
             enabled    : true,
             accelerator: 'D',
             label      : 'Delete Note', click() {
@@ -236,7 +236,7 @@ class ListComponent extends React.Component {
 
     public handleItemContextMenu(item: any) {
         if (item.selected) {
-            this.contextMenu.popup({window: Service.getWindow('master')});
+            this.listContextMenu.popup({window: Service.getWindow('master')});
         }
     }
 
@@ -297,9 +297,9 @@ class ListComponent extends React.Component {
                             />
                             {
                                 this.state.clearInputBtnState &&
-								<label onClick={this.clearSearchKeys}>
-									<FontAwesomeIcon className="fa-icon" icon="times-circle"/>
-								</label>
+                                <label onClick={this.clearSearchKeys}>
+                                    <FontAwesomeIcon className="fa-icon" icon="times-circle"/>
+                                </label>
                                 // <i className="icon iconfont icon-2 icon-wrong" onClick={this.clearSearchKeys}/>
                             }
                         </div>
