@@ -12,6 +12,7 @@ class ListComponent extends React.Component {
     public state: any = {
         inputFocusState   : false,
         clearInputBtnState: false,
+        quickSearchType   : 0, // 0 title 1 article
 
         from: {
             searchKeys: {
@@ -25,26 +26,31 @@ class ListComponent extends React.Component {
     };
 
     public listContextMenu: any;
-    public searchTimer: number;
+    public quickSearchContextMenu: any;
+    public quickSearchTimer: number;
     public articleService: ArticleService;
 
     constructor(props: any) {
         super(props);
-        this.articleService         = new ArticleService();
-        this.handleInputActive      = this.handleInputActive.bind(this);
-        this.handleChange           = this.handleChange.bind(this);
-        this.clearSearchKeys        = this.clearSearchKeys.bind(this);
-        this.getActiveList          = this.getActiveList.bind(this);
-        this.handleItemClick        = this.handleItemClick.bind(this);
-        this.removeNote             = this.removeNote.bind(this);
-        this.clearItemSelectedState = this.clearItemSelectedState.bind(this);
-        this.handleItemContextMenu  = this.handleItemContextMenu.bind(this);
-        this.createdNote            = this.createdNote.bind(this);
-        this.listContextMenu        = new Service.Menu();
+        this.articleService               = new ArticleService();
+        this.handleInputActive            = this.handleInputActive.bind(this);
+        this.handleChange                 = this.handleChange.bind(this);
+        this.clearSearchKeys              = this.clearSearchKeys.bind(this);
+        this.getActiveList                = this.getActiveList.bind(this);
+        this.handleItemClick              = this.handleItemClick.bind(this);
+        this.removeNote                   = this.removeNote.bind(this);
+        this.clearItemSelectedState       = this.clearItemSelectedState.bind(this);
+        this.handleItemContextMenu        = this.handleItemContextMenu.bind(this);
+        this.handleQuickSearchContextMenu = this.handleQuickSearchContextMenu.bind(this);
+        this.createdNote                  = this.createdNote.bind(this);
+        this.quickSearchContextMenuInit   = this.quickSearchContextMenuInit.bind(this);
+        this.listContextMenu              = new Service.Menu();
+        this.quickSearchContextMenu       = new Service.Menu();
         this.listContextMenuInit();
+        this.quickSearchContextMenuInit();
     }
 
-    // contextMenu初始化
+    // listContextMenu初始化
     public listContextMenuInit() {
         const $this: this = this;
         this.listContextMenu.append(new Service.MenuItem({
@@ -54,6 +60,38 @@ class ListComponent extends React.Component {
                 $this.removeNote()
             }
         }));
+    }
+
+    // 更改快速搜索的类型
+    public changeQuickSearchType(type: number) {
+        const state           = this.state;
+        state.quickSearchType = type;
+        this.setState(state);
+        this.quickSearchEvent();
+    }
+
+    // listContextMenu初始化
+    public quickSearchContextMenuInit() {
+
+        const $this: this = this;
+
+        this.quickSearchContextMenu.append(
+            new Service.MenuItem({
+                type: 'radio', label: 'search title', click() {
+                    $this.changeQuickSearchType(0);
+                }
+            })
+        );
+
+        this.quickSearchContextMenu.append(new Service.MenuItem(
+            {
+                type : 'radio',
+                label: 'search content', click() {
+                    $this.changeQuickSearchType(1);
+                }
+            }
+        ));
+
     }
 
     public async removeNote() {
@@ -114,22 +152,37 @@ class ListComponent extends React.Component {
         state.from[event.target.name].value = event.target.value;
         this.setState(state);
 
-        if (this.searchTimer) {
-            clearTimeout(this.searchTimer)
+        if (this.quickSearchTimer) {
+            clearTimeout(this.quickSearchTimer)
         }
 
-        this.searchTimer = window.setTimeout(async () => {
-            clearTimeout(this.searchTimer);
+        this.quickSearchTimer = window.setTimeout(async () => {
+            this.quickSearchEvent();
+            clearTimeout(this.quickSearchTimer);
         }, 200)
     }
 
-    // 搜索框状态
+    public quickSearchEvent() {
+        switch (this.state.quickSearchType) {
+            case 0:
+                break;
+            case 1:
+                store.dispatch({
+                    type    : 'NOTE$QUICK_SEARCH',
+                    playload: {quickSearchKey: this.state.from.searchKeys.value}
+                });
+                break;
+        }
+    }
+
+    // 搜索框聚焦/onFocus失焦/onBlur事件
     public handleInputActive(sourceState: any) {
         const state           = this.state;
         state.inputFocusState = !(!sourceState && this.state.from.searchKeys.value.length === 0);
         this.setState(state);
     }
 
+    // 更新文章列表
     public async UpdateArticleListDom(cid: number) {
         const state       = this.state;
         state.currentCid  = cid;
@@ -152,14 +205,17 @@ class ListComponent extends React.Component {
 
     public async componentDidMount() {
 
+        // 监听categoryComment组件传递过来的选中事件
         EventEmitter.on('selectedCategory', async (cid: number) => {
             await this.UpdateArticleListDom(cid);
         });
 
+        // 监听categoryComment传递过来的创建日志事件
         EventEmitter.on('createdNote', async (cid: number) => {
             await this.UpdateArticleListDom(cid);
         });
 
+        // 监听监听articleComment传递过来的保存日志事件
         storeSubscribe('NOTE$SAVE_ARTICLE', async (action: any) => {
             await this.UpdateArticleListDom(this.state.currentCid);
         });
@@ -175,6 +231,7 @@ class ListComponent extends React.Component {
 
     }
 
+    // 获取文章列表
     public async getActiveList(cid: number) {
         const request = await new Service.ServerProxy('note', 'getArticleData', {cid}).send();
         if (request.result !== 1) {
@@ -184,6 +241,7 @@ class ListComponent extends React.Component {
         }
     }
 
+    // 清除文章选中状态
     public clearItemSelectedState() {
         const state = this.state;
         state.articleList.some((item: any, index: number): any => {
@@ -195,6 +253,7 @@ class ListComponent extends React.Component {
         this.setState(state);
     }
 
+    // 文章列表被点击
     public handleItemClick(item: any): boolean | void {
 
         const state = this.state;
@@ -204,12 +263,14 @@ class ListComponent extends React.Component {
             return false;
         }
 
+        // 清除文章列表被选中的item
         this.clearItemSelectedState();
 
         state.articleList[key].selected = true;
         state.articleObj                = item;
         this.setState(state);
 
+        // 更新store中NOTE内的文章字段组
         store.dispatch({
             type    : 'NOTE$UPDATE_ARTICLE',
             playload: {
@@ -221,6 +282,7 @@ class ListComponent extends React.Component {
             }
         });
 
+        // 更新store中NOTE内的临时文章字段组
         store.dispatch({
             type    : 'NOTE$UPDATE_ARTICLE_TEMP',
             playload: {
@@ -230,14 +292,21 @@ class ListComponent extends React.Component {
             }
         });
 
+        // 发送列表文章选中事件
         store.dispatch({type: 'NOTE$SELECTED_ARTICLE'});
 
     }
 
+    // 被响应的文章列表右键上下文菜单事件
     public handleItemContextMenu(item: any) {
         if (item.selected) {
             this.listContextMenu.popup({window: Service.getWindow('master')});
         }
+    }
+
+    // 被响应的搜索分类选择上下文菜单事件
+    public handleQuickSearchContextMenu() {
+        this.quickSearchContextMenu.popup({window: Service.getWindow('master')});
     }
 
     // 创建文章
@@ -297,15 +366,14 @@ class ListComponent extends React.Component {
                             />
                             {
                                 this.state.clearInputBtnState &&
-                                <label onClick={this.clearSearchKeys}>
-                                    <FontAwesomeIcon className="fa-icon" icon="times-circle"/>
-                                </label>
+								<label onClick={this.clearSearchKeys}>
+									<FontAwesomeIcon className="clearSearchKey fa-icon" icon="times-circle"/>
+								</label>
                                 // <i className="icon iconfont icon-2 icon-wrong" onClick={this.clearSearchKeys}/>
                             }
                         </div>
-                        <div className='btn'>
-                            {/*<FontAwesomeIcon className="fa-icon" icon="folder"/>*/}
-                            <FontAwesomeIcon className="fa-icon" icon="sticky-note"/>
+                        <div className='btn' onClick={this.handleQuickSearchContextMenu}>
+                            <FontAwesomeIcon className="fa-icon" icon={this.state.quickSearchType === 0 ? 'file' : 'file-alt'}/>
                         </div>
                     </div>
                 </div>

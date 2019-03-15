@@ -98,9 +98,10 @@ class BrowseComponent extends React.Component {
         try {
             const instance = new Mark(this.$element.current);
             instance.unmark({
-                'element'  : 'span',
-                'className': 'sch-highlight',
-                'exclude'  : ['.hljs-line-numbers']
+                'element'         : 'span',
+                'className'       : 'sch-highlight',
+                'exclude'         : ['.hljs-line-numbers'],
+                separateWordSearch: false
             });
         } catch (e) {
             console.log(e);
@@ -111,9 +112,10 @@ class BrowseComponent extends React.Component {
         try {
             const instance = new Mark(this.$element.current);
             instance.mark(searchKey, {
-                'element'  : 'span',
-                'className': 'sch-highlight',
-                'exclude'  : ['.hljs-line-numbers']
+                'element'         : 'span',
+                'className'       : 'sch-highlight',
+                'exclude'         : ['.hljs-line-numbers'],
+                separateWordSearch: false
             });
         } catch (e) {
             console.log(e);
@@ -121,14 +123,11 @@ class BrowseComponent extends React.Component {
     }
 
     public setArticleContentSearchTag(searchKey: string) {
-        setTimeout(() => {
-            const state         = this.state;
-            state.isSearchModel = true;
-            this.setState(state);
-            this.unTagMark();
-            this.setTagMark(searchKey);
-        }, 100);
-
+        const state         = this.state;
+        state.isSearchModel = true;
+        this.setState(state);
+        this.unTagMark();
+        this.setTagMark(searchKey);
     }
 
     public render() {

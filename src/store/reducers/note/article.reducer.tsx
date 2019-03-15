@@ -1,11 +1,12 @@
 interface DefaultState {
-    id?: number | null,
-    cid?: number | null,
-    title?: string,
-    markdown_content?: string,
-    html_content?: string,
-    moveArticleId?: number,
+    id?: number | null
+    cid?: number | null
+    title?: string
+    markdown_content?: string
+    html_content?: string
+    moveArticleId?: number
     receiveCategoryId?: number
+    quickSearchKey?: string
 }
 
 declare type Playload = DefaultState;
@@ -63,6 +64,12 @@ export class ArticleReducer {
         const {moveArticleId, receiveCategoryId} = this.playload;
         this.body.moveArticleId                  = moveArticleId;
         this.body.receiveCategoryId              = receiveCategoryId;
+        return {...this.state, ...this.body};
+    }
+
+    public QUICK_SEARCH(): DefaultState {
+        const {quickSearchKey}   = this.playload;
+        this.body.quickSearchKey = quickSearchKey;
         return {...this.state, ...this.body};
     }
 

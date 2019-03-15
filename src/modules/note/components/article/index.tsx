@@ -97,13 +97,17 @@ class ArticleComponent extends React.Component {
             this.handleFrameToggle();
         });
 
+        storeSubscribe('NOTE$QUICK_SEARCH', (action: any) => {
+            console.log(3333, this.state.html_content);
+            if (!this.state.editState && this.browseComponentChild) {
+                this.browseComponentChild.setArticleContentSearchTag(action.playload.quickSearchKey);
+            }
+        });
+
         // 订阅搜索页面发送过来的选择搜索结果双击事件
         Service.RenderToRender.subject('search@searchListDoubleClick', async (event: any, params: any): Promise<boolean | void> => {
             if (params.data.searchType === 1) {
-                console.log(this.browseComponentChild);
-                setTimeout(() => {
-                    this.browseComponentChild.setArticleContentSearchTag(params.data.searchKey);
-                }, 200);
+                this.browseComponentChild.setArticleContentSearchTag(params.data.searchKey);
             }
         });
 
@@ -126,7 +130,6 @@ class ArticleComponent extends React.Component {
     }
 
     public browseComponentRef(refs: React.ComponentClass) {
-        console.log(777, refs);
         this.browseComponentChild = refs;
     }
 
