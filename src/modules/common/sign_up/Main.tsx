@@ -101,7 +101,6 @@ class SignUpMain extends React.Component<Props, State> {
 
         // 如果注册成功
         if (request.result === 0) {
-            console.log(request);
             // 'sign', 'registration success'
             Service.Dialog.showMessageBox({
                     title  : 'sign',
@@ -135,7 +134,6 @@ class SignUpMain extends React.Component<Props, State> {
 
         // 用户名不能为空
         if (!username || username === '') {
-            console.log('Account cannot be empty');
             state.from.username.verify     = 2;
             state.from.username.verifyText = 'Account cannot be empty';
             this.setState(state);
@@ -158,7 +156,6 @@ class SignUpMain extends React.Component<Props, State> {
                 state.from.username.verify     = 2;
                 state.from.username.verifyText = 'The account already exists';
                 this.setState(state);
-                console.log('The account already exists');
                 return false;
             }
 
@@ -175,7 +172,6 @@ class SignUpMain extends React.Component<Props, State> {
             state.from.username.verify     = 2;
             state.from.username.verifyText = 'Account should be 6-12 digits long, with underscore letters and numbers';
             this.setState(state);
-            console.log('Account should be 6-12 digits long, with underscore letters and numbers');
             return false;
         }
 
@@ -212,7 +208,6 @@ class SignUpMain extends React.Component<Props, State> {
 
         // 校验重复密码字段是否存在，并设置表单校验状态
         if (!repassword || repassword === '') {
-            console.log(5234234);
             state.from.repassword.verify     = 2;
             state.from.repassword.verifyText = 'repassword cannot be empty';
             this.setState(state);

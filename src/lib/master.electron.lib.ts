@@ -54,7 +54,6 @@ const Service = {
 
         const currentWinId: number = masterModules.electron.remote.getCurrentWindow().id;
         const browserWindowList    = masterModules.electron.remote.getGlobal('service').browserWindowList();
-        console.log(99999, browserWindowList);
         if (!browserWindowList[windowHash]) {
             return false;
         }

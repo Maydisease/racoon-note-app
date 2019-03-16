@@ -17,10 +17,8 @@ class NoteMain extends React.Component {
     }
 
     public componentDidMount() {
-        console.log('componentDidMount');
 
         Service.IPCRenderer.on('windowKeyboard', (event: any, arg: any) => {
-            console.log(`WINDOW_KEYBOARD$${arg}`);
             store.dispatch({'type': `WINDOW_KEYBOARD$${arg}`});
         });
 
@@ -33,10 +31,12 @@ class NoteMain extends React.Component {
                 if (this.searchWin && !this.searchWin.isDestroyed()) {
 
                     if (this.searchWin.isVisible()) {
+                        this.searchWin.hide();
                         Service.Remote.getCurrentWindow().focus();
+                    } else {
+                        this.searchWin.show();
                     }
 
-                    this.searchWin.isVisible() ? this.searchWin.hide() : this.searchWin.show();
                 }
             }
 

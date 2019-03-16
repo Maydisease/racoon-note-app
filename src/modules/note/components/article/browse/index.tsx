@@ -4,6 +4,7 @@ import * as Mark          from 'mark.js';
 import './prism-okaidia.scss';
 import './dark-mermaid.scss';
 import {VLightBoxService} from "../../../../component/light_box";
+import {storeSubscribe}   from "../../../../../store/middleware/storeActionEvent.middleware";
 
 const mermaid = require('mermaid');
 
@@ -20,7 +21,7 @@ class BrowseComponent extends React.Component {
     public intersectionObserver: IntersectionObserver;
 
     public props: DefaultProps = {
-        onRef: ''
+        onRef: '55'
     };
 
     public state = {
@@ -41,7 +42,32 @@ class BrowseComponent extends React.Component {
     }
 
     public componentDidMount() {
-        this.props.onRef(this);
+
+        this.setSearchTagInit();
+
+        storeSubscribe('NOTE$QUICK_SEARCH', (action: any) => {
+            this.setTagMark(action.playload.quickSearchKey);
+        });
+
+        storeSubscribe('NOTE$UN_SEARCH_TAG', () => {
+            this.unTagMark();
+        });
+    }
+
+    public componentDidUpdate(prevProps: any, prevState: any) {
+        const ARTICLE = (this.props as any).STORE_NOTE$ARTICLE;
+        this.setTagMark(ARTICLE.quickSearchKey);
+    }
+
+    public setSearchTagInit() {
+        const ARTICLE = (this.props as any).STORE_NOTE$ARTICLE;
+        if (ARTICLE.quickSearchKey) {
+            setTimeout(() => {
+                this.setTagMark(ARTICLE.quickSearchKey);
+            }, 100);
+        } else {
+            this.unTagMark();
+        }
     }
 
     public mermaidObserve<IntersectionObserverCallback>(entries: IntersectionObserverEntry[]) {
@@ -109,6 +135,7 @@ class BrowseComponent extends React.Component {
     }
 
     public setTagMark(searchKey: string) {
+        this.unTagMark();
         try {
             const instance = new Mark(this.$element.current);
             instance.mark(searchKey, {

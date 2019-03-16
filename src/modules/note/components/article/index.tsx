@@ -72,7 +72,6 @@ class ArticleComponent extends React.Component {
     }
 
     public componentDidMount() {
-        console.log('componentDidMount');
 
         // 订阅选中文章事件
         storeSubscribe('NOTE$SELECTED_ARTICLE', () => {
@@ -97,19 +96,31 @@ class ArticleComponent extends React.Component {
             this.handleFrameToggle();
         });
 
-        storeSubscribe('NOTE$QUICK_SEARCH', (action: any) => {
-            console.log(3333, this.state.html_content);
-            if (!this.state.editState && this.browseComponentChild) {
-                this.browseComponentChild.setArticleContentSearchTag(action.playload.quickSearchKey);
+        // 订阅搜索页面发送过来的选择搜索结果双击事件
+        Service.RenderToRender.subject('search@superSearchSelectedList', async (event: any, params: any): Promise<boolean | void> => {
+            if (params.data.searchType === 1) {
+                store.dispatch({
+                    type    : 'NOTE$QUICK_SEARCH',
+                    playload: {quickSearchKey: params.data.searchKey}
+                });
             }
         });
 
-        // 订阅搜索页面发送过来的选择搜索结果双击事件
-        Service.RenderToRender.subject('search@searchListDoubleClick', async (event: any, params: any): Promise<boolean | void> => {
+        Service.RenderToRender.subject('search@superSearchChangeFilterType', async (event: any, params: any): Promise<boolean | void> => {
             if (params.data.searchType === 1) {
-                this.browseComponentChild.setArticleContentSearchTag(params.data.searchKey);
+                store.dispatch({
+                    type    : 'NOTE$QUICK_SEARCH',
+                    playload: {quickSearchKey: params.data.searchKey}
+                });
+            } else {
+                store.dispatch({type: 'NOTE$UN_SEARCH_TAG'})
             }
         });
+
+        Service.RenderToRender.subject('search@superSearchClearKeys', async (): Promise<boolean | void> => {
+            store.dispatch({type: 'NOTE$UN_SEARCH_TAG'});
+        });
+
 
     }
 
@@ -172,7 +183,7 @@ class ArticleComponent extends React.Component {
                 {ARTICLE.id &&
                 <div className="content">
                     {
-                        this.state.editState ? <EditorComponent/> : <BrowseComponent onRef={this.browseComponentRef}/>
+                        this.state.editState ? <EditorComponent/> : <BrowseComponent/>
                     }
                     {
                         this.state.editAndBrowse && this.state.editState && FRAME.layout === 0 &&

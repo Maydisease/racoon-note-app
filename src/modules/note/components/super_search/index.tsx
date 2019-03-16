@@ -25,15 +25,14 @@ class SuperSearch extends React.Component {
 
     constructor(props: any) {
         super(props);
-        this.timer                       = null;
-        this.keysInput                   = React.createRef();
-        this.handleInputActive           = this.handleInputActive.bind(this);
-        this.handleChange                = this.handleChange.bind(this);
-        this.clearSearchKeys             = this.clearSearchKeys.bind(this);
-        this.switchFilterType            = this.switchFilterType.bind(this);
-        this.handleSearchListSelect      = this.handleSearchListSelect.bind(this);
-        this.handleSearchListDoubleClick = this.handleSearchListDoubleClick.bind(this);
-        this.doubleCount                 = 1;
+        this.timer                  = null;
+        this.keysInput              = React.createRef();
+        this.handleInputActive      = this.handleInputActive.bind(this);
+        this.handleChange           = this.handleChange.bind(this);
+        this.clearSearchKeys        = this.clearSearchKeys.bind(this);
+        this.switchFilterType       = this.switchFilterType.bind(this);
+        this.handleSearchListSelect = this.handleSearchListSelect.bind(this);
+        this.doubleCount            = 1;
     }
 
     public componentDidMount() {
@@ -86,6 +85,8 @@ class SuperSearch extends React.Component {
         state.inputFocusState       = false;
         state.searchData            = [];
         this.setState(state);
+        Service.RenderToRender.emit('master@superSearchClearKeys', {emitAuthor: 'search'});
+
     }
 
     // 搜索框状态
@@ -142,6 +143,8 @@ class SuperSearch extends React.Component {
         state.searchData = [];
         this.setState(state);
         this.getSearchData();
+
+        Service.RenderToRender.emit('master@superSearchChangeFilterType', {emitAuthor: 'search', data: {searchKey: this.state.from.searchKeys.value, searchType: this.state.filterType}});
     }
 
     public resetSearchListSelected() {
@@ -159,21 +162,9 @@ class SuperSearch extends React.Component {
         const index                      = state.searchData.findIndex((sourceItem: any) => item.id === sourceItem.id);
         state.searchData[index].selected = true;
         this.setState(state);
-
-        this.doubleCount++;
-        const t = setTimeout(() => {
-            if (this.doubleCount >= 2) {
-                this.handleSearchListDoubleClick(item);
-            }
-            clearTimeout(t);
-            this.doubleCount = 0;
-        }, 300);
-    }
-
-    public handleSearchListDoubleClick(item: any): void {
         const searchKey  = this.state.from.searchKeys.value;
         const searchType = this.state.filterType;
-        Service.RenderToRender.emit('master@searchListDoubleClick', {emitAuthor: 'search', data: {...item, searchKey, searchType}});
+        Service.RenderToRender.emit('master@superSearchSelectedList', {emitAuthor: 'search', data: {...item, searchKey, searchType}});
     }
 
     public render() {
@@ -250,7 +241,7 @@ class SuperSearch extends React.Component {
                         <em className={`slider ${this.state.filterType === 0 ? 'type_1' : 'type_2'}`}/>
                     </span>
                     {/* <span className="text">find path</span>
-                    <span className="find-path">/work/os/etois/tandongs.md</span> */}
+                     <span className="find-path">/work/os/etois/tandongs.md</span> */}
                 </div>
                 <div className="search-content">
                     <ul>

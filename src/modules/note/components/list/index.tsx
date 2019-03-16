@@ -142,7 +142,9 @@ class ListComponent extends React.Component {
         state.clearInputBtnState    = false;
         state.inputFocusState       = false;
         this.setState(state);
+        this.quickSearchEvent();
     }
+
 
     // 表单修改时的数据同步
     public handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -165,6 +167,9 @@ class ListComponent extends React.Component {
     public quickSearchEvent() {
         switch (this.state.quickSearchType) {
             case 0:
+                store.dispatch({
+                    type: 'NOTE$UN_SEARCH_TAG'
+                });
                 break;
             case 1:
                 store.dispatch({
@@ -221,7 +226,7 @@ class ListComponent extends React.Component {
         });
 
         // 订阅搜索页面发送过来的选择搜索结果双击事件
-        Service.RenderToRender.subject('search@searchListDoubleClick', async (event: any, params: any): Promise<boolean | void> => {
+        Service.RenderToRender.subject('search@superSearchSelectedList', async (event: any, params: any): Promise<boolean | void> => {
             const cid = params.data.cid;
             const id  = params.data.id;
             await this.UpdateArticleListDom(cid);
@@ -354,7 +359,7 @@ class ListComponent extends React.Component {
                 <div className="searchContainer">
                     <div className={`wrap ${this.state.inputFocusState && 'focus'}`}>
                         <div className={`formBox ${this.state.inputFocusState && 'focus'}`}>
-                            <FontAwesomeIcon className="fa-icon" icon="search"/>
+                            <FontAwesomeIcon className="searchIcon fa-icon" icon="search"/>
                             <input
                                 name="searchKeys"
                                 type="text"
@@ -364,15 +369,11 @@ class ListComponent extends React.Component {
                                 placeholder="Search Notes"
                                 onChange={this.handleChange}
                             />
-                            {
-                                this.state.clearInputBtnState &&
-								<label onClick={this.clearSearchKeys}>
-									<FontAwesomeIcon className="clearSearchKey fa-icon" icon="times-circle"/>
-								</label>
-                                // <i className="icon iconfont icon-2 icon-wrong" onClick={this.clearSearchKeys}/>
-                            }
+                            <label className="clearIcon" onClick={this.clearSearchKeys} style={{display: this.state.clearInputBtnState ? 'block' : 'none'}}>
+                                <FontAwesomeIcon className="clearSearchKey fa-icon" icon="times-circle"/>
+                            </label>
                         </div>
-                        <div className='btn' onClick={this.handleQuickSearchContextMenu}>
+                        <div className='searchTypeIcon' onClick={this.handleQuickSearchContextMenu}>
                             <FontAwesomeIcon className="fa-icon" icon={this.state.quickSearchType === 0 ? 'file' : 'file-alt'}/>
                         </div>
                     </div>

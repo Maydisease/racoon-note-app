@@ -79,7 +79,6 @@ class CategoryContainer extends React.Component {
     }
 
     public async componentWillMount() {
-        console.log('componentWillMount');
         storeSubscribe('NOTE$CHANGE_FRAME_STATE', (action: any) => {
             const state: any         = this.state;
             state.componentShowState = action.playload.layout;
@@ -221,7 +220,7 @@ class CategoryContainer extends React.Component {
                         const isCurrent = (itemElement.querySelector('label') as HTMLElement).getAttribute('current') === 'true';
                         if (isCurrent) {
                             // const isLast = itemElement.getAttribute('data-is-last');
-                            const items  = this.contextMenu.items;
+                            const items = this.contextMenu.items;
 
                             // item[0] Add article;
                             // item[1] Created category;
@@ -295,8 +294,8 @@ class CategoryContainer extends React.Component {
     // 创建文章
     public async createdNote() {
         const resState = await this.articleService.createdNote(this.state.categoryObj.id);
-        EventEmitter.emit('createdNote', this.state.categoryObj.id);
         console.log(resState);
+        EventEmitter.emit('createdNote', this.state.categoryObj.id);
     }
 
     // 创建分类
@@ -369,7 +368,6 @@ class CategoryContainer extends React.Component {
     }
 
     public openAttached() {
-        console.log('openAttached');
         this.attachedService.open();
     }
 

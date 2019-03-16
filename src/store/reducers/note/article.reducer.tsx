@@ -73,6 +73,11 @@ export class ArticleReducer {
         return {...this.state, ...this.body};
     }
 
+    public UN_SEARCH_TAG(): DefaultState {
+        this.body.quickSearchKey = undefined;
+        return {...this.state, ...this.body};
+    }
+
     public Action(state: DefaultState = this.body, action: Action) {
         if (action.type && action.type.indexOf(this.modelName) === 0) {
             const typeName = action.type.substring(this.modelName.length, action.type.length);

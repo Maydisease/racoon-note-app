@@ -21,7 +21,6 @@ class Index extends React.Component {
     }
 
     public handelMoveArticleDrop(item: any, event: any) {
-        console.log(item);
         event.stopPropagation();
         const moveArticleId = Number(event.dataTransfer.getData("moveArticle")) || undefined;
         if (moveArticleId) {
