@@ -8,18 +8,17 @@ code[class*="language-"],
 pre[class*="language-"] {
     color: #f8f8f2;
     background: none;
-    text-shadow: 0 1px rgba(0, 0, 0, 0.3);
-    font-family: 'Microsoft YaHei', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    font-family: Arial, sans-serif;
     text-align: left;
     white-space: pre;
     word-spacing: normal;
     word-break: normal;
     word-wrap: normal;
-    line-height: 1.2;
-    
+    line-height: 1.5;
     -moz-tab-size: 4;
     -o-tab-size: 4;
     tab-size: 4;
+    font-size: 12px;
     
     -webkit-hyphens: none;
     -moz-hyphens: none;
@@ -29,7 +28,7 @@ pre[class*="language-"] {
 }
 
 pre[class*="language-"] code{
-    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono','Microsoft YaHei', sans-serif;
+    font-family: Arial, sans-serif;
 }
 
 /* Code blocks */
@@ -40,18 +39,18 @@ pre[class*="language-"] {
     position: relative;
     border-radius: 0.3em;
     &:before{
-        right: 8px;
-        top: 6px;
+        right: 5px;
+        top: 3px;
         font-size: 11px;
+        color: hsla(0, 0%, 100%, .4);
         position: absolute;
-        color: RGBA(255, 255, 255, .2);
         content: attr(language);
     }
 }
 
 :not(pre) > code[class*="language-"],
 pre[class*="language-"] {
-    background: RGBA(0, 0, 0, .1);
+    background: RGBA(0, 0, 0, .3);
 }
 
 /* Inline code */
