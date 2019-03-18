@@ -5,7 +5,10 @@ import {Service}         from "../../../../lib/master.electron.lib";
 import {store}           from "../../../../store";
 import {storeSubscribe}  from "../../../../store/middleware/storeActionEvent.middleware";
 import {connect}         from "react-redux";
+import {friendlyDate}    from '../../../../utils/friendlyDate.utils';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+
+// "../../../../utils/friendlyDate.utils"
 
 class ListComponent extends React.Component {
 
@@ -336,7 +339,7 @@ class ListComponent extends React.Component {
                                 onClick={this.handleItemClick.bind(this, item)}
                                 onContextMenu={this.handleItemContextMenu.bind(this, item)}
                             >
-                                <div className="date">1h</div>
+                                <div className="date">{friendlyDate(item.inputTime)}</div>
                                 <div className="context">
                                     <h2>{item.title}</h2>
                                     <div className="description">
