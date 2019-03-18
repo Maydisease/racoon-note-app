@@ -37,8 +37,6 @@ class BrowseComponent extends React.Component {
         this.intersectionObserver       = new IntersectionObserver(this.mermaidObserve);
         this.unTagMark                  = this.unTagMark.bind(this);
         this.setTagMark                 = this.setTagMark.bind(this);
-        this.setArticleContentSearchTag = this.setArticleContentSearchTag.bind(this);
-        this.setArticleContentSearchTag = this.setArticleContentSearchTag.bind(this);
     }
 
     public componentDidMount() {
@@ -46,7 +44,8 @@ class BrowseComponent extends React.Component {
         this.setSearchTagInit();
 
         storeSubscribe('NOTE$QUICK_SEARCH', (action: any) => {
-            this.setTagMark(action.playload.quickSearchKey);
+            const ARTICLE = (this.props as any).STORE_NOTE$ARTICLE;
+            this.setTagMark(ARTICLE.quickSearchKey);
         });
 
         storeSubscribe('NOTE$UN_SEARCH_TAG', () => {
@@ -135,26 +134,22 @@ class BrowseComponent extends React.Component {
     }
 
     public setTagMark(searchKey: string) {
-        this.unTagMark();
-        try {
-            const instance = new Mark(this.$element.current);
-            instance.mark(searchKey, {
-                'element'         : 'span',
-                'className'       : 'sch-highlight',
-                'exclude'         : ['.hljs-line-numbers'],
-                separateWordSearch: false
-            });
-        } catch (e) {
-            console.log(e);
-        }
-    }
+        const ARTICLE = (this.props as any).STORE_NOTE$ARTICLE;
 
-    public setArticleContentSearchTag(searchKey: string) {
-        const state         = this.state;
-        state.isSearchModel = true;
-        this.setState(state);
         this.unTagMark();
-        this.setTagMark(searchKey);
+        if (ARTICLE.quickSearchKey) {
+            try {
+                const instance = new Mark(this.$element.current);
+                instance.mark(searchKey, {
+                    'element'         : 'span',
+                    'className'       : 'sch-highlight',
+                    'exclude'         : ['.hljs-line-numbers'],
+                    separateWordSearch: false
+                });
+            } catch (e) {
+                console.log(e);
+            }
+        }
     }
 
     public render() {

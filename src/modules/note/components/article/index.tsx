@@ -99,6 +99,7 @@ class ArticleComponent extends React.Component {
         // 订阅搜索页面发送过来的选择搜索结果双击事件
         Service.RenderToRender.subject('search@superSearchSelectedList', async (event: any, params: any): Promise<boolean | void> => {
             if (params.data.searchType === 1) {
+                this.handleFrameToggle(true);
                 store.dispatch({
                     type    : 'NOTE$QUICK_SEARCH',
                     playload: {quickSearchKey: params.data.searchKey}
@@ -125,12 +126,16 @@ class ArticleComponent extends React.Component {
     }
 
     // 切换article区域全屏化状态[显示category，list/不显示]
-    public handleFrameToggle() {
+    public handleFrameToggle(forceLayout: boolean | undefined = false): void {
+        let layout = (this.props as any).STORE_NOTE$FRAME.layout === 1 ? 0 : 1;
+        if (forceLayout) {
+            layout = 1;
+        }
+
+        console.log(6666, layout);
         store.dispatch({
             type    : 'NOTE$CHANGE_FRAME_STATE',
-            playload: {
-                layout: (this.props as any).STORE_NOTE$FRAME.layout === 1 ? 0 : 1
-            }
+            playload: {layout}
         });
     }
 
@@ -169,7 +174,7 @@ class ArticleComponent extends React.Component {
                     </div>
                     }
                     <div className={`menu frameToggle ${FRAME.layout === 0 ? 'current' : ''}`}>
-                        <i className='icon' onClick={this.handleFrameToggle}>
+						<i className='icon' onClick={this.handleFrameToggle.bind(this, false)}>
                             <FontAwesomeIcon className={`${!this.state.editState ? 'light' : ''}`} icon="expand-arrows-alt"/>
                         </i>
                     </div>
