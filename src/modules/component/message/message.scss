@@ -11,15 +11,18 @@
         top: 0;
         font-size: 12px;
         opacity: 0;
+        box-sizing: border-box;
         font-family: Arial, sans-serif;
         color: RGBA(255, 255, 255, 1);
         border-radius: 3px;
         transform: translate(-50%, 0);
         background: RGBA(0, 0, 0, .5);
         box-shadow: 1px 2px 5px RGBA(0, 0, 0, 0.3);
-        -webkit-animation: v-message .3s forwards linear;
         font-weight: bold;
         z-index: 9999;
+        &:not(.validate) {
+            -webkit-animation: v-message .3s forwards linear;
+        }
         @keyframes v-message {
             0% {
                 opacity: 0;
@@ -30,7 +33,21 @@
                 transform: translateY(20px);
             }
         }
-        &.error {
+        &.validate {
+            -webkit-animation: v-message-validate .3s forwards linear;
+        }
+        @keyframes v-message-validate {
+            0% {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        &.error,
+        &.validate {
             background: RGBA(210, 53, 62, 1);
         }
         &.success {
@@ -42,6 +59,15 @@
         &.common {
             color: RGBA(255, 255, 255, .7);
             background: RGBA(50, 50, 50, 1);
+        }
+        &.validate {
+            left: 0;
+            top: 0;
+            width: 100%;
+            max-width: 100%;
+            border-radius: 0;
+            text-align: center;
+            transform: translate(0, 0);
         }
     }
 }

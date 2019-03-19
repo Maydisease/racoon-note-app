@@ -1,6 +1,7 @@
-import * as React from 'react';
-import {Service}  from '../../../lib/master.electron.lib';
-import {Link}     from "react-router-dom";
+import * as React        from 'react';
+import {Service}         from '../../../lib/master.electron.lib';
+import {Link}            from "react-router-dom";
+import {VMessageService} from '../../component/message';
 
 interface Props {
     verifyState: number,
@@ -94,7 +95,7 @@ class SignInMain extends React.Component<Props, State> {
 
         // 如果登录失败
         else {
-            Service.Dialog.showErrorBox('sign in', 'Sign in failed, account password does not match');
+            Service.Dialog.showErrorBox('sign in', 'Sign in failed, email password does not match');
         }
 
     }
@@ -108,8 +109,9 @@ class SignInMain extends React.Component<Props, State> {
         // 用户名不能为空
         if (!this.state.from.username.value || this.state.from.username.value === '') {
             state.from.username.verify     = 2;
-            state.from.username.verifyText = 'Account cannot be empty';
             this.setState(state);
+            const message = 'Email cannot be empty';
+            new VMessageService(message, 'validate', 5000).init();
             return false;
         }
 
@@ -125,8 +127,9 @@ class SignInMain extends React.Component<Props, State> {
         // 账号不存在，设置表单验证信息状态
         if (asyncVerifyUserResponse.result === 0 && asyncVerifyUserResponse.data.state === 2) {
             state.from.username.verify     = 2;
-            state.from.username.verifyText = 'Account does not exist';
             this.setState(state);
+            const message = 'Email does not exist';
+            new VMessageService(message, 'validate', 5000).init();
             return false;
         }
 
@@ -141,8 +144,9 @@ class SignInMain extends React.Component<Props, State> {
         // 意外错误
         else {
             state.from.username.verify     = 2;
-            state.from.username.verifyText = 'Unexpected error';
             this.setState(state);
+            const message = 'Unexpected error';
+            new VMessageService(message, 'validate', 5000).init();
             return false;
         }
 
@@ -157,8 +161,9 @@ class SignInMain extends React.Component<Props, State> {
         // 密码为空，设置表单验证状态
         if (!password || password === '') {
             state.from.password.verify     = 2;
-            state.from.password.verifyText = 'Password cannot be empty';
             this.setState(state);
+            const message = 'Password cannot be empty';
+            new VMessageService(message, 'validate', 5000).init();
             return false;
         }
 
@@ -198,17 +203,6 @@ class SignInMain extends React.Component<Props, State> {
     }
 
     public render() {
-
-        // 表单验证组件
-        const VerifyTips = (props: Props): any => {
-            const state = props.verifyState;
-            if (state === 2) {
-                return <div className='verify-tips error'>{this.state.from[props.inputName].verifyText}</div>;
-            } else {
-                return ''
-            }
-        };
-
         return (
             <div id="login">
                 <div className="login-container">
@@ -217,16 +211,14 @@ class SignInMain extends React.Component<Props, State> {
                         <div className="item input">
                             <div className="wrap">
                                 <div className="icon"/>
-                                <input name="username" placeholder="username" value={this.state.from.username.value} onBlur={this.handleBlur} onChange={this.handleChange}/>
+                                <input name="username" placeholder="email" value={this.state.from.username.value} onBlur={this.handleBlur} onChange={this.handleChange}/>
                             </div>
-                            <VerifyTips verifyState={this.state.from.username.verify} inputName="username"/>
                         </div>
                         <div className="item input">
                             <div className="wrap">
                                 <div className="icon"/>
                                 <input name="password" placeholder="password" value={this.state.from.password.value} onBlur={this.handleBlur} onChange={this.handleChange}/>
                             </div>
-                            <VerifyTips verifyState={this.state.from.password.verify} inputName="password"/>
                         </div>
                         <div className="item">
                             <div className="wrap">

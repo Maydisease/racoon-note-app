@@ -19,7 +19,7 @@ class Component extends React.Component {
     }
 }
 
-declare type IMessageType = 'common' | 'success' | 'error' | 'warning';
+declare type IMessageType = 'common' | 'success' | 'error' | 'warning' | 'validate';
 
 class VMessageService {
 

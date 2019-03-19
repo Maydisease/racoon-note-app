@@ -1,6 +1,7 @@
-import * as React       from 'react';
-import {Service}        from '../../../lib/master.electron.lib';
-import {Link, Redirect} from "react-router-dom";
+import * as React        from 'react';
+import {Service}         from '../../../lib/master.electron.lib';
+import {Link, Redirect}  from "react-router-dom";
+import {VMessageService} from '../../component/message';
 
 interface Props {
     verifyState: number,
@@ -135,13 +136,14 @@ class SignUpMain extends React.Component<Props, State> {
         // 用户名不能为空
         if (!username || username === '') {
             state.from.username.verify     = 2;
-            state.from.username.verifyText = 'Account cannot be empty';
             this.setState(state);
+            const message = 'Email cannot be empty';
+            new VMessageService(message, 'validate', 5000).init();
             return false;
         }
 
-        // 用户名规则应符合字母开头、0-9、a-z、A-Z，长度为6-12 位的组合
-        else if (new RegExp(/^[a-zA-Z][0-9a-zA-Z]{5,11}$/).test(username)) {
+        // 邮箱校验规则
+        else if (new RegExp(/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/).test(username)) {
 
             // 校验用户是否存在
             const request = await new Service.ServerProxy('User', 'asyncVerifyUser', {username}).send();
@@ -153,25 +155,26 @@ class SignUpMain extends React.Component<Props, State> {
 
             // 如果存在，那么设置表单校验状态
             if (request.data.state === 1) {
-                state.from.username.verify     = 2;
-                state.from.username.verifyText = 'The account already exists';
+                state.from.username.verify = 2;
                 this.setState(state);
+                const message = 'The email already exists';
+                new VMessageService(message, 'validate', 5000).init();
                 return false;
             }
 
             // 如果不存在，那么设置表单校验状态
             else {
                 state.from.username.verify     = 1;
-                state.from.username.verifyText = '';
                 this.setState(state);
                 return true;
             }
         }
         // 用户名不符合规则，那么设置表单校验状态
         else {
-            state.from.username.verify     = 2;
-            state.from.username.verifyText = 'Account should be 6-12 digits long, with underscore letters and numbers';
+            state.from.username.verify = 2;
             this.setState(state);
+            const message = 'Please enter your vaild email';
+            new VMessageService(message, 'validate', 5000).init();
             return false;
         }
 
@@ -191,9 +194,10 @@ class SignUpMain extends React.Component<Props, State> {
         }
         // 如果不符合、那么设置表单校验状态
         else {
-            state.from.password.verify     = 2;
-            state.from.password.verifyText = 'The password must be longer than 5 digits or less than 16 digits.';
+            state.from.password.verify = 2;
             this.setState(state);
+            const message = 'The password must be longer than 5 digits or less than 16 digits.';
+            new VMessageService(message, 'validate', 5000).init();
             return false;
         }
     };
@@ -208,9 +212,10 @@ class SignUpMain extends React.Component<Props, State> {
 
         // 校验重复密码字段是否存在，并设置表单校验状态
         if (!repassword || repassword === '') {
-            state.from.repassword.verify     = 2;
-            state.from.repassword.verifyText = 'repassword cannot be empty';
+            state.from.repassword.verify = 2;
             this.setState(state);
+            const message = 'repassword cannot be empty';
+            new VMessageService(message, 'validate', 5000).init();
             return false;
         }
 
@@ -227,16 +232,18 @@ class SignUpMain extends React.Component<Props, State> {
             // 校验两次密码是否相等，并设置表单校验状态
             else {
                 state.from.repassword.verify     = 2;
-                state.from.repassword.verifyText = 'The repassword do not match';
                 this.setState(state);
+                const message = 'The repassword do not match';
+                new VMessageService(message, 'validate', 5000).init();
                 return false;
             }
         }
         // 意外的错误
         else {
             state.from.repassword.verify     = 2;
-            state.from.repassword.verifyText = 'Unexpected error';
             this.setState(state);
+            const message = 'Unexpected error';
+            new VMessageService(message, 'validate', 5000).init();
             return false;
         }
 
@@ -267,16 +274,6 @@ class SignUpMain extends React.Component<Props, State> {
     // 页面渲染
     public render() {
 
-        // 表单校验规则组件
-        const VerifyTips = (props: Props): any => {
-            const state = props.verifyState;
-            if (state === 2) {
-                return <div className='verify-tips error'>{this.state.from[props.inputName].verifyText}</div>;
-            } else {
-                return ''
-            }
-        };
-
         // 路由跳转组件
         const RouteJump = (props: any): any => {
             const redirectState: boolean = props.redirect;
@@ -298,23 +295,20 @@ class SignUpMain extends React.Component<Props, State> {
                         <div className="item input">
                             <div className="wrap">
                                 <div className="icon"/>
-                                <input name="username" placeholder="username" value={this.state.from.username.value} onBlur={this.handleBlur} onChange={this.handleChange}/>
+                                <input name="username" placeholder="email" value={this.state.from.username.value} onBlur={this.handleBlur} onChange={this.handleChange}/>
                             </div>
-                            <VerifyTips verifyState={this.state.from.username.verify} inputName='username'/>
                         </div>
                         <div className="item input">
                             <div className="wrap">
                                 <div className="icon"/>
                                 <input name="password" type="password" placeholder="password" value={this.state.from.password.value} onBlur={this.handleBlur} onChange={this.handleChange}/>
                             </div>
-                            <VerifyTips verifyState={this.state.from.password.verify} inputName='password'/>
                         </div>
                         <div className="item input">
                             <div className="wrap">
                                 <div className="icon"/>
                                 <input name="repassword" type="password" placeholder="repassword" value={this.state.from.repassword.value} onBlur={this.handleBlur} onChange={this.handleChange}/>
                             </div>
-                            <VerifyTips verifyState={this.state.from.repassword.verify} inputName='repassword'/>
                         </div>
                         <div className="item">
                             <div className="wrap">
