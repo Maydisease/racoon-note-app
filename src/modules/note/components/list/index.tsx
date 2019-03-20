@@ -45,7 +45,6 @@ class ListComponent extends React.Component {
         this.clearItemSelectedState       = this.clearItemSelectedState.bind(this);
         this.handleItemContextMenu        = this.handleItemContextMenu.bind(this);
         this.handleQuickSearchContextMenu = this.handleQuickSearchContextMenu.bind(this);
-        this.createdNote                  = this.createdNote.bind(this);
         this.quickSearchContextMenuInit   = this.quickSearchContextMenuInit.bind(this);
         this.listContextMenu              = new Service.Menu();
         this.quickSearchContextMenu       = new Service.Menu();
@@ -315,14 +314,6 @@ class ListComponent extends React.Component {
     // 被响应的搜索分类选择上下文菜单事件
     public handleQuickSearchContextMenu() {
         this.quickSearchContextMenu.popup({window: Service.getWindow('master')});
-    }
-
-    // 创建文章
-    public async createdNote() {
-        const resState = await this.articleService.createdNote(this.state.currentCid);
-        console.log(resState);
-        await this.getActiveList(this.state.currentCid);
-        await this.UpdateArticleListDom(this.state.currentCid);
     }
 
     public render() {

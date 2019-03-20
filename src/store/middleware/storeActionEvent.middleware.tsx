@@ -32,7 +32,6 @@ const storeActionEventMiddleware: Middleware = () => (
     next: Dispatch
 ) => <A extends Action>(action: A) => {
     // 触发事件
-    console.log(action);
     storeEvent.triggerEvent(action);
     return next(action);
 };

@@ -804,6 +804,17 @@ body[theme='dark'] {
                         }
                     }
                 }
+                .more-menu {
+                    margin-top: 10px;
+                    label {
+                        cursor: pointer;
+                        transition: color .3s;
+                        color: RGBA(255, 255, 255, .3);
+                        &:hover {
+                            color: RGBA(255, 255, 255, .5);
+                        }
+                    }
+                }
                 .item {
                     width: 100%;
                     &.input {
@@ -814,6 +825,7 @@ body[theme='dark'] {
                             background: RGBA(41, 43, 45, 1);
                             height: 28px;
                             box-sizing: border-box;
+                            position: relative;
                         }
                         .verify-tips {
                             color: RGBA(214, 85, 95, 1);
@@ -822,6 +834,28 @@ body[theme='dark'] {
                             font-size: 11px;
                             position: absolute;
                             font-family: Arial, sans-serif;
+                        }
+                    }
+                    &.verifycode {
+                        display: flex;
+                        .wrap {
+                            flex: 1;
+                            width: auto;
+                        }
+                        button {
+                            width: 60px;
+                            margin-left: 5px;
+                            font-weight: bold;
+                            font-size: 12px;
+                            cursor: pointer;
+                            color: RGBA(255, 255, 255, .5);
+                            background: #333;
+                            box-sizing: border-box;
+                            transition: border, color, background .1s;
+                            &:hover {
+                                background: #444;
+                                color: RGBA(255, 255, 255, .8);
+                            }
                         }
                     }
                     .wrap {
@@ -834,7 +868,20 @@ body[theme='dark'] {
                             box-sizing: border-box;
                             border: none;
                             background: none;
-                            color: RGBA(255, 255, 255, 1)
+                            color: RGBA(255, 255, 255, 1);
+                            &[name='password'] {
+                                padding-right: 28px;
+                            }
+                        }
+                        .icon.hidePW {
+                            width: 28px;
+                            height: 28px;
+                            font-size: 14px;
+                            line-height: 28px;
+                            position: absolute;
+                            right: 0;
+                            top: 0;
+                            color: RGBA(255, 255, 255, .3);
                         }
                         button {
                             width: 100%;
@@ -845,6 +892,7 @@ body[theme='dark'] {
                             cursor: pointer;
                             font-weight: bold;
                             border-radius: 3px;
+                            transition: background .3s;
                             color: RGBA(255, 255, 255, 1);
                             background: RGBA(39, 106, 179, 1);
                             box-shadow: 1px 1px 5px RGBA(0, 0, 0, 1);

@@ -71,7 +71,6 @@ const Service = {
         emit   : masterModules.electron.remote.getGlobal('service').RenderToRender.emit,
         subject: (eventName: string, callback: any) => {
             masterModules.electron.ipcRenderer.on(eventName, (event: any, params: object) => {
-                console.log(eventName);
                 return callback(event, params);
             });
         }

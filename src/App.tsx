@@ -6,6 +6,7 @@ import RSSMain                          from './modules/rss/Main';
 import TodoMain                         from './modules/todo/Main';
 import SignInMain                       from './modules/common/sign_in/Main';
 import SignUpMain                       from './modules/common/sign_up/Main';
+import ForgetPasswordMain               from './modules/common/forget_password/Main';
 import DefaultMain                      from './modules/Main';
 import {BrowserRouter as Router, Route} from "react-router-dom";
 
@@ -28,6 +29,7 @@ class App extends React.Component {
                     <Route path="/todo" component={TodoMain}/>
                     <Route path="/sign_in" component={SignInMain}/>
                     <Route path="/sign_up" component={SignUpMain}/>
+                    <Route path="/forget_password" component={ForgetPasswordMain}/>
                     <Route path="/attached" component={Attached}/>
                 </div>
             </Router>

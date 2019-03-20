@@ -294,8 +294,9 @@ class CategoryContainer extends React.Component {
     // 创建文章
     public async createdNote() {
         const resState = await this.articleService.createdNote(this.state.categoryObj.id);
-        console.log(resState);
-        EventEmitter.emit('createdNote', this.state.categoryObj.id);
+        if (resState) {
+            EventEmitter.emit('createdNote', this.state.categoryObj.id);
+        }
     }
 
     // 创建分类

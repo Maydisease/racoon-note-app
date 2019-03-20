@@ -132,7 +132,6 @@ class ArticleComponent extends React.Component {
             layout = 1;
         }
 
-        console.log(6666, layout);
         store.dispatch({
             type    : 'NOTE$CHANGE_FRAME_STATE',
             playload: {layout}

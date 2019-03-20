@@ -2,10 +2,12 @@ import * as React        from 'react';
 import {Service}         from '../../../lib/master.electron.lib';
 import {Link}            from "react-router-dom";
 import {VMessageService} from '../../component/message';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 interface Props {
     verifyState: number,
-    inputName: string
+    inputName: string,
+    history: any
 }
 
 interface State {
@@ -22,13 +24,14 @@ interface State {
             verifyText: string
         },
     },
+    displayPWState: boolean
 }
 
 class SignInMain extends React.Component<Props, State> {
 
     public state = {
-        t   : undefined,
-        from: {
+        t             : undefined,
+        from          : {
             username: {
                 value     : '',
                 verify    : 0,
@@ -39,14 +42,34 @@ class SignInMain extends React.Component<Props, State> {
                 verify    : 0,
                 verifyText: ''
             }
-        }
+        },
+        displayPWState: false
     };
+
+    public props: any;
+
+    public moreContextMenu: any;
 
     constructor(props: any) {
         super(props);
-        this.handleBlur   = this.handleBlur.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSignIn = this.handleSignIn.bind(this);
+        this.props                   = props;
+        this.handleChange            = this.handleChange.bind(this);
+        this.handleSignIn            = this.handleSignIn.bind(this);
+        this.handleMoreMenu          = this.handleMoreMenu.bind(this);
+        this.handleChangeHidePWState = this.handleChangeHidePWState.bind(this);
+        this.moreContextMenu         = new Service.Menu();
+        this.moreContextMenuInit();
+    }
+
+    // moreContextMenu初始化
+    public moreContextMenuInit() {
+        const $this: this = this;
+        this.moreContextMenu.append(new Service.MenuItem({
+            enabled: true,
+            label  : 'forget password', click() {
+                $this.props.history.push('/forget_password');
+            }
+        }));
     }
 
     // submit 登录
@@ -184,14 +207,15 @@ class SignInMain extends React.Component<Props, State> {
         this.setState(state);
     }
 
-    // 表单焦点丢失，处理表单验证环节
-    public handleBlur(event: React.ChangeEvent<HTMLInputElement>) {
-        if (event.target.name === 'username') {
-            this.asyncVerifyUser();
-        }
-        if (event.target.name === 'password') {
-            this.verifyPassword();
-        }
+    // 是否明文显示密码
+    public handleChangeHidePWState() {
+        const state          = this.state;
+        state.displayPWState = !this.state.displayPWState;
+        this.setState(state);
+    }
+
+    public handleMoreMenu() {
+        this.moreContextMenu.popup({window: Service.getWindow('sign')});
     }
 
     public componentDidMount(): void {
@@ -211,13 +235,24 @@ class SignInMain extends React.Component<Props, State> {
                         <div className="item input">
                             <div className="wrap">
                                 <div className="icon"/>
-                                <input name="username" placeholder="email" value={this.state.from.username.value} onBlur={this.handleBlur} onChange={this.handleChange}/>
+                                <input name="username" placeholder="email" value={this.state.from.username.value} onChange={this.handleChange}/>
                             </div>
                         </div>
                         <div className="item input">
                             <div className="wrap">
-                                <div className="icon"/>
-                                <input name="password" placeholder="password" value={this.state.from.password.value} onBlur={this.handleBlur} onChange={this.handleChange}/>
+
+                                <div className="icon hidePW" onClick={this.handleChangeHidePWState}>
+                                    <FontAwesomeIcon className="fa-icon" icon={this.state.displayPWState ? 'eye' : 'eye-slash'}/>
+                                </div>
+
+                                <input
+                                    name="password"
+                                    type={this.state.displayPWState ? 'text' : 'password'}
+                                    placeholder="password"
+                                    value={this.state.from.password.value}
+                                    onChange={this.handleChange}
+                                />
+
                             </div>
                         </div>
                         <div className="item">
@@ -227,6 +262,11 @@ class SignInMain extends React.Component<Props, State> {
                         </div>
                     </div>
                     <h4>New to Note?<em><Link to="/sign_up">Create an account.</Link></em></h4>
+                    <div className="more-menu">
+                        <label onClick={this.handleMoreMenu}>
+                            <FontAwesomeIcon className="fa-icon" icon="ellipsis-h"/>
+                        </label>
+                    </div>
                 </div>
             </div>
         );
