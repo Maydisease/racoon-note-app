@@ -108,7 +108,7 @@ class SignInMain extends React.Component<Props, State> {
 
         // 用户名不能为空
         if (!this.state.from.username.value || this.state.from.username.value === '') {
-            state.from.username.verify     = 2;
+            state.from.username.verify = 2;
             this.setState(state);
             const message = 'Email cannot be empty';
             new VMessageService(message, 'validate', 5000).init();
@@ -126,7 +126,7 @@ class SignInMain extends React.Component<Props, State> {
 
         // 账号不存在，设置表单验证信息状态
         if (asyncVerifyUserResponse.result === 0 && asyncVerifyUserResponse.data.state === 2) {
-            state.from.username.verify     = 2;
+            state.from.username.verify = 2;
             this.setState(state);
             const message = 'Email does not exist';
             new VMessageService(message, 'validate', 5000).init();
@@ -143,7 +143,7 @@ class SignInMain extends React.Component<Props, State> {
 
         // 意外错误
         else {
-            state.from.username.verify     = 2;
+            state.from.username.verify = 2;
             this.setState(state);
             const message = 'Unexpected error';
             new VMessageService(message, 'validate', 5000).init();
@@ -160,7 +160,7 @@ class SignInMain extends React.Component<Props, State> {
 
         // 密码为空，设置表单验证状态
         if (!password || password === '') {
-            state.from.password.verify     = 2;
+            state.from.password.verify = 2;
             this.setState(state);
             const message = 'Password cannot be empty';
             new VMessageService(message, 'validate', 5000).init();

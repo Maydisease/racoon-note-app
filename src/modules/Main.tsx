@@ -20,6 +20,7 @@ class DefaultMain extends React.Component {
             state.redirect    = true;
             state.jumpAddress = '/note';
             this.setState(state);
+            Service.Remote.getCurrentWindow().focus();
         });
     }
 
