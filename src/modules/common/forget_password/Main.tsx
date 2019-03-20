@@ -1,6 +1,7 @@
 import * as React        from 'react';
 import {Service}         from '../../../lib/master.electron.lib';
 import {Link}            from "react-router-dom";
+import {VLoadingService} from "../../component/loading";
 import {VMessageService} from '../../component/message';
 
 interface Props {
@@ -62,7 +63,7 @@ class ForgetPasswordMain extends React.Component<Props, State> {
         sendTimerText   : 0
     };
 
-    public moreContextMenu: any;
+    public verifyCodesendTimer: any;
 
     constructor(props: any) {
         super(props);
@@ -99,9 +100,12 @@ class ForgetPasswordMain extends React.Component<Props, State> {
             return false;
         }
 
+        const vload = new VLoadingService({});
+        vload.init();
         const response = await new Service.ServerProxy('User', 'changeUserPassword', {verifycode, username, password}).send();
-        const state    = this.state;
+        vload.destroy();
         if (response.result === 1) {
+            const state = this.state;
             let message = '';
             switch (response.messageCode) {
                 case 1202:
@@ -123,12 +127,14 @@ class ForgetPasswordMain extends React.Component<Props, State> {
                     break;
 
             }
+            this.setState(state);
         } else if (response.result === 0) {
-
+            const state                 = this.state;
             state.from.verifycode.value = '';
             state.from.username.value   = '';
             state.from.password.value   = '';
             state.from.repassword.value = '';
+            this.setState(state);
 
             Service.Dialog.showMessageBox({
                     title  : 'forget password',
@@ -144,8 +150,6 @@ class ForgetPasswordMain extends React.Component<Props, State> {
             );
 
         }
-
-        this.setState(state);
 
     }
 
@@ -207,14 +211,14 @@ class ForgetPasswordMain extends React.Component<Props, State> {
             state.isVerifyCodeSend = true;
             this.setState(state);
 
-            let i   = 60;
-            const t = setInterval(() => {
+            let i                    = 60;
+            this.verifyCodesendTimer = setInterval(() => {
                 const state$ = this.state;
                 if (i > 0) {
                     state$.sendTimerText = i;
                 } else {
                     state$.isVerifyCodeSend = false;
-                    clearInterval(t);
+                    clearInterval(this.verifyCodesendTimer);
                 }
                 this.setState(state$);
                 i--;
@@ -238,9 +242,12 @@ class ForgetPasswordMain extends React.Component<Props, State> {
             return false;
         }
 
+        const vload = new VLoadingService({});
+        vload.init();
+
         const sendVerifyMailResponse = await new Service.ServerProxy('user', 'sendForgetPasswordVerifyMail', {username}).send();
         this.setSendFlagTimer();
-
+        vload.destroy();
         if (sendVerifyMailResponse.result === 1) {
             let message;
             switch (sendVerifyMailResponse.messageCode) {
@@ -373,6 +380,10 @@ class ForgetPasswordMain extends React.Component<Props, State> {
                 await this.handleSubmit();
             }
         });
+    }
+
+    public componentWillUnmount() {
+        clearInterval(this.verifyCodesendTimer);
     }
 
     public render() {
