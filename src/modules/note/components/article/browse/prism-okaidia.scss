@@ -23,7 +23,7 @@ pre[class*="language-"] {
     -moz-hyphens: none;
     -ms-hyphens: none;
     hyphens: none;
-    border: 1px solid RGBA(0, 0, 0, .08);
+    border: 1px solid RGBA(0, 0, 0, 0.4);
 }
 
 pre[class*="language-"] code{
@@ -32,11 +32,13 @@ pre[class*="language-"] code{
 
 /* Code blocks */
 pre[class*="language-"] {
+    width: calc(100% - 20px);
     padding: 1em;
-    margin: .5em 0;
+    margin: .5em 0 .5em 20px;
     overflow: auto;
     position: relative;
     border-radius: 0.3em;
+    box-sizing: border-box;
     &:before{
         right: 5px;
         top: 3px;
@@ -49,7 +51,7 @@ pre[class*="language-"] {
 
 :not(pre) > code[class*="language-"],
 pre[class*="language-"] {
-    background: RGBA(0, 0, 0, .3);
+    background: RGBA(0, 0, 0, 0.1);
 }
 
 /* Inline code */

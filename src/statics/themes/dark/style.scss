@@ -488,9 +488,6 @@ body[theme='dark'] {
                         overflow-x: hidden;
                         overflow-y: auto;
                         box-sizing: border-box;
-                        padding-right: 15px;
-                        padding-top: 15px;
-                        padding-bottom: 5px;
                         -webkit-user-select: text;
                         position: relative;
                         display: flex;
@@ -505,6 +502,7 @@ body[theme='dark'] {
                             box-sizing: border-box;
                             overflow: hidden;
                             &.browse-mod {
+                                height: calc(100% - 10px);
                                 flex-shrink: 0;
                                 padding: 15px 60px;
                                 box-sizing: border-box;
@@ -617,8 +615,7 @@ body[theme='dark'] {
                                 p > code {
                                     padding: 0 3px;
                                     margin: 0 2px;
-                                    border-radius: 5px;
-                                    color: RGBA(255, 255, 255, .5);
+                                    color: RGBA(255, 150, 50, 1);
                                     border-radius: 3px;
                                     display: inline-block;
                                     background: RGBA(0, 0, 0, 0.1);
@@ -744,20 +741,21 @@ body[theme='dark'] {
                                 overflow: hidden;
                             }
                             .editor-container {
-                                padding-right: 40px;
-                                height: calc(100% - 15px);
-                                margin: 10px 0 5px 0;
+                                height: 100%;
+                                padding: 10px 40px 10px 20px;
                                 box-sizing: border-box;
                                 position: relative;
                                 overflow: hidden;
                                 .editor-tools-bar {
                                     width: 30px;
-                                    height: 100%;
+                                    height: calc(100% - 10px);
                                     position: absolute;
-                                    right: 5px;
                                     top: 0;
+                                    right: 0;
                                     display: flex;
+                                    padding: 5px;
                                     flex-direction: column-reverse;
+                                    background: RGBA(0, 0, 0, .1);
                                     span {
                                         width: 30px;
                                         height: 30px;
@@ -773,9 +771,20 @@ body[theme='dark'] {
                             textarea {
                                 width: 100%;
                                 height: 100%;
-                                position: absolute;
-                                left: 0;
-                                top: 0;
+                                box-sizing: border-box;
+                                line-height: 1.5;
+                                font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
+                                color: RGBA(255, 255, 255, .8);
+                                text-align: left;
+                                white-space: pre;
+                                word-spacing: normal;
+                                word-break: normal;
+                                word-wrap: normal;
+                                -moz-tab-size: 4;
+                                -o-tab-size: 4;
+                                tab-size: 4;
+                                resize: none;
+                                font-size: 12px;
                             }
                         }
                     }
