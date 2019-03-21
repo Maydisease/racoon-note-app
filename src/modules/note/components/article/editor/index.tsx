@@ -93,6 +93,7 @@ class EditorComponent extends React.Component {
     public componentDidUpdate(newProps: any, newState: any) {
         if (!newProps.displayState && this.props.displayState) {
             this.editor.refresh();
+            this.editor.setValue((this.props as any).STORE_NOTE$ARTICLE_TEMP.markdown_content);
         }
     }
 
