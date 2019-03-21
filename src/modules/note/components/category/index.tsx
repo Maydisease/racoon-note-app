@@ -9,7 +9,7 @@ import {VMessageService}   from "../../../component/message";
 import {FontAwesomeIcon}   from '@fortawesome/react-fontawesome';
 import {store}             from "../../../../store";
 import {AppCommandService} from "../../services/appCommand.service";
-import {AttachedService}   from '../../services/attached.server';
+import {AttachedService, $AttachedService}   from '../../services/window_manage/attached.server';
 
 interface CategoryItemEdit {
     state: boolean,
@@ -71,7 +71,7 @@ class CategoryContainer extends React.Component {
         this.contextMenuInit();
         this.categoryMenusElement = undefined;
         this.articleService       = new ArticleService();
-        this.attachedService      = new AttachedService();
+        this.attachedService      = $AttachedService;
         this.appCommandService    = new AppCommandService();
         this.closeRenamePanel     = this.closeRenamePanel.bind(this);
         this.confirmRenamePanel   = this.confirmRenamePanel.bind(this);

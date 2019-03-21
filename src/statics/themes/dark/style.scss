@@ -741,13 +741,34 @@ body[theme='dark'] {
                                 
                             }
                             &.edit-mod {
-                            
+                                overflow: hidden;
                             }
                             .editor-container {
-                                width: calc(100% - 40px);
+                                padding-right: 40px;
                                 height: calc(100% - 15px);
-                                margin: 10px 40px 5px 0;
+                                margin: 10px 0 5px 0;
                                 box-sizing: border-box;
+                                position: relative;
+                                overflow: hidden;
+                                .editor-tools-bar {
+                                    width: 30px;
+                                    height: 100%;
+                                    position: absolute;
+                                    right: 5px;
+                                    top: 0;
+                                    display: flex;
+                                    flex-direction: column-reverse;
+                                    span {
+                                        width: 30px;
+                                        height: 30px;
+                                        line-height: 30px;
+                                        text-align: center;
+                                        transition: background .2s;
+                                        &:hover {
+                                            background: RGBA(0, 0, 0, .2);
+                                        }
+                                    }
+                                }
                             }
                             textarea {
                                 width: 100%;

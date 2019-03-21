@@ -1,6 +1,6 @@
-import {Service} from "../../../lib/master.electron.lib";
+import {Service} from "../../../../lib/master.electron.lib";
 
-export class AttachedService {
+class AttachedService {
 
     public attachedClass: any;
     public attachedWin: any;
@@ -20,3 +20,6 @@ export class AttachedService {
     }
 
 }
+
+const $AttachedService = new AttachedService();
+export {$AttachedService, AttachedService}

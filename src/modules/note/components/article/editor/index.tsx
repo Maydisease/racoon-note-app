@@ -1,16 +1,17 @@
-import * as React           from 'react';
-import * as CodeMirror      from "codemirror";
-import {connect}            from 'react-redux';
-import {store}              from "../../../../../store";
-import * as MarkdownIt      from 'markdown-it';
-import {EditorToolsService} from '../../../services/editorTools.service';
+import * as React                          from 'react';
+import * as CodeMirror                     from "codemirror";
+import {connect}                           from 'react-redux';
+import {store}                             from "../../../../../store";
+import * as MarkdownIt                     from 'markdown-it';
+import {EditorToolsService}                from '../../../services/editorTools.service';
+import {Service}                           from "../../../../../lib/master.electron.lib";
+import {ArticleService}                    from "../../../services/article.service";
+import {$AttachedService, AttachedService} from '../../../services/window_manage/attached.server';
 
-import {ArticleService} from "../../../services/article.service";
 import './codemirror.scss';
 import './monokai.scss';
 import 'codemirror/mode/markdown/markdown';
 import 'codemirror/addon/display/placeholder';
-
 import 'prismjs';
 import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-javascript';
@@ -29,8 +30,7 @@ import 'prismjs/components/prism-bash';
 import 'prismjs/components/prism-sass';
 import 'prismjs/components/prism-scss';
 import 'prismjs/components/prism-textile';
-import {Service}        from "../../../../../lib/master.electron.lib";
-// import editorShortKeyMaps from '../../../../../config/editor/shortcutKey.conf';
+import {FontAwesomeIcon}                   from "@fortawesome/react-fontawesome";
 
 const markdownItMermaid = require('markdown-it-mermaid').default;
 const markdownItImsize  = require('markdown-it-imsize');
@@ -45,12 +45,15 @@ class EditorComponent extends React.Component {
     public editor: any;
     public markdownIt: MarkdownIt;
     public editorTools: EditorToolsService;
+    public attachedService: AttachedService;
 
     constructor(props: any) {
         super(props);
-        this.saveContent   = this.saveContent.bind(this);
-        this.insertContent = this.insertContent.bind(this);
-        this.markdownIt    = new MarkdownIt({
+        this.saveContent       = this.saveContent.bind(this);
+        this.insertContent     = this.insertContent.bind(this);
+        this.handelEditorTools = this.handelEditorTools.bind(this);
+        this.attachedService   = $AttachedService;
+        this.markdownIt        = new MarkdownIt({
             breaks   : true,
             highlight: (str: string, lang: string) => {
 
@@ -130,12 +133,24 @@ class EditorComponent extends React.Component {
         }
     }
 
+    public handelEditorTools(type: string) {
+        switch (type) {
+            case 'attached':
+                this.attachedService.open();
+                break;
+        }
+    }
+
     public render() {
 
         return (
             <div className="wrap edit-mod">
                 <div className="editor-container">
                     <textarea id="textareaEditor" placeholder="write your dreams..."/>
+                    <div className="editor-tools-bar">
+                        <span><FontAwesomeIcon icon="link"/></span>
+                        <span onClick={this.handelEditorTools.bind(this, 'attached')}><FontAwesomeIcon icon="image"/></span>
+                    </div>
                 </div>
             </div>
         )
