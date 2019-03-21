@@ -186,9 +186,8 @@ class ArticleComponent extends React.Component {
                 }
                 {ARTICLE.id &&
                 <div className="content">
-                    {
-                        this.state.editState ? <EditorComponent/> : <BrowseComponent/>
-                    }
+					<EditorComponent displayState={this.state.editState} />
+					<BrowseComponent displayState={this.state.editState} />
                     {
                         this.state.editAndBrowse && this.state.editState && FRAME.layout === 0 &&
                         <React.Fragment>

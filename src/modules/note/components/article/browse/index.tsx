@@ -13,7 +13,8 @@ mermaid.initialize({
 });
 
 interface DefaultProps {
-    onRef?: any
+    onRef?: any,
+    displayState?: boolean
 }
 
 class BrowseComponent extends React.Component {
@@ -157,7 +158,7 @@ class BrowseComponent extends React.Component {
         this.rewriteATagLink();
         this.bindImageLightBoxEvent();
         const ARTICLE_TEMP = (this.props as any).STORE_NOTE$ARTICLE_TEMP;
-        return (<div ref={this.$element} className="wrap browse-mod" dangerouslySetInnerHTML={{__html: ARTICLE_TEMP.html_content}}/>);
+        return (<div ref={this.$element} className="wrap browse-mod" style={{display: this.props.displayState ? 'none' : 'block'}} dangerouslySetInnerHTML={{__html: ARTICLE_TEMP.html_content}}/>);
     }
 }
 

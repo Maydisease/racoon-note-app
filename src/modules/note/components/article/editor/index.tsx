@@ -39,6 +39,10 @@ declare var Prism: any;
 
 import Timeout = NodeJS.Timeout;
 
+interface DefaultProps {
+    displayState: boolean
+}
+
 class EditorComponent extends React.Component {
 
     public state: any = {};
@@ -46,6 +50,8 @@ class EditorComponent extends React.Component {
     public markdownIt: MarkdownIt;
     public editorTools: EditorToolsService;
     public attachedService: AttachedService;
+
+    public props: DefaultProps;
 
     constructor(props: any) {
         super(props);
@@ -84,6 +90,12 @@ class EditorComponent extends React.Component {
         await new ArticleService().saveNote();
     }
 
+    public componentDidUpdate(newProps: any, newState: any) {
+        if (!newProps.displayState && this.props.displayState) {
+            this.editor.refresh();
+        }
+    }
+
     public componentDidMount() {
         this.editor = CodeMirror.fromTextArea((document.getElementById('textareaEditor') as any), {
             theme         : 'monokai',
@@ -93,6 +105,8 @@ class EditorComponent extends React.Component {
             viewportMargin: 5000,
             lineNumbers   : true
         });
+
+        this.editor.focus();
 
         let timer: Timeout;
         this.editor.on("update", (change: any) => {
@@ -144,7 +158,7 @@ class EditorComponent extends React.Component {
     public render() {
 
         return (
-            <div className="wrap edit-mod">
+            <div className="wrap edit-mod" style={{display: this.props.displayState ? 'block' : 'none'}}>
                 <div className="editor-container">
                     <textarea id="textareaEditor" placeholder="write your dreams..."/>
                     <div className="editor-tools-bar">
@@ -157,4 +171,4 @@ class EditorComponent extends React.Component {
     }
 }
 
-export default connect((state: any) => state)(EditorComponent);
+export default connect<{}, {}, DefaultProps>((state: any) => state)(EditorComponent);
