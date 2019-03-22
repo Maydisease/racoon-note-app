@@ -7,11 +7,6 @@ import {Service}                           from "../../../../../lib/master.elect
 import {ArticleService}                    from "../../../services/article.service";
 import {FontAwesomeIcon}                   from "@fortawesome/react-fontawesome";
 import {$AttachedService, AttachedService} from '../../../services/window_manage/attached.server';
-
-// import './codemirror.scss';
-// import './monokai.scss';
-// import 'codemirror/mode/markdown/markdown';
-// import 'codemirror/addon/display/placeholder';
 import 'prismjs';
 import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-javascript';
@@ -30,6 +25,7 @@ import 'prismjs/components/prism-bash';
 import 'prismjs/components/prism-sass';
 import 'prismjs/components/prism-scss';
 import 'prismjs/components/prism-textile';
+import {VMessageService} from "../../../../component/message";
 
 const markdownItMermaid = require('markdown-it-mermaid').default;
 const markdownItImsize  = require('markdown-it-imsize');
@@ -112,21 +108,78 @@ class EditorComponent extends React.Component {
 
     }
 
-    public insertContent(type: string, obj: any) {
-        const state = this.state;
+    public insertContent(type: string, obj: any = {}): boolean {
+
+        // 如果插入内容时，不是编辑模式的话，就提示警告
+        if (!this.props.displayState) {
+            new VMessageService('please switch to edit mode', 'warning').init();
+            return false;
+        }
+
+        const state       = this.state;
+        let returnContent = '';
         switch (type) {
+            // 向编辑器插入图片
             case 'image':
-                state.content = this.editorTools.insertImage(obj.imageTitle, obj.imageUrl);
+                returnContent = this.editorTools.insertImage(obj.imageTitle, obj.imageUrl);
+                if (returnContent) {
+                    state.content = returnContent;
+                    this.setState(state);
+                }
+                break;
+            case 'fontBold':
+                returnContent = this.editorTools.insertFontBold();
+                if (returnContent) {
+                    state.content = returnContent;
+                    this.setState(state);
+                }
+                break;
+            case 'fontItalic':
+                returnContent = this.editorTools.insertFontItalic();
+                if (returnContent) {
+                    state.content = returnContent;
+                    this.setState(state);
+                }
+                break;
+            case 'fontStrikethrough':
+                returnContent = this.editorTools.insertFontStrikethrough();
+                if (returnContent) {
+                    state.content = returnContent;
+                    this.setState(state);
+                }
+                break;
+            case 'fontQuoteLeft':
+                returnContent = this.editorTools.insertFontQuoteLeft();
+                if (returnContent) {
+                    state.content = returnContent;
+                    this.setState(state);
+                }
                 break;
         }
-        this.setState(state);
-        this.writeArticleToStore(this.state.content);
+        if (state.content) {
+            (this.textareaElement.current as HTMLTextAreaElement).dispatchEvent(new Event('textarea', {bubbles: true}));
+            // this.textareaElement.dispatchEvent(event);
+            this.writeArticleToStore(this.state.content);
+        }
+        return true;
     }
 
     public handelEditorTools(type: string) {
         switch (type) {
             case 'attached':
                 this.attachedService.open();
+                break;
+            case 'fontBold':
+                this.insertContent(type);
+                break;
+            case 'fontItalic':
+                this.insertContent(type);
+                break;
+            case 'fontStrikethrough':
+                this.insertContent(type);
+                break;
+            case 'fontQuoteLeft':
+                this.insertContent(type);
                 break;
         }
     }
@@ -175,6 +228,10 @@ class EditorComponent extends React.Component {
                     />
                     <div className="editor-tools-bar">
                         {/*<span><FontAwesomeIcon icon="link"/></span>*/}
+                        <span onClick={this.handelEditorTools.bind(this, 'fontItalic')}><FontAwesomeIcon icon="italic"/></span>
+                        <span onClick={this.handelEditorTools.bind(this, 'fontBold')}><FontAwesomeIcon icon="bold"/></span>
+                        <span onClick={this.handelEditorTools.bind(this, 'fontStrikethrough')}><FontAwesomeIcon icon="strikethrough"/></span>
+                        <span onClick={this.handelEditorTools.bind(this, 'fontQuoteLeft')}><FontAwesomeIcon icon="quote-left"/></span>
                         <span onClick={this.handelEditorTools.bind(this, 'attached')}><FontAwesomeIcon icon="image"/></span>
                     </div>
                 </div>

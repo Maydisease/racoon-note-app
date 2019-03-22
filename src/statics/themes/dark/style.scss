@@ -672,7 +672,6 @@ body[theme='dark'] {
                                     position: relative;
                                     list-style: none;
                                     box-sizing: border-box;
-                                    font-weight: bold;
                                     color: RGBA(255, 255, 255, .8);
                                     &:before {
                                         content: '';
@@ -762,8 +761,12 @@ body[theme='dark'] {
                                         height: 30px;
                                         line-height: 30px;
                                         text-align: center;
+                                        font-size: 14px;
+                                        cursor: pointer;
+                                        color: RGBA(255, 255, 255, .3);
                                         transition: background .2s;
                                         &:hover {
+                                            color: RGBA(255, 255, 255, .7);
                                             background: RGBA(0, 0, 0, .2);
                                         }
                                     }
