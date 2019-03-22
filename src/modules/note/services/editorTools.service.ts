@@ -141,7 +141,11 @@ export class EditorToolsService {
                 newSelectedCont += `${symbol}${item}\n`;
             });
         } else {
-            newSelectedCont = `\n${symbol}${selection.text}`;
+            if (selection.start === 0) {
+                newSelectedCont = `${symbol}${selection.text}`;
+            } else {
+                newSelectedCont = `\n${symbol}${selection.text}`;
+            }
         }
 
         const startValue = sourceValue.substring(0, selection.start);
