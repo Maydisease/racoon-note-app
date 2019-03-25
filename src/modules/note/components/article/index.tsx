@@ -73,6 +73,29 @@ class ArticleComponent extends React.Component {
 
     public componentDidMount() {
 
+        // store.dispatch({
+        //     type    : 'EDITOR$ADD',
+        //     playload: {
+        //         content: '5555'
+        //     }
+        // });
+        //
+        // setTimeout(() => {
+        //     store.dispatch(reduxUndo.ActionCreators.undo());
+        // }, 1000);
+        //
+        // setTimeout(() => {
+        //     console.log(788, store.getState().EDITOR$HISTORY);
+        // }, 2000);
+        //
+        // setTimeout(() => {
+        //     store.dispatch(reduxUndo.ActionCreators.redo());
+        // }, 3000);
+        //
+        // setTimeout(() => {
+        //     console.log(789, store.getState().EDITOR$HISTORY);
+        // }, 4000);
+
         // 订阅选中文章事件
         storeSubscribe('NOTE$SELECTED_ARTICLE', () => {
             const ARTICLE_TEMP     = (this.props as any).STORE_NOTE$ARTICLE_TEMP;

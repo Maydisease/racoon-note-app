@@ -1,15 +1,15 @@
 interface DefaultState {
-    layout?: number
+    content?: string
 }
 
 declare type Playload = DefaultState;
 
 interface Action {
     type: string
-    playload: Playload
+    playload: DefaultState
 }
 
-export class WindowMenusKeyboardReducer {
+export class EditorReducer {
 
     public body: DefaultState;
     public state: DefaultState;
@@ -18,41 +18,31 @@ export class WindowMenusKeyboardReducer {
 
     constructor(ModelName: string) {
         this.modelName = ModelName;
-        this.body      = {};
+        this.body      = {
+            content: ''
+        };
         this.playload  = {};
         this.Action    = this.Action.bind(this);
     }
 
-    // 更新UI框架状态
-    public CMD_OR_CTRL_S() {
-        return this.state;
+    // 更新临时日志STORE
+    public ADD() {
+        const {content} = this.playload;
+        this.body       = {content};
+        return {...this.state, ...this.body};
     }
 
-    // 更新UI框架状态
-    public CMD_OR_CTRL_E() {
-        return this.state;
-    }
+    public CLEAR() {
+        this.body = {
+            past   : [],
+            present: {content: ''},
+            future : []
 
-    public CMD_OR_CTRL_W() {
-        return this.state;
-    }
+        }as any;
 
-    public CMD_OR_CTRL_SHIFT_F() {
-        return this.state;
-    }
+        console.log('进来了');
 
-    // editor -> undo
-    public CMD_OR_CTRL_Z() {
-        return this.state;
-    }
-
-    // editor -> redo
-    public CMD_OR_CTRL_SHIFT_Z() {
-        return this.state;
-    }
-
-    public ESCAPE() {
-        return this.state;
+        return {};
     }
 
     public Action(state: DefaultState = this.body, action: Action) {

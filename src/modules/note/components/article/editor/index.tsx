@@ -26,6 +26,9 @@ import 'prismjs/components/prism-sass';
 import 'prismjs/components/prism-scss';
 import 'prismjs/components/prism-textile';
 import {VMessageService} from "../../../../component/message";
+import {storeSubscribe}  from "../../../../../store/middleware/storeActionEvent.middleware";
+// import {ActionCreators}  from 'redux-undo';
+const reduxUndo = require('redux-undo');
 
 const markdownItMermaid = require('markdown-it-mermaid').default;
 const markdownItImsize  = require('markdown-it-imsize');
@@ -34,6 +37,11 @@ declare var Prism: any;
 
 interface DefaultProps {
     displayState: boolean
+}
+
+interface TextAreaHistory {
+    list: string[]
+    index: number
 }
 
 class EditorComponent extends React.Component {
@@ -48,6 +56,7 @@ class EditorComponent extends React.Component {
 
     public props: DefaultProps;
     public handelEditorTimer: number;
+    public textAreaHistory: TextAreaHistory;
     public textareaElement: React.RefObject<HTMLTextAreaElement>;
 
     constructor(props: any) {
@@ -58,6 +67,12 @@ class EditorComponent extends React.Component {
         this.handelEditor        = this.handelEditor.bind(this);
         this.writeArticleToStore = this.writeArticleToStore.bind(this);
         this.attachedService     = $AttachedService;
+
+        this.textAreaHistory = {
+            list : [],
+            index: 0
+        };
+
         this.textareaElement     = React.createRef();
         this.markdownIt          = new MarkdownIt({
             breaks   : true,
@@ -91,6 +106,10 @@ class EditorComponent extends React.Component {
     }
 
     public componentDidUpdate(newProps: any, newState: any) {
+        if (newProps.STORE_NOTE$ARTICLE.id !== (this.props as any).STORE_NOTE$ARTICLE.id) {
+            store.dispatch({type: 'EDITOR$CLEAR'});
+            console.log(store.getState(), '----');
+        }
         if (!newProps.displayState && this.props.displayState) {
             const state   = this.state;
             state.content = (this.props as any).STORE_NOTE$ARTICLE_TEMP.markdown_content;
@@ -105,6 +124,53 @@ class EditorComponent extends React.Component {
         Service.RenderToRender.subject('attached@editorInsertImage', async (event: any, params: any): Promise<boolean | void> => {
             this.insertContent('image', params.data);
         });
+
+        storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_Z', () => {
+            this.contentUndoOrRedo('undo');
+        });
+
+        storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_SHIFT_Z', () => {
+            this.contentUndoOrRedo('redo');
+        });
+
+    }
+
+    public contentUndoOrRedo(type: string): void {
+
+        switch (type) {
+            case 'undo':
+                if ((store.getState().EDITOR$HISTORY as any).past.length > 0) {
+                    store.dispatch(reduxUndo.ActionCreators['undo']());
+                    store.dispatch({
+                        type    : 'NOTE$UPDATE_ARTICLE_TEMP',
+                        playload: {
+                            title           : (this.props as any).STORE_NOTE$ARTICLE_TEMP.title,
+                            markdown_content: (store.getState().EDITOR$HISTORY as any).present.content,
+                            html_content    : (this.markdownIt.render((store.getState().EDITOR$HISTORY as any).present.content) as string)
+                        }
+                    });
+                    const state   = this.state;
+                    state.content = (store.getState().EDITOR$HISTORY as any).present.content;
+                    this.setState(state);
+                }
+                break;
+            case 'redo':
+                if ((store.getState().EDITOR$HISTORY as any).future.length > 0) {
+                    store.dispatch(reduxUndo.ActionCreators['redo']());
+                    store.dispatch({
+                        type    : 'NOTE$UPDATE_ARTICLE_TEMP',
+                        playload: {
+                            title           : (this.props as any).STORE_NOTE$ARTICLE_TEMP.title,
+                            markdown_content: (store.getState().EDITOR$HISTORY as any).present.content,
+                            html_content    : (this.markdownIt.render((store.getState().EDITOR$HISTORY as any).present.content) as string)
+                        }
+                    });
+                    const state   = this.state;
+                    state.content = (store.getState().EDITOR$HISTORY as any).present.content;
+                    this.setState(state);
+                }
+                break;
+        }
 
     }
 
@@ -210,9 +276,20 @@ class EditorComponent extends React.Component {
                     html_content    : (this.markdownIt.render(content) as string)
                 }
             });
+
+            store.dispatch({
+                type    : 'EDITOR$ADD',
+                playload: {content}
+            });
+
             clearTimeout(this.handelEditorTimer);
         }, 200);
     }
+
+    public componentWillUnmount() {
+        console.log('////componentWillUnmount');
+    }
+
 
     public render() {
 
