@@ -1,15 +1,8 @@
 import {EditorReducer} from './editor.reducer';
-
-const reduxUndo = require('redux-undo').default;
+import {undoable}      from "../../middleware/undoable.middleware";
 
 export const editor = (modelName: string) => {
     return {
-        'EDITOR$HISTORY': reduxUndo(new EditorReducer(modelName).Action, {
-            limit : 200,
-            debug : true,
-            filter: (action: any, currentState: any, previousHistory: any) => {
-                return !(action.type === 'EDITOR$CLEAR');
-            }
-        })
+        'EDITOR$HISTORY': undoable(new EditorReducer(modelName).Action)
     };
 };

@@ -30,9 +30,7 @@ const storeSubscribe = storeEvent.subscribe;
 // 中间件
 const storeActionEventMiddleware: Middleware = () => (
     next: Dispatch
-) => <A extends Action>(action: A) => {
-
-    console.log(action);
+) => (action: Action) => {
 
     // 触发事件
     storeEvent.triggerEvent(action);

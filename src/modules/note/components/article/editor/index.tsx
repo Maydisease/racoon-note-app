@@ -7,6 +7,8 @@ import {Service}                           from "../../../../../lib/master.elect
 import {ArticleService}                    from "../../../services/article.service";
 import {FontAwesomeIcon}                   from "@fortawesome/react-fontawesome";
 import {$AttachedService, AttachedService} from '../../../services/window_manage/attached.server';
+import {VMessageService}                   from "../../../../component/message";
+import {storeSubscribe}                    from "../../../../../store/middleware/storeActionEvent.middleware";
 import 'prismjs';
 import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-javascript';
@@ -25,10 +27,7 @@ import 'prismjs/components/prism-bash';
 import 'prismjs/components/prism-sass';
 import 'prismjs/components/prism-scss';
 import 'prismjs/components/prism-textile';
-import {VMessageService} from "../../../../component/message";
-import {storeSubscribe}  from "../../../../../store/middleware/storeActionEvent.middleware";
-// import {ActionCreators}  from 'redux-undo';
-const reduxUndo = require('redux-undo');
+
 
 const markdownItMermaid = require('markdown-it-mermaid').default;
 const markdownItImsize  = require('markdown-it-imsize');
@@ -49,6 +48,7 @@ class EditorComponent extends React.Component {
     public state: any = {
         content: ''
     };
+
     public editor: any;
     public markdownIt: MarkdownIt;
     public editorTools: EditorToolsService;
@@ -73,8 +73,8 @@ class EditorComponent extends React.Component {
             index: 0
         };
 
-        this.textareaElement     = React.createRef();
-        this.markdownIt          = new MarkdownIt({
+        this.textareaElement = React.createRef();
+        this.markdownIt      = new MarkdownIt({
             breaks   : true,
             highlight: (str: string, lang: string) => {
 
@@ -107,13 +107,18 @@ class EditorComponent extends React.Component {
 
     public componentDidUpdate(newProps: any, newState: any) {
         if (newProps.STORE_NOTE$ARTICLE.id !== (this.props as any).STORE_NOTE$ARTICLE.id) {
-            store.dispatch({type: 'EDITOR$CLEAR'});
-            console.log(store.getState(), '----');
+            store.dispatch({
+                type: 'CLEAR'
+            });
         }
         if (!newProps.displayState && this.props.displayState) {
             const state   = this.state;
             state.content = (this.props as any).STORE_NOTE$ARTICLE_TEMP.markdown_content;
             this.setState(state);
+            store.dispatch({
+                type    : 'EDITOR$ADD',
+                playload: {content: (this.props as any).STORE_NOTE$ARTICLE_TEMP.markdown_content}
+            });
         }
     }
 
@@ -125,49 +130,45 @@ class EditorComponent extends React.Component {
             this.insertContent('image', params.data);
         });
 
+        // 撤销
         storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_Z', () => {
-            this.contentUndoOrRedo('undo');
+            this.contentUndoOrRedo('UNDO');
         });
 
+        // 重做
         storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_SHIFT_Z', () => {
-            this.contentUndoOrRedo('redo');
+            this.contentUndoOrRedo('REDO');
         });
 
     }
 
     public contentUndoOrRedo(type: string): void {
 
+        const timeShuttle = () => {
+            store.dispatch({type});
+            const history = store.getState().EDITOR$HISTORY;
+            store.dispatch({
+                type    : 'NOTE$UPDATE_ARTICLE_TEMP',
+                playload: {
+                    title           : (this.props as any).STORE_NOTE$ARTICLE_TEMP.title,
+                    markdown_content: history.present.content,
+                    html_content    : (this.markdownIt.render(history.present.content) as string)
+                }
+            });
+            const state   = this.state;
+            state.content = history.present.content;
+            this.setState(state);
+        };
+
         switch (type) {
-            case 'undo':
-                if ((store.getState().EDITOR$HISTORY as any).past.length > 0) {
-                    store.dispatch(reduxUndo.ActionCreators['undo']());
-                    store.dispatch({
-                        type    : 'NOTE$UPDATE_ARTICLE_TEMP',
-                        playload: {
-                            title           : (this.props as any).STORE_NOTE$ARTICLE_TEMP.title,
-                            markdown_content: (store.getState().EDITOR$HISTORY as any).present.content,
-                            html_content    : (this.markdownIt.render((store.getState().EDITOR$HISTORY as any).present.content) as string)
-                        }
-                    });
-                    const state   = this.state;
-                    state.content = (store.getState().EDITOR$HISTORY as any).present.content;
-                    this.setState(state);
+            case 'UNDO':
+                if (store.getState().EDITOR$HISTORY.past.length > 1) {
+                    timeShuttle();
                 }
                 break;
-            case 'redo':
-                if ((store.getState().EDITOR$HISTORY as any).future.length > 0) {
-                    store.dispatch(reduxUndo.ActionCreators['redo']());
-                    store.dispatch({
-                        type    : 'NOTE$UPDATE_ARTICLE_TEMP',
-                        playload: {
-                            title           : (this.props as any).STORE_NOTE$ARTICLE_TEMP.title,
-                            markdown_content: (store.getState().EDITOR$HISTORY as any).present.content,
-                            html_content    : (this.markdownIt.render((store.getState().EDITOR$HISTORY as any).present.content) as string)
-                        }
-                    });
-                    const state   = this.state;
-                    state.content = (store.getState().EDITOR$HISTORY as any).present.content;
-                    this.setState(state);
+            case 'REDO':
+                if (store.getState().EDITOR$HISTORY.future.length > 0) {
+                    timeShuttle();
                 }
                 break;
         }
@@ -224,7 +225,6 @@ class EditorComponent extends React.Component {
         }
         if (state.content) {
             (this.textareaElement.current as HTMLTextAreaElement).dispatchEvent(new Event('textarea', {bubbles: true}));
-            // this.textareaElement.dispatchEvent(event);
             this.writeArticleToStore(this.state.content);
         }
         return true;
@@ -254,15 +254,15 @@ class EditorComponent extends React.Component {
     public handelEditor(event: React.ChangeEvent<HTMLTextAreaElement>) {
 
         const contentValue = event.target.value;
-
-        const state   = this.state;
-        state.content = contentValue;
+        const state        = this.state;
+        state.content      = contentValue;
         this.setState(state);
 
         this.writeArticleToStore(contentValue);
 
     }
 
+    // 写入内容到store
     public writeArticleToStore(content: string) {
         if (this.handelEditorTimer) {
             clearTimeout(this.handelEditorTimer);
@@ -285,11 +285,6 @@ class EditorComponent extends React.Component {
             clearTimeout(this.handelEditorTimer);
         }, 200);
     }
-
-    public componentWillUnmount() {
-        console.log('////componentWillUnmount');
-    }
-
 
     public render() {
 

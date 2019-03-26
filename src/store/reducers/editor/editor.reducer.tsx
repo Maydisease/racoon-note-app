@@ -32,19 +32,6 @@ export class EditorReducer {
         return {...this.state, ...this.body};
     }
 
-    public CLEAR() {
-        this.body = {
-            past   : [],
-            present: {content: ''},
-            future : []
-
-        }as any;
-
-        console.log('进来了');
-
-        return {};
-    }
-
     public Action(state: DefaultState = this.body, action: Action) {
         if (action.type && action.type.indexOf(this.modelName) === 0) {
             const typeName = action.type.substring(this.modelName.length, action.type.length);
