@@ -51,6 +51,10 @@ export class WindowMenusKeyboardReducer {
         return this.state;
     }
 
+    public CMD_OR_CTRL_F() {
+        return this.state;
+    }
+
     public ESCAPE() {
         return this.state;
     }

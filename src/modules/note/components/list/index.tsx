@@ -32,6 +32,7 @@ class ListComponent extends React.Component {
     public quickSearchContextMenu: any;
     public quickSearchTimer: number;
     public articleService: ArticleService;
+    public searchElement: React.RefObject<HTMLInputElement>;
 
     constructor(props: any) {
         super(props);
@@ -48,6 +49,7 @@ class ListComponent extends React.Component {
         this.quickSearchContextMenuInit   = this.quickSearchContextMenuInit.bind(this);
         this.listContextMenu              = new Service.Menu();
         this.quickSearchContextMenu       = new Service.Menu();
+        this.searchElement                = React.createRef();
         this.listContextMenuInit();
         this.quickSearchContextMenuInit();
     }
@@ -227,6 +229,17 @@ class ListComponent extends React.Component {
             await this.UpdateArticleListDom(this.state.currentCid);
         });
 
+        storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_F', async (action: any) => {
+            const element = (this.searchElement.current as HTMLInputElement);
+            if (element === document.activeElement) {
+                element.blur();
+                this.handleInputActive(false);
+            } else {
+                element.focus();
+                this.handleInputActive(true);
+            }
+        });
+
         // 订阅搜索页面发送过来的选择搜索结果双击事件
         Service.RenderToRender.subject('search@superSearchSelectedList', async (event: any, params: any): Promise<boolean | void> => {
             const cid = params.data.cid;
@@ -355,6 +368,7 @@ class ListComponent extends React.Component {
                         <div className={`formBox ${this.state.inputFocusState && 'focus'}`}>
                             <FontAwesomeIcon className="searchIcon fa-icon" icon="search"/>
                             <input
+                                ref={this.searchElement}
                                 name="searchKeys"
                                 type="text"
                                 value={this.state.from.searchKeys.value}
