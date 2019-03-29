@@ -106,7 +106,7 @@ class BrowseComponent extends React.Component {
                                 title    : 'GoToLink',
                                 type     : 'question',
                                 message  : 'Open this link',
-                                detail   : `Do you open ${aLink} in your browser?`,
+                                detail   : `Do you open '${aLink}' in your browser?`,
                                 defaultId: 0,
                                 cancelId : 1,
                                 buttons  : ['Yes', 'Cancel']
