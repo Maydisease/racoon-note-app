@@ -3,6 +3,7 @@ import {connect}          from "react-redux";
 import * as Mark          from 'mark.js';
 import './prism-okaidia.scss';
 import './dark-mermaid.scss';
+import {Service}          from '../../../../../lib/master.electron.lib';
 import {VLightBoxService} from "../../../../component/light_box";
 import {storeSubscribe}   from "../../../../../store/middleware/storeActionEvent.middleware";
 
@@ -33,11 +34,11 @@ class BrowseComponent extends React.Component {
 
     constructor(props: any) {
         super(props);
-        this.props                      = props;
-        this.$element                   = React.createRef();
-        this.intersectionObserver       = new IntersectionObserver(this.mermaidObserve);
-        this.unTagMark                  = this.unTagMark.bind(this);
-        this.setTagMark                 = this.setTagMark.bind(this);
+        this.props                = props;
+        this.$element             = React.createRef();
+        this.intersectionObserver = new IntersectionObserver(this.mermaidObserve);
+        this.unTagMark            = this.unTagMark.bind(this);
+        this.setTagMark           = this.setTagMark.bind(this);
     }
 
     public componentDidMount() {
@@ -98,8 +99,25 @@ class BrowseComponent extends React.Component {
             const browseElement: HTMLElement | null = document.querySelector('#app .wrap.browse-mod');
             if (browseElement) {
                 const aTags: NodeListOf<Element> = browseElement.querySelectorAll('a');
-                aTags.forEach((element: HTMLElement) => {
-                    element.onclick = (e) => {
+                aTags.forEach((element: HTMLLinkElement) => {
+                    const aLink     = element.href;
+                    element.onclick = (event: MouseEvent) => {
+                        Service.Dialog.showMessageBox({
+                                title    : 'GoToLink',
+                                type     : 'question',
+                                message  : 'Open this link',
+                                detail   : `Do you open ${aLink} in your browser?`,
+                                defaultId: 0,
+                                cancelId : 1,
+                                buttons  : ['Yes', 'Cancel']
+                            },
+                            // btn 按钮被点击，删除被选中的Note
+                            async (btnIndex: number) => {
+                                if (btnIndex === 0) {
+                                    Service.Shell.openExternal(aLink);
+                                }
+                            }
+                        );
                         return false;
                     }
                 });

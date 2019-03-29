@@ -5,8 +5,8 @@ import {reducers}                                               from './reducers
 const store = createStore(
     combineReducers(reducers),
     compose(
-        applyMiddleware(storeActionEventMiddleware),
-        (window as any).devToolsExtension ? (window as any).devToolsExtension() : (f: any) => f
+        applyMiddleware(storeActionEventMiddleware)
+        // (window as any).devToolsExtension ? (window as any).devToolsExtension() : (f: any) => f
     )
 );
 

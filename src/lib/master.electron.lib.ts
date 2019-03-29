@@ -3,6 +3,7 @@ declare const masterModules: any;
 const Service = {
 
     Remote          : masterModules.electron.remote,
+    Shell           : masterModules.electron.shell,
     IPCRenderer     : masterModules.electron.ipcRenderer,
     CreatedWindow   : masterModules.electron.remote.getGlobal('service').CreatedWindow,
     WindowManages   : masterModules.electron.remote.getGlobal('service').WindowManages,
