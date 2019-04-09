@@ -59,17 +59,19 @@ class ListComponent extends React.Component {
 
         this.listContextMenu.append(new Service.MenuItem({
             enabled    : true,
-            accelerator: 'D',
-            label      : 'Delete Note', click() {
-                $this.removeNote()
+            accelerator: 'L',
+            label      : 'Lock note', click() {
+                $this.lockNote()
             }
         }));
 
+        this.listContextMenu.append(new Service.MenuItem({type: 'separator'}));
+
         this.listContextMenu.append(new Service.MenuItem({
             enabled    : true,
-            accelerator: 'L',
-            label      : 'Lock Note', click() {
-                $this.lockNote()
+            accelerator: 'D',
+            label      : 'Delete note', click() {
+                $this.removeNote()
             }
         }));
 
@@ -396,10 +398,10 @@ class ListComponent extends React.Component {
 
             switch (item.lock) {
                 case 0:
-                    items[1].enabled = true;
+                    items[0].enabled = true;
                     break;
                 case 1:
-                    items[1].enabled = false;
+                    items[0].enabled = false;
                     break;
             }
 
