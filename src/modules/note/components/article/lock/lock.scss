@@ -1,0 +1,81 @@
+.wrap {
+    width: 100%;
+    height: 24px;
+    padding: 3px 24px 3px 5px;
+    display: inline-block;
+    border-radius: 3px;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+    transition: border .2s;
+    vertical-align: text-top;
+    background: RGBA(41, 43, 45, 1);
+    border: 1px solid RGBA(56, 59, 61, 1);
+    &.focus {
+        border: 1px solid RGBA(39, 106, 179, 1);
+    }
+    .formBox {
+        width: 100%;
+        height: 100%;
+        padding: 0 16px;
+        position: relative;
+        box-sizing: border-box;
+        transition: transform .2s;
+        transform: translateX(12%);
+        &.focus {
+            transform: translateX(0);
+        }
+        .searchIcon, .clearIcon {
+            top: 0;
+            width: 16px;
+            height: 16px;
+            position: absolute;
+            color: RGBA(255, 255, 255, .3);
+        }
+        .searchIcon {
+            left: 0;
+        }
+        .clearIcon {
+            font-size: 14px;
+            border-radius: 50%;
+            right: 0;
+            &:hover {
+                color: RGBA(39, 106, 179, 1);
+            }
+        }
+        input {
+            width: 100%;
+            height: 16px;
+            line-height: 16px;
+            padding: 0 5px;
+            display: inline-block;
+            box-sizing: border-box;
+            vertical-align: text-top;
+            color: RGBA(255, 255, 255, .8);
+        }
+    }
+    .searchTypeIcon {
+        width: 22px;
+        height: 22px;
+        line-height: 22px;
+        display: inline-block;
+        text-align: center;
+        cursor: pointer;
+        font-size: 16px;
+        box-sizing: border-box;
+        transition: color .2s;
+        position: absolute;
+        right: 0;
+        top: 0;
+        border-left: 1px solid RGBA(255, 255, 255, .1);
+        color: RGBA(255, 255, 255, .3);
+        vertical-align: text-top;
+        &:hover {
+            color: RGBA(39, 106, 179, 1);
+        }
+        &.disable {
+            color: RGBA(255, 255, 255, .1);
+            pointer-events: none;
+        }
+    }
+}

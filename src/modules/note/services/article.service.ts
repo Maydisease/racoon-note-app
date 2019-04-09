@@ -57,6 +57,7 @@ export class ArticleService {
                 playload: {
                     id              : ARTICLE.id,
                     cid             : ARTICLE.cid,
+                    lock            : ARTICLE.lock,
                     title           : ARTICLE_TEMP.title,
                     markdown_content: ARTICLE_TEMP.markdown_content,
                     html_content    : ARTICLE_TEMP.html_content

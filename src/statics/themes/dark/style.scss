@@ -351,6 +351,13 @@ body[theme='dark'] {
                                         height: 100%;
                                         overflow: hidden;
                                         -webkit-user-select: text;
+                                        p {
+                                            width: 100%;
+                                            height: 14px;
+                                            margin-bottom: 4px;
+                                            border-radius: 1px;
+                                            background: RGBA(255, 255, 255, .05);
+                                        }
                                     }
                                 }
                             }
@@ -501,6 +508,119 @@ body[theme='dark'] {
                             display: block;
                             box-sizing: border-box;
                             overflow: hidden;
+    
+                            &.lock-mod {
+                                width: 100%;
+                                height: 100%;
+                                box-sizing: border-box;
+                                position: relative;
+                                .plane {
+                                    position: absolute;
+                                    left: 50%;
+                                    top: 35%;
+                                    transform: translate(-50%, -50%);
+                                    text-align: center;
+                                    .icon {
+                                        font-size: 80px;
+                                        color: RGBA(255, 255, 255, .1);
+                                        text-shadow: 1px 1px 50px RGBA(0, 0, 0, 1);
+                                    }
+                                    .text {
+                                        margin-top: 20px;
+                                        font-size: 12px;
+                                        font-family: Arial, sans-serif;
+                                        color: RGBA(255, 255, 255, .5);
+                                        text-shadow: 1px 1px 50px RGBA(0, 0, 0, 1);
+                                    }
+                                    .form {
+                                        width: 180px;
+                                        .wrap {
+                                            width: 100%;
+                                            height: 24px;
+                                            padding: 3px 24px 3px 5px;
+                                            display: inline-block;
+                                            border-radius: 3px;
+                                            box-sizing: border-box;
+                                            overflow: hidden;
+                                            position: relative;
+                                            transition: border .2s;
+                                            vertical-align: text-top;
+                                            background: RGBA(41, 43, 45, 1);
+                                            border: 1px solid RGBA(56, 59, 61, 1);
+                                            &.focus {
+                                                border: 1px solid RGBA(39, 106, 179, 1);
+                                            }
+                                            .formBox {
+                                                width: 100%;
+                                                height: 100%;
+                                                padding: 0 16px;
+                                                position: relative;
+                                                box-sizing: border-box;
+                                                transition: transform .2s;
+                                                transform: translateX(12%);
+                                                &.focus {
+                                                    transform: translateX(0);
+                                                }
+                                                .lockIcon, .clearIcon {
+                                                    top: 0;
+                                                    width: 16px;
+                                                    height: 16px;
+                                                    position: absolute;
+                                                    color: RGBA(255, 255, 255, .3);
+                                                }
+                                                .lockIcon {
+                                                    left: 0;
+                                                }
+                                                .clearIcon {
+                                                    font-size: 14px;
+                                                    border-radius: 50%;
+                                                    right: 0;
+                                                    &:hover {
+                                                        color: RGBA(39, 106, 179, 1);
+                                                    }
+                                                }
+                                                input {
+                                                    width: 100%;
+                                                    height: 16px;
+                                                    line-height: 16px;
+                                                    padding: 0 5px;
+                                                    display: inline-block;
+                                                    box-sizing: border-box;
+                                                    vertical-align: text-top;
+                                                    color: RGBA(255, 255, 255, .8);
+                                                }
+                                            }
+                                            .buttonIcon {
+                                                width: 22px;
+                                                height: 22px;
+                                                line-height: 22px;
+                                                display: inline-block;
+                                                text-align: center;
+                                                cursor: pointer;
+                                                font-size: 16px;
+                                                box-sizing: border-box;
+                                                transition: color .2s;
+                                                position: absolute;
+                                                right: 0;
+                                                top: 0;
+                                                border-left: 1px solid RGBA(255, 255, 255, .1);
+                                                color: RGBA(255, 255, 255, .3);
+                                                vertical-align: text-top;
+                                                &:hover {
+                                                    color: RGBA(39, 106, 179, 1);
+                                                }
+                                                &.disable {
+                                                    color: RGBA(255, 255, 255, .1);
+                                                    pointer-events: none;
+                                                }
+                                            }
+                                        }
+                                        margin-top: 10px;
+                                    }
+            
+                                }
+                            }
+                            
                             &.browse-mod {
                                 height: calc(100% - 10px);
                                 flex-shrink: 0;

@@ -1,6 +1,7 @@
 import * as React        from 'react';
 import EditorComponent   from './editor';
 import BrowseComponent   from "./browse";
+import LockComponent     from "./lock";
 import {connect}         from 'react-redux';
 import {store}           from "../../../../store";
 import {storeSubscribe}  from "../../../../store/middleware/storeActionEvent.middleware";
@@ -73,29 +74,6 @@ class ArticleComponent extends React.Component {
 
     public componentDidMount() {
 
-        // store.dispatch({
-        //     type    : 'EDITOR$ADD',
-        //     playload: {
-        //         content: '5555'
-        //     }
-        // });
-        //
-        // setTimeout(() => {
-        //     store.dispatch(reduxUndo.ActionCreators.undo());
-        // }, 1000);
-        //
-        // setTimeout(() => {
-        //     console.log(788, store.getState().EDITOR$HISTORY);
-        // }, 2000);
-        //
-        // setTimeout(() => {
-        //     store.dispatch(reduxUndo.ActionCreators.redo());
-        // }, 3000);
-        //
-        // setTimeout(() => {
-        //     console.log(789, store.getState().EDITOR$HISTORY);
-        // }, 4000);
-
         // 订阅选中文章事件
         storeSubscribe('NOTE$SELECTED_ARTICLE', () => {
             const ARTICLE_TEMP     = (this.props as any).STORE_NOTE$ARTICLE_TEMP;
@@ -145,7 +123,6 @@ class ArticleComponent extends React.Component {
             store.dispatch({type: 'NOTE$UN_SEARCH_TAG'});
         });
 
-
     }
 
     // 切换article区域全屏化状态[显示category，list/不显示]
@@ -188,36 +165,47 @@ class ArticleComponent extends React.Component {
                                 <span>{ARTICLE_TEMP.title}</span>
                         }
                     </div>
-                    {this.state.editState && FRAME.layout === 0 &&
-                    <div className={`menu ${this.state.editAndBrowse ? 'current' : ''}`}>
-                        <i className='icon' onClick={this.handleEditAndBrowse}>
-                            <FontAwesomeIcon className={`${this.state.editAndBrowse ? 'light' : ''}`} icon="columns"/>
-                        </i>
-                    </div>
+                    {ARTICLE.lock === 0 &&
+					<React.Fragment>
+                        {this.state.editState && FRAME.layout === 0 &&
+						<div className={`menu ${this.state.editAndBrowse ? 'current' : ''}`}>
+							<i className='icon' onClick={this.handleEditAndBrowse}>
+								<FontAwesomeIcon className={`${this.state.editAndBrowse ? 'light' : ''}`} icon="columns"/>
+							</i>
+						</div>
+                        }
+						<div className={`menu frameToggle ${FRAME.layout === 0 ? 'current' : ''}`}>
+							<i className='icon' onClick={this.handleFrameToggle.bind(this, false)}>
+								<FontAwesomeIcon className={`${!this.state.editState ? 'light' : ''}`} icon="expand-arrows-alt"/>
+							</i>
+						</div>
+						<div className={`menus icon-browse ${this.state.editState ? 'edit' : 'browse'}`} onClick={this.switchEditState}>
+                            {/*<i className={`icon iconfont icon-browse ${!this.state.editState ? 'light' : ''} `}/>*/}
+							<FontAwesomeIcon className={`icon ${!this.state.editState ? 'light' : ''}`} icon="eye"/>
+							<FontAwesomeIcon className={`icon ${this.state.editState ? 'light' : ''}`} icon="edit"/>
+						</div>
+					</React.Fragment>
                     }
-                    <div className={`menu frameToggle ${FRAME.layout === 0 ? 'current' : ''}`}>
-						<i className='icon' onClick={this.handleFrameToggle.bind(this, false)}>
-                            <FontAwesomeIcon className={`${!this.state.editState ? 'light' : ''}`} icon="expand-arrows-alt"/>
-                        </i>
-                    </div>
-                    <div className={`menus icon-browse ${this.state.editState ? 'edit' : 'browse'}`} onClick={this.switchEditState}>
-                        {/*<i className={`icon iconfont icon-browse ${!this.state.editState ? 'light' : ''} `}/>*/}
-                        <FontAwesomeIcon className={`icon ${!this.state.editState ? 'light' : ''}`} icon="eye"/>
-                        <FontAwesomeIcon className={`icon ${this.state.editState ? 'light' : ''}`} icon="edit"/>
-                    </div>
                 </div>
                 }
                 {ARTICLE.id &&
                 <div className="content">
-                    {
-                        this.state.editAndBrowse && this.state.editState && FRAME.layout === 0 &&
-                        <React.Fragment>
-                            <BrowseComponent/>
-							<div className="columns-line"/>
-                        </React.Fragment>
+                    {ARTICLE.lock === 0 &&
+					<React.Fragment>
+                        {
+                            this.state.editAndBrowse && this.state.editState && FRAME.layout === 0 &&
+							<React.Fragment>
+								<BrowseComponent/>
+								<div className="columns-line"/>
+							</React.Fragment>
+                        }
+						<EditorComponent displayState={this.state.editState}/>
+						<BrowseComponent displayState={this.state.editState}/>
+					</React.Fragment>
                     }
-					<EditorComponent displayState={this.state.editState}/>
-					<BrowseComponent displayState={this.state.editState}/>
+                    {ARTICLE.lock === 1 &&
+					<LockComponent/>
+                    }
                 </div>
                 }
             </div>

@@ -1,7 +1,8 @@
 interface DefaultState {
     id?: number | null
     cid?: number | null
-    title?: string
+    title?: string,
+    lock?: number,
     markdown_content?: string
     html_content?: string
     moveArticleId?: number
@@ -32,12 +33,13 @@ export class ArticleReducer {
 
     // 更新日志STORE
     public UPDATE_ARTICLE() {
-        const {id, cid, title, markdown_content, html_content} = this.playload;
-        this.body.id                                           = id;
-        this.body.cid                                          = cid;
-        this.body.title                                        = title;
-        this.body.markdown_content                             = markdown_content;
-        this.body.html_content                                 = html_content;
+        const {id, cid, title, lock, markdown_content, html_content} = this.playload;
+        this.body.id                                                 = id;
+        this.body.cid                                                = cid;
+        this.body.title                                              = title;
+        this.body.lock                                               = lock;
+        this.body.markdown_content                                   = markdown_content;
+        this.body.html_content                                       = html_content;
 
         return {...this.state, ...this.body};
     }
@@ -65,6 +67,11 @@ export class ArticleReducer {
         this.body.moveArticleId                  = moveArticleId;
         this.body.receiveCategoryId              = receiveCategoryId;
         return {...this.state, ...this.body};
+    }
+
+    // 解锁日志STORE[事件传播]
+    public UNLOCK_ARTICLE(): DefaultState {
+        return {...this.state};
     }
 
     public QUICK_SEARCH(): DefaultState {

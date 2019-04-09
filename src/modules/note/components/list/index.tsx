@@ -8,8 +8,6 @@ import {connect}         from "react-redux";
 import {friendlyDate}    from '../../../../utils/friendlyDate.utils';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
-// "../../../../utils/friendlyDate.utils"
-
 class ListComponent extends React.Component {
 
     public state: any = {
@@ -56,7 +54,9 @@ class ListComponent extends React.Component {
 
     // listContextMenu初始化
     public listContextMenuInit() {
+
         const $this: this = this;
+
         this.listContextMenu.append(new Service.MenuItem({
             enabled    : true,
             accelerator: 'D',
@@ -64,6 +64,15 @@ class ListComponent extends React.Component {
                 $this.removeNote()
             }
         }));
+
+        this.listContextMenu.append(new Service.MenuItem({
+            enabled    : true,
+            accelerator: 'L',
+            label      : 'Lock Note', click() {
+                $this.lockNote()
+            }
+        }));
+
     }
 
     // 更改快速搜索的类型
@@ -137,6 +146,52 @@ class ListComponent extends React.Component {
                 }
             }
         );
+    }
+
+    // 锁定文章
+    public async lockNote() {
+        const articleId = this.state.articleObj.id;
+        const request   = await new Service.ServerProxy('note', 'setArticleLockState', {id: articleId, lock: 1}).send();
+        if (request.result === 0) {
+            const state                 = this.state;
+            const key                   = state.articleList.findIndex((sourceItem: any) => articleId === sourceItem.id);
+            state.articleList[key].lock = 1;
+            this.setState(state);
+            this.handleItemClick(this.state.articleList[key], true);
+        }
+    }
+
+    // 解锁文章
+    public unLockNote() {
+        const articleId = this.state.articleObj.id;
+        // 如果list是被选中的文章
+        if (this.state.articleObj.cid === this.state.currentCid) {
+
+            const state                 = this.state;
+            const key                   = state.articleList.findIndex((sourceItem: any) => articleId === sourceItem.id);
+            state.articleList[key].lock = 0;
+            this.setState(state);
+            this.handleItemClick(this.state.articleObj, true);
+
+        }
+        // 如果list中不存在被选中的文章
+        else {
+
+            // 更新store中NOTE内的文章字段组
+            store.dispatch({
+                type    : 'NOTE$UPDATE_ARTICLE',
+                playload: {
+                    id   : this.state.articleObj.id,
+                    cid  : this.state.articleObj.cid,
+                    title: this.state.articleObj.title,
+                    lock : 0
+                }
+            });
+
+            // 发送列表文章选中事件
+            store.dispatch({type: 'NOTE$SELECTED_ARTICLE'});
+        }
+
     }
 
     // 清空搜索关键词
@@ -229,6 +284,12 @@ class ListComponent extends React.Component {
             await this.UpdateArticleListDom(this.state.currentCid);
         });
 
+        // 监听articleComponent传递过来的解锁日志事件
+        storeSubscribe('NOTE$UNLOCK_ARTICLE', (action: any) => {
+            this.unLockNote();
+        });
+
+
         storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_F', async (action: any) => {
             const element = (this.searchElement.current as HTMLInputElement);
             if (element === document.activeElement) {
@@ -274,12 +335,12 @@ class ListComponent extends React.Component {
     }
 
     // 文章列表被点击
-    public handleItemClick(item: any): boolean | void {
+    public handleItemClick(item: any, forceUpdate?: boolean): boolean | void {
 
         const state = this.state;
         const key   = state.articleList.findIndex((sourceItem: any) => item === sourceItem);
 
-        if (this.state.articleObj && item.id === this.state.articleObj.id && state.articleList[key].selected) {
+        if (!forceUpdate && this.state.articleObj && item.id === this.state.articleObj.id && state.articleList[key].selected) {
             return false;
         }
 
@@ -297,6 +358,7 @@ class ListComponent extends React.Component {
                 id              : item.id,
                 cid             : item.cid,
                 title           : item.title,
+                lock            : item.lock,
                 markdown_content: item.markdown_content,
                 html_content    : item.html_content,
             }
@@ -320,6 +382,27 @@ class ListComponent extends React.Component {
     // 被响应的文章列表右键上下文菜单事件
     public handleItemContextMenu(item: any) {
         if (item.selected) {
+
+            const items = this.listContextMenu.items;
+
+            /**
+             *
+             * list context menu index
+             *
+             * items[0] -> Delete
+             * items[1] -> Lock
+             *
+             */
+
+            switch (item.lock) {
+                case 0:
+                    items[1].enabled = true;
+                    break;
+                case 1:
+                    items[1].enabled = false;
+                    break;
+            }
+
             this.listContextMenu.popup({window: Service.getWindow('master')});
         }
     }
@@ -347,7 +430,12 @@ class ListComponent extends React.Component {
                                 <div className="context">
                                     <h2>{item.title}</h2>
                                     <div className="description">
-                                        <dl>{item.description}</dl>
+                                        {item.lock === 0 &&
+										<dl>{item.description}</dl>
+                                        }
+                                        {item.lock === 1 &&
+										<dl><p/><p/><p/></dl>
+                                        }
                                     </div>
                                 </div>
                             </div>
