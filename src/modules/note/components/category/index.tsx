@@ -132,7 +132,7 @@ class CategoryContainer extends React.Component {
             const request = await new Service.ServerProxy('note', 'renameCategory', renameBody).send();
 
             // 当前父级分类下只允许一个同名子分类
-            if (request.messageCode === 1103) {
+            if (request.messageCode === 1010) {
                 const msg = 'There is a brother of the same name';
                 new VMessageService(msg, 'error', 5000).init();
                 this.closeRenamePanel();
@@ -330,15 +330,15 @@ class CategoryContainer extends React.Component {
                         const request = await new Service.ServerProxy('note', 'removeCategory', {id}).send();
 
                         // 当前父级分类下只允许一个同名子分类
-                        if (request.messageCode === 1106) {
+                        if (request.messageCode === 1013) {
                             const msg = 'Current category has subcategories!';
                             new VMessageService(msg, 'error', 3000).init();
                             this.closeRenamePanel();
                             return false;
                         }
 
-                        // 当前父级分类下只允许一个同名子分类
-                        if (request.messageCode === 1107) {
+                        // 当前分类下有文章
+                        if (request.messageCode === 1014) {
                             const msg = 'Current category has articles!';
                             new VMessageService(msg, 'error', 3000).init();
                             this.closeRenamePanel();

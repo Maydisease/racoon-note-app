@@ -108,21 +108,27 @@ class ForgetPasswordMain extends React.Component<Props, State> {
             const state = this.state;
             let message = '';
             switch (response.messageCode) {
-                case 1202:
+                case 1021:
                     state.from.verifycode.value = '';
                     message                     = 'Verify code error';
                     new VMessageService(message, 'validate', 5000).init();
                     break;
-                case 1003:
+                case 1004:
                     state.from.username.value   = '';
                     state.from.verifycode.value = '';
                     message                     = 'Email address does not exist';
                     new VMessageService(message, 'validate', 5000).init();
                     break;
-                case 1001:
+                case 1019:
                     state.from.password.value   = '';
                     state.from.repassword.value = '';
                     message                     = 'Password must be longer than 5 digits or less than 16 digits.';
+                    new VMessageService(message, 'validate', 5000).init();
+                    break;
+                case 1022:
+                    state.from.password.value   = '';
+                    state.from.repassword.value = '';
+                    message                     = 'Verification code failed to be sent, please resend';
                     new VMessageService(message, 'validate', 5000).init();
                     break;
 
@@ -316,8 +322,8 @@ class ForgetPasswordMain extends React.Component<Props, State> {
     // 校验重复密码是否一致
     public verifyUserRepassword() {
 
-        const password   = this.state.from.password.value;
-        const repassword = this.state.from.repassword.value;
+        const password: string   = this.state.from.password.value;
+        const repassword: string = this.state.from.repassword.value;
 
         const state = this.state;
 

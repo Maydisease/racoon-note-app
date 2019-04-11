@@ -8,7 +8,7 @@ import {VLoadingService} from "../../../../component/loading";
 
 class LockComponent extends React.Component {
 
-    public state = {
+    public state: any = {
         inputFocusState: false,
         from           : {
             lockPassword: {
@@ -69,7 +69,6 @@ class LockComponent extends React.Component {
         const ARTICLE  = (this.props as any).STORE_NOTE$ARTICLE;
         const password = this.state.from.lockPassword.value;
         const request  = await new Service.ServerProxy('note', 'setArticleLockState', {id: ARTICLE.id, lock: 0, password}).send();
-
         loading.destroy();
 
         if (request.result === 0) {
@@ -78,7 +77,7 @@ class LockComponent extends React.Component {
             });
         } else {
             switch (request.messageCode) {
-                case 1003:
+                case 1004:
                     const msg = 'Unlock failed, password error!';
                     new VMessageService(msg, 'error', 3000).init();
                     break;
