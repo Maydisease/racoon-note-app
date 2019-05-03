@@ -5,6 +5,7 @@ const Service = {
     Remote          : masterModules.electron.remote,
     Shell           : masterModules.electron.shell,
     IPCRenderer     : masterModules.electron.ipcRenderer,
+    Clipboard       : masterModules.electron.clipboard,
     CreatedWindow   : masterModules.electron.remote.getGlobal('service').CreatedWindow,
     WindowManages   : masterModules.electron.remote.getGlobal('service').WindowManages,
     DestroyTargetWin: masterModules.electron.remote.getGlobal('service').DestroyTargetWin,

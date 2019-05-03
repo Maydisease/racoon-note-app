@@ -23,7 +23,7 @@ class BrowseComponent extends React.Component {
     public intersectionObserver: IntersectionObserver;
 
     public props: DefaultProps = {
-        onRef: '55'
+        onRef: ''
     };
 
     public state = {
@@ -31,6 +31,8 @@ class BrowseComponent extends React.Component {
     };
 
     public $element: any;
+    public selectedText: string;
+    public browseContextMenu: any;
 
     constructor(props: any) {
         super(props);
@@ -39,6 +41,22 @@ class BrowseComponent extends React.Component {
         this.intersectionObserver = new IntersectionObserver(this.mermaidObserve);
         this.unTagMark            = this.unTagMark.bind(this);
         this.setTagMark           = this.setTagMark.bind(this);
+        this.browseContextMenu    = new Service.Menu();
+        this.selectedText         = '';
+        this.browseContextMenuInit();
+    }
+
+    public browseContextMenuInit() {
+
+        const $this: this = this;
+        this.browseContextMenu.append(new Service.MenuItem({
+            enabled    : true,
+            accelerator: 'C',
+            label      : 'Copy', click() {
+                Service.Clipboard.writeText($this.selectedText);
+            }
+        }));
+
     }
 
     public componentDidMount() {
@@ -53,6 +71,15 @@ class BrowseComponent extends React.Component {
         storeSubscribe('NOTE$UN_SEARCH_TAG', () => {
             this.unTagMark();
         });
+
+        this.$element.current.oncontextmenu = () => {
+            const selected: any = window.getSelection();
+            if (selected.focusNode.data && selected.focusNode.data.length > 0) {
+                this.selectedText = selected.focusNode.data;
+                this.browseContextMenu.popup({window: Service.getWindow('master')});
+            }
+        }
+
     }
 
     public componentDidUpdate(prevProps: any, prevState: any) {
@@ -94,6 +121,7 @@ class BrowseComponent extends React.Component {
         }, 200);
     }
 
+    // 重写超链接，由系统默认浏览器打开
     public rewriteATagLink() {
         setTimeout(() => {
             const browseElement: HTMLElement | null = document.querySelector('#app .wrap.browse-mod');
@@ -125,6 +153,7 @@ class BrowseComponent extends React.Component {
         }, 200);
     }
 
+    // 循环绑定图片灯箱事件
     public bindImageLightBoxEvent() {
         setTimeout(() => {
             if (this.$element.current) {
@@ -138,6 +167,7 @@ class BrowseComponent extends React.Component {
         }, 200);
     }
 
+    // 移除搜索关键字高亮
     public unTagMark() {
         try {
             const instance = new Mark(this.$element.current);
@@ -152,6 +182,7 @@ class BrowseComponent extends React.Component {
         }
     }
 
+    // 设置标签高亮展示
     public setTagMark(searchKey: string) {
         const ARTICLE = (this.props as any).STORE_NOTE$ARTICLE;
 

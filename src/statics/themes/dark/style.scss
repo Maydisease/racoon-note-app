@@ -3,12 +3,14 @@ body[theme='dark'] {
     padding: 1px;
     box-sizing: border-box;
     position: relative;
+    
     #root {
         width: 100%;
         height: 100%;
         background: RGBA(86, 87, 88, 1);
         padding: 1px;
         box-sizing: border-box;
+        
         #app {
             width: 100%;
             height: 100%;
@@ -18,11 +20,13 @@ body[theme='dark'] {
             text-align: center;
             box-sizing: border-box;
             background: RGBA(30, 32, 34, 1);
+            
             #noteMain {
                 width: 100%;
                 height: 100%;
                 display: flex;
                 text-align: left;
+                
                 .categoryContainer {
                     flex-shrink: 0;
                     width: 220px;
@@ -31,9 +35,11 @@ body[theme='dark'] {
                     padding: 1px 0 1px 1px;
                     border-right: 1px solid RGBA(0, 0, 0, 1);
                     box-sizing: border-box;
+                    
                     &.show {
                         display: block;
                     }
+                    
                     .wrap {
                         width: 100%;
                         height: 100%;
@@ -42,6 +48,7 @@ body[theme='dark'] {
                         flex-direction: column;
                         flex-wrap: wrap;
                         background: RGBA(44, 45, 47, 1);
+                        
                         .action-bar {
                             width: 100%;
                             height: 30px;
@@ -52,18 +59,22 @@ body[theme='dark'] {
                             overflow: hidden;
                             background: RGBA(30, 32, 34, .3);
                             border-top: 1px solid RGBA(0, 0, 0, .1);
+                            
                             .line {
                                 width: 1px;
                                 height: 16px;
                                 margin-top: 6px;
                                 border-right: 1px solid RGBA(255, 255, 255, .07);
+                                
                                 &.left {
                                     float: left;
                                 }
+                                
                                 &.right {
                                     float: right;
                                 }
                             }
+                            
                             .fa-icon {
                                 width: 30px;
                                 height: 30px;
@@ -72,16 +83,20 @@ body[theme='dark'] {
                                 text-align: center;
                                 transition: color .2s;
                                 color: RGBA(255, 255, 255, .3);
+                                
                                 &:hover {
                                     color: RGBA(255, 255, 255, .7);
                                 }
+                                
                                 &.left {
                                     float: left;
                                 }
+                                
                                 &.right {
                                     float: right;
                                 }
                             }
+                            
                             .logo-text {
                                 width: 100%;
                                 height: 30px;
@@ -95,12 +110,14 @@ body[theme='dark'] {
                                 //background: RGBA(0, 0, 0, .8);
                             }
                         }
+                        
                         .category-list {
                             width: 100%;
                             flex: 1;
                             height: 0;
                             overflow-x: hidden;
                             overflow-y: auto;
+                            
                             .item {
                                 width: 100%;
                                 display: block;
@@ -108,63 +125,79 @@ body[theme='dark'] {
                                 padding: 0;
                                 font-size: 0;
                                 font-family: Arial, sans-serif;
+                                
                                 label {
                                     width: 100%;
                                     display: inline-block;
                                     box-sizing: border-box;
+                                    
                                     &[current = 'true'] {
                                         background: RGBA(39, 106, 179, 1);
+                                        
                                         .text {
                                             color: RGBA(255, 255, 255, 1);
                                         }
+                                        
                                         .icon {
                                             color: RGBA(255, 255, 255, 1);
                                         }
                                     }
                                 }
+                                
                                 & .item > label {
                                     padding-left: 20px;
                                 }
+                                
                                 & .item > .item > label {
                                     padding-left: 40px;
                                 }
+                                
                                 & .item > .item > .item > label {
                                     padding-left: 60px;
                                 }
+                                
                                 & .item > .item > .item > .item > label {
                                     padding-left: 80px;
                                 }
+                                
                                 span {
                                     height: 28px;
                                     line-height: 28px;
                                     display: inline-block;
                                     float: left;
                                 }
+                                
                                 span.icon {
                                     width: 25px;
                                     font-size: 14px;
                                     color: RGBA(255, 255, 255, .5);
+                                    
                                     &.icon-1 {
                                         text-align: center;
                                         transition: transform .2s;
+                                        
                                         &[close='true'] {
                                             transform: rotate(90deg);
                                         }
                                     }
+                                    
                                     &.icon-2 {
                                         text-align: left;
                                     }
                                 }
+                                
                                 &.default {
                                     span {
                                         font-weight: bold;
                                         color: RGBA(255, 255, 255, .8);
+                                        
                                         &.icon {
                                             text-align: center;
                                         }
                                     }
                                     
                                 }
+                                
                                 span.text {
                                     font-size: 14px;
                                     color: RGBA(255, 255, 255, .5);
@@ -173,6 +206,7 @@ body[theme='dark'] {
                         }
                     }
                 }
+                
                 .listContainer {
                     flex-shrink: 0;
                     width: 220px;
@@ -182,9 +216,11 @@ body[theme='dark'] {
                     box-sizing: border-box;
                     display: none;
                     flex-direction: column;
+                    
                     &.show {
                         display: flex;
                     }
+                    
                     .searchContainer {
                         width: 100%;
                         height: 48px;
@@ -192,6 +228,7 @@ body[theme='dark'] {
                         background: RGBA(30, 32, 34, 1);
                         box-sizing: border-box;
                         border-bottom: 1px solid RGBA(0, 0, 0, 1);
+                        
                         .wrap {
                             width: 100%;
                             height: 24px;
@@ -205,9 +242,11 @@ body[theme='dark'] {
                             vertical-align: text-top;
                             background: RGBA(41, 43, 45, 1);
                             border: 1px solid RGBA(56, 59, 61, 1);
+                            
                             &.focus {
                                 border: 1px solid RGBA(39, 106, 179, 1);
                             }
+                            
                             .formBox {
                                 width: 100%;
                                 height: 100%;
@@ -216,9 +255,11 @@ body[theme='dark'] {
                                 box-sizing: border-box;
                                 transition: transform .2s;
                                 transform: translateX(12%);
+                                
                                 &.focus {
                                     transform: translateX(0);
                                 }
+                                
                                 .searchIcon, .clearIcon {
                                     top: 0;
                                     width: 16px;
@@ -226,17 +267,21 @@ body[theme='dark'] {
                                     position: absolute;
                                     color: RGBA(255, 255, 255, .3);
                                 }
+                                
                                 .searchIcon {
                                     left: 0;
                                 }
+                                
                                 .clearIcon {
                                     font-size: 14px;
                                     border-radius: 50%;
                                     right: 0;
+                                    
                                     &:hover {
                                         color: RGBA(39, 106, 179, 1);
                                     }
                                 }
+                                
                                 input {
                                     width: 100%;
                                     height: 16px;
@@ -248,6 +293,7 @@ body[theme='dark'] {
                                     color: RGBA(255, 255, 255, .8);
                                 }
                             }
+                            
                             .searchTypeIcon {
                                 width: 22px;
                                 height: 22px;
@@ -264,9 +310,11 @@ body[theme='dark'] {
                                 border-left: 1px solid RGBA(255, 255, 255, .1);
                                 color: RGBA(255, 255, 255, .3);
                                 vertical-align: text-top;
+                                
                                 &:hover {
                                     color: RGBA(39, 106, 179, 1);
                                 }
+                                
                                 &.disable {
                                     color: RGBA(255, 255, 255, .1);
                                     pointer-events: none;
@@ -274,6 +322,7 @@ body[theme='dark'] {
                             }
                         }
                     }
+                    
                     .article-list {
                         flex: 1;
                         height: 0;
@@ -281,6 +330,7 @@ body[theme='dark'] {
                         overflow-y: auto;
                         scroll-behavior: smooth;
                         -webkit-overflow-scrolling: touch;
+                        
                         .not-data {
                             width: 100%;
                             height: 35px;
@@ -291,14 +341,17 @@ body[theme='dark'] {
                             box-sizing: border-box;
                             color: RGBA(255, 255, 255, .2);
                         }
+                        
                         .item {
                             width: 220px;
                             height: 96px;
                             padding-left: 50px;
                             box-sizing: border-box;
                             position: relative;
+                            
                             &.current {
                                 background: RGBA(25, 25, 28, 1);
+                                
                                 &:before {
                                     content: '';
                                     width: 5px;
@@ -309,6 +362,7 @@ body[theme='dark'] {
                                     background: RGBA(107, 202, 251, 1);
                                 }
                             }
+                            
                             .date {
                                 width: 50px;
                                 height: 96px;
@@ -321,9 +375,11 @@ body[theme='dark'] {
                                 left: 0;
                                 top: 0;
                             }
+                            
                             .context {
                                 width: 100%;
                                 height: 96px;
+                                
                                 h2 {
                                     width: calc(100% - 10px);
                                     height: 35px;
@@ -335,6 +391,7 @@ body[theme='dark'] {
                                     font-family: Arial, 'Microsoft YaHei', sans-serif;
                                     color: RGBA(255, 255, 255, .7);
                                 }
+                                
                                 .description {
                                     width: 100%;
                                     height: 61px;
@@ -347,10 +404,12 @@ body[theme='dark'] {
                                     font-family: Arial, 'Microsoft YaHei', sans-serif;
                                     color: RGBA(255, 255, 255, .5);
                                     border-bottom: 1px solid RGBA(0, 0, 0, 1);
+                                    
                                     dl {
                                         height: 100%;
                                         overflow: hidden;
                                         -webkit-user-select: text;
+                                        
                                         p {
                                             width: 100%;
                                             height: 14px;
@@ -364,18 +423,21 @@ body[theme='dark'] {
                         }
                     }
                 }
+                
                 .articleContainer {
                     flex: 1;
                     display: flex;
                     flex-wrap: wrap;
                     width: 0;
                     flex-direction: column;
+                    
                     .content-bar {
                         width: 100%;
                         display: flex;
                         padding: 0 20px;
                         box-sizing: border-box;
                         background: RGBA(0, 0, 0, .1);
+                        
                         .title {
                             flex: 1;
                             height: 48px;
@@ -384,10 +446,12 @@ body[theme='dark'] {
                             font-size: 18px;
                             font-family: Arial, 'Microsoft YaHei', sans-serif;
                             color: RGBA(255, 255, 255, .8);
+                            
                             span {
                                 -webkit-user-select: text;
                             }
                         }
+                        
                         input {
                             width: 350px;
                             height: 48px;
@@ -404,6 +468,7 @@ body[theme='dark'] {
                             position: relative;
                             margin-right: 1px;
                             box-sizing: border-box;
+                            
                             .icon {
                                 width: 50px;
                                 height: 30px;
@@ -417,10 +482,12 @@ body[theme='dark'] {
                                 position: relative;
                                 z-index: 100;
                             }
+                            
                             &.current .icon {
                                 color: RGBA(255, 255, 255, .8);
                                 background: RGBA(255, 255, 255, .1);
                             }
+                            
                             &.frameToggle .icon:before {
                                 transform: rotate(-10deg);
                             }
@@ -432,6 +499,7 @@ body[theme='dark'] {
                             cursor: pointer;
                             position: relative;
                             box-sizing: border-box;
+                            
                             .icon {
                                 width: 50px;
                                 height: 30px;
@@ -445,10 +513,12 @@ body[theme='dark'] {
                                 position: relative;
                                 z-index: 100;
                                 transition: color .3s .1s;
+                                
                                 &.light {
                                     color: RGBA(255, 255, 255, 1);
                                 }
                             }
+                            
                             &:before {
                                 content: '';
                                 width: 50px;
@@ -457,6 +527,7 @@ body[theme='dark'] {
                                 left: 0;
                                 background: RGBA(39, 106, 179, 1);
                             }
+                            
                             &.edit:before {
                                 content: '';
                                 -webkit-animation-name: switchToEdit;
@@ -464,6 +535,7 @@ body[theme='dark'] {
                                 -webkit-animation-fill-mode: forwards;
                                 -webkit-animation-timing-function: linear;
                             }
+                            
                             &.browse:before {
                                 content: '';
                                 -webkit-animation-name: switchToBrowse;
@@ -471,6 +543,7 @@ body[theme='dark'] {
                                 -webkit-animation-fill-mode: forwards;
                                 -webkit-animation-timing-function: linear;
                             }
+                            
                             @keyframes switchToEdit {
                                 0% {
                                     transform: translate3d(0, 0, 0)
@@ -489,6 +562,7 @@ body[theme='dark'] {
                             }
                         }
                     }
+                    
                     .content {
                         color: RGBA(255, 255, 255, .5);
                         flex: 1;
@@ -498,33 +572,38 @@ body[theme='dark'] {
                         -webkit-user-select: text;
                         position: relative;
                         display: flex;
+                        
                         .columns-line {
                             width: 1px;
                             background: RGBA(255, 255, 255, .05);
                         }
+                        
                         .wrap {
                             flex: 1;
                             height: 100%;
                             display: block;
                             box-sizing: border-box;
                             overflow: hidden;
-    
+                            
                             &.lock-mod {
                                 width: 100%;
                                 height: 100%;
                                 box-sizing: border-box;
                                 position: relative;
+                                
                                 .plane {
                                     position: absolute;
                                     left: 50%;
                                     top: 35%;
                                     transform: translate(-50%, -50%);
                                     text-align: center;
+                                    
                                     .icon {
                                         font-size: 80px;
                                         color: RGBA(255, 255, 255, .1);
                                         text-shadow: 1px 1px 50px RGBA(0, 0, 0, 1);
                                     }
+                                    
                                     .text {
                                         margin-top: 20px;
                                         font-size: 12px;
@@ -532,8 +611,10 @@ body[theme='dark'] {
                                         color: RGBA(255, 255, 255, .5);
                                         text-shadow: 1px 1px 50px RGBA(0, 0, 0, 1);
                                     }
+                                    
                                     .form {
                                         width: 180px;
+                                        
                                         .wrap {
                                             width: 100%;
                                             height: 24px;
@@ -547,9 +628,11 @@ body[theme='dark'] {
                                             vertical-align: text-top;
                                             background: RGBA(41, 43, 45, 1);
                                             border: 1px solid RGBA(56, 59, 61, 1);
+                                            
                                             &.focus {
                                                 border: 1px solid RGBA(39, 106, 179, 1);
                                             }
+                                            
                                             .formBox {
                                                 width: 100%;
                                                 height: 100%;
@@ -558,9 +641,11 @@ body[theme='dark'] {
                                                 box-sizing: border-box;
                                                 transition: transform .2s;
                                                 transform: translateX(12%);
+                                                
                                                 &.focus {
                                                     transform: translateX(0);
                                                 }
+                                                
                                                 .lockIcon, .clearIcon {
                                                     top: 0;
                                                     width: 16px;
@@ -568,17 +653,21 @@ body[theme='dark'] {
                                                     position: absolute;
                                                     color: RGBA(255, 255, 255, .3);
                                                 }
+                                                
                                                 .lockIcon {
                                                     left: 0;
                                                 }
+                                                
                                                 .clearIcon {
                                                     font-size: 14px;
                                                     border-radius: 50%;
                                                     right: 0;
+                                                    
                                                     &:hover {
                                                         color: RGBA(39, 106, 179, 1);
                                                     }
                                                 }
+                                                
                                                 input {
                                                     width: 100%;
                                                     height: 16px;
@@ -590,6 +679,7 @@ body[theme='dark'] {
                                                     color: RGBA(255, 255, 255, .8);
                                                 }
                                             }
+                                            
                                             .buttonIcon {
                                                 width: 22px;
                                                 height: 22px;
@@ -606,25 +696,28 @@ body[theme='dark'] {
                                                 border-left: 1px solid RGBA(255, 255, 255, .1);
                                                 color: RGBA(255, 255, 255, .3);
                                                 vertical-align: text-top;
+                                                
                                                 &:hover {
                                                     color: RGBA(39, 106, 179, 1);
                                                 }
+                                                
                                                 &.disable {
                                                     color: RGBA(255, 255, 255, .1);
                                                     pointer-events: none;
                                                 }
                                             }
                                         }
+                                        
                                         margin-top: 10px;
                                     }
-            
+                                    
                                 }
                             }
                             
                             &.browse-mod {
                                 height: calc(100% - 10px);
                                 flex-shrink: 0;
-                                padding: 15px;
+                                padding: 25px 15px 15px 15px;
                                 box-sizing: border-box;
                                 overflow-x: hidden;
                                 overflow-y: auto;
@@ -633,25 +726,32 @@ body[theme='dark'] {
                                 position: static;
                                 color: RGBA(255, 255, 255, .6);
                                 font-family: 'Microsoft YaHei', sans-serif;
+                                
                                 .sch-highlight {
                                     color: RGBA(0, 0, 0, 1) !important;
                                     background: RGBA(255, 150, 50, 1);
                                 }
+                                
                                 img {
                                     max-width: 800px;
                                     display: block;
                                     margin: 10px 0;
                                     box-shadow: 1px 0 5px RGBA(0, 0, 0, 1);
                                 }
+                                
                                 * {
                                     -webkit-user-select: text;
                                 }
+                                
                                 & > *:not(pre):first-child {
                                     margin-top: 0;
                                     padding-top: 0;
                                 }
+                                
                                 h1 {
                                     font-size: 24px;
+                                    margin-bottom: 15px !important;
+                                    
                                     &:before {
                                         content: 'H1';
                                         width: 20px;
@@ -661,8 +761,10 @@ body[theme='dark'] {
                                         color: RGBA(255, 255, 255, .3);
                                     }
                                 }
+                                
                                 h2 {
                                     font-size: 22px;
+                                    
                                     &:before {
                                         content: 'H2';
                                         width: 20px;
@@ -672,8 +774,10 @@ body[theme='dark'] {
                                         color: RGBA(255, 255, 255, .3);
                                     }
                                 }
+                                
                                 h3 {
                                     font-size: 20px;
+                                    
                                     &:before {
                                         content: 'H3';
                                         width: 20px;
@@ -683,8 +787,10 @@ body[theme='dark'] {
                                         color: RGBA(255, 255, 255, .3);
                                     }
                                 }
+                                
                                 h4 {
                                     font-size: 18px;
+                                    
                                     &:before {
                                         content: 'H4';
                                         width: 20px;
@@ -694,8 +800,10 @@ body[theme='dark'] {
                                         color: RGBA(255, 255, 255, .3);
                                     }
                                 }
+                                
                                 h5 {
                                     font-size: 16px;
+                                    
                                     &:before {
                                         content: 'H5';
                                         width: 20px;
@@ -705,8 +813,10 @@ body[theme='dark'] {
                                         color: RGBA(255, 255, 255, .3);
                                     }
                                 }
+                                
                                 h6 {
                                     font-size: 14px;
+                                    
                                     &:before {
                                         content: 'H6';
                                         width: 20px;
@@ -716,12 +826,14 @@ body[theme='dark'] {
                                         color: RGBA(255, 255, 255, .3);
                                     }
                                 }
+                                
                                 h1, h2, h3, h4, h5, h6 {
                                     padding-left: 0;
                                     margin-top: 10px;
                                     margin-bottom: 10px;
                                     color: RGBA(255, 255, 255, .8);
                                 }
+                                
                                 h1, h2, h3, h4, h5, h6, hr, p {
                                     box-sizing: border-box;
                                     position: relative;
@@ -751,8 +863,8 @@ body[theme='dark'] {
                                     height: 1px;
                                     border: none;
                                     font-size: 0;
-                                    margin-top: 10px;
-                                    margin-bottom: 10px;
+                                    margin-top: 20px;
+                                    margin-bottom: 20px;
                                     overflow: hidden;
                                     border-bottom: 1px dashed RGBA(255, 255, 255, .2);
                                     background: RGBA(255, 255, 255, 0);
@@ -768,6 +880,7 @@ body[theme='dark'] {
                                     counter-increment: field;
                                     position: relative;
                                     box-sizing: border-box;
+                                    
                                     &:before {
                                         content: counter(field) '.';
                                         color: RGBA(74, 168, 251, 1);
@@ -784,7 +897,7 @@ body[theme='dark'] {
                                 }
                                 
                                 & > ul {
-                                
+                                    margin: 10px 0;
                                 }
                                 
                                 & ul li {
@@ -793,6 +906,7 @@ body[theme='dark'] {
                                     list-style: none;
                                     box-sizing: border-box;
                                     color: RGBA(255, 255, 255, .8);
+                                    
                                     &:before {
                                         content: '';
                                         width: 5px;
@@ -807,9 +921,11 @@ body[theme='dark'] {
                                 
                                 blockquote {
                                     padding-left: 20px;
-                                    margin-bottom: 10px;
+                                    margin-bottom: 20px;
+                                    margin-top: 20px;
                                     position: relative;
                                     list-style: none;
+                                    
                                     &:before {
                                         content: '';
                                         width: 2px;
@@ -824,10 +940,12 @@ body[theme='dark'] {
                                 a {
                                     color: RGBA(74, 168, 251, 1);
                                     text-decoration: none;
+                                    
                                     &:before {
                                         color: RGBA(255, 255, 255, .3);
                                         content: '[ ';
                                     }
+                                    
                                     &:after {
                                         color: RGBA(255, 255, 255, .3);
                                         content: ' ]';
@@ -857,15 +975,18 @@ body[theme='dark'] {
                                 }
                                 
                             }
+                            
                             &.edit-mod {
                                 overflow: hidden;
                             }
+                            
                             .editor-container {
                                 height: 100%;
                                 padding: 10px 40px 10px 20px;
                                 box-sizing: border-box;
                                 position: relative;
                                 overflow: hidden;
+                                
                                 .editor-tools-bar {
                                     width: 30px;
                                     height: calc(100% - 10px);
@@ -876,6 +997,7 @@ body[theme='dark'] {
                                     padding: 5px;
                                     flex-direction: column-reverse;
                                     background: RGBA(0, 0, 0, .1);
+                                    
                                     span {
                                         width: 30px;
                                         height: 30px;
@@ -885,6 +1007,7 @@ body[theme='dark'] {
                                         cursor: pointer;
                                         color: RGBA(255, 255, 255, .3);
                                         transition: background .2s;
+                                        
                                         &:hover {
                                             color: RGBA(255, 255, 255, .7);
                                             background: RGBA(0, 0, 0, .2);
@@ -892,6 +1015,7 @@ body[theme='dark'] {
                                     }
                                 }
                             }
+                            
                             textarea {
                                 width: 100%;
                                 height: 100%;
@@ -912,6 +1036,7 @@ body[theme='dark'] {
                     }
                 }
             }
+            
             #login {
                 width: 320px;
                 height: 300px;
@@ -923,6 +1048,7 @@ body[theme='dark'] {
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
+                
                 .login-container {
                     width: 200px;
                     position: absolute;
@@ -930,12 +1056,14 @@ body[theme='dark'] {
                     left: 50%;
                     transform: translate(-50%, -50%);
                 }
+                
                 h2 {
                     width: 100%;
                     text-align: center;
                     color: RGBA(255, 255, 255, .7);
                     padding-bottom: 20px;
                 }
+                
                 h4 {
                     font-size: 12px;
                     font-weight: normal;
@@ -944,34 +1072,42 @@ body[theme='dark'] {
                     color: RGBA(255, 255, 255, .7);
                     font-family: Arial, sans-serif;
                     padding: 0;
+                    
                     a {
                         margin-left: 8px;
                         cursor: pointer;
                         font-style: normal;
                         text-decoration: none;
                         color: RGBA(39, 106, 179, 1);
+                        
                         &:hover {
                             color: RGBA(46, 132, 226, 1);
                             text-decoration: underline;
                         }
                     }
                 }
+                
                 .more-menu {
                     margin-top: 10px;
+                    
                     label {
                         cursor: pointer;
                         transition: color .3s;
                         color: RGBA(255, 255, 255, .3);
+                        
                         &:hover {
                             color: RGBA(255, 255, 255, .5);
                         }
                     }
                 }
+                
                 .item {
                     width: 100%;
+                    
                     &.input {
                         padding-bottom: 10px;
                         position: relative;
+                        
                         .wrap {
                             width: 100%;
                             background: RGBA(41, 43, 45, 1);
@@ -979,6 +1115,7 @@ body[theme='dark'] {
                             box-sizing: border-box;
                             position: relative;
                         }
+                        
                         .verify-tips {
                             color: RGBA(214, 85, 95, 1);
                             top: 30px;
@@ -988,12 +1125,15 @@ body[theme='dark'] {
                             font-family: Arial, sans-serif;
                         }
                     }
+                    
                     &.verifycode {
                         display: flex;
+                        
                         .wrap {
                             flex: 1;
                             width: auto;
                         }
+                        
                         button {
                             width: 60px;
                             margin-left: 5px;
@@ -1004,14 +1144,17 @@ body[theme='dark'] {
                             background: #333;
                             box-sizing: border-box;
                             transition: border, color, background .1s;
+                            
                             &:hover {
                                 background: #444;
                                 color: RGBA(255, 255, 255, .8);
                             }
                         }
                     }
+                    
                     .wrap {
                         width: 100%;
+                        
                         input {
                             width: 100%;
                             height: 28px;
@@ -1021,10 +1164,12 @@ body[theme='dark'] {
                             border: none;
                             background: none;
                             color: RGBA(255, 255, 255, 1);
+                            
                             &[name='password'] {
                                 padding-right: 28px;
                             }
                         }
+                        
                         .icon.hidePW {
                             width: 28px;
                             height: 28px;
@@ -1035,6 +1180,7 @@ body[theme='dark'] {
                             top: 0;
                             color: RGBA(255, 255, 255, .3);
                         }
+                        
                         button {
                             width: 100%;
                             height: 30px;
@@ -1048,6 +1194,7 @@ body[theme='dark'] {
                             color: RGBA(255, 255, 255, 1);
                             background: RGBA(39, 106, 179, 1);
                             box-shadow: 1px 1px 5px RGBA(0, 0, 0, 1);
+                            
                             &:hover {
                                 background: RGBA(46, 132, 226, 1);
                             }
@@ -1055,6 +1202,7 @@ body[theme='dark'] {
                     }
                 }
             }
+            
             #defaultMain {
                 width: 100%;
                 height: 100%;
