@@ -1,5 +1,6 @@
 interface DefaultState {
-    layout?: number
+    layout?: number,
+    editLayout?: boolean
 }
 
 declare type Playload = DefaultState;
@@ -19,7 +20,8 @@ export class FrameStateReducer {
     constructor(ModelName: string) {
         this.modelName = ModelName;
         this.body      = {
-            layout: 1
+            layout    : 1,
+            editLayout: true,
         };
         this.playload  = {};
         this.Action    = this.Action.bind(this);
@@ -30,6 +32,13 @@ export class FrameStateReducer {
 
         const {layout}   = this.playload;
         this.body.layout = layout;
+
+        return {...this.state, ...this.body};
+    }
+
+    public CHANGE_EDITOR_COLUMN() {
+        const {editLayout}   = this.playload;
+        this.body.editLayout = editLayout;
 
         return {...this.state, ...this.body};
     }

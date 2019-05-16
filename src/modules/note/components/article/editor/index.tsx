@@ -8,6 +8,7 @@ import {ArticleService}                    from "../../../services/article.servi
 import {FontAwesomeIcon}                   from "@fortawesome/react-fontawesome";
 import {$AttachedService, AttachedService} from '../../../services/window_manage/attached.server';
 import {VMessageService}                   from "../../../../component/message";
+// import SuperLinkComponent                  from './tools/super_link';
 import {storeSubscribe}                    from "../../../../../store/middleware/storeActionEvent.middleware";
 import 'prismjs';
 import 'prismjs/components/prism-css';
@@ -46,7 +47,11 @@ interface TextAreaHistory {
 class EditorComponent extends React.Component {
 
     public state: any = {
-        content: ''
+        content       : '',
+        superLinkPanel: {
+            status: false,
+            title : ''
+        },
     };
 
     public editor: any;
@@ -66,6 +71,8 @@ class EditorComponent extends React.Component {
         this.handelEditorTools   = this.handelEditorTools.bind(this);
         this.handelEditor        = this.handelEditor.bind(this);
         this.writeArticleToStore = this.writeArticleToStore.bind(this);
+        this.superLinkConfirm    = this.superLinkConfirm.bind(this);
+        this.superLinkCancel     = this.superLinkCancel.bind(this);
         this.attachedService     = $AttachedService;
 
         this.textAreaHistory = {
@@ -175,6 +182,12 @@ class EditorComponent extends React.Component {
 
     }
 
+    public insertSuperLink() {
+        const state                 = this.state;
+        state.superLinkPanel.status = !this.state.superLinkPanel.status;
+        this.setState(state);
+    }
+
     public insertContent(type: string, obj: any = {}): boolean {
 
         // 如果插入内容时，不是编辑模式的话，就提示警告
@@ -222,6 +235,13 @@ class EditorComponent extends React.Component {
                     this.setState(state);
                 }
                 break;
+            case  'insertSuperLink':
+                returnContent = this.editorTools.insertSuperLink();
+                if (returnContent) {
+                    state.content = returnContent;
+                    this.setState(state);
+                }
+                break;
         }
         if (state.content) {
             (this.textareaElement.current as HTMLTextAreaElement).dispatchEvent(new Event('textarea', {bubbles: true}));
@@ -245,6 +265,9 @@ class EditorComponent extends React.Component {
                 this.insertContent(type);
                 break;
             case 'fontQuoteLeft':
+                this.insertContent(type);
+                break;
+            case 'insertSuperLink':
                 this.insertContent(type);
                 break;
         }
@@ -286,6 +309,18 @@ class EditorComponent extends React.Component {
         }, 200);
     }
 
+    public superLinkConfirm(title: string, link: string) {
+        const state                 = this.state;
+        state.superLinkPanel.status = false;
+        this.setState(state);
+    }
+
+    public superLinkCancel() {
+        const state                 = this.state;
+        state.superLinkPanel.status = false;
+        this.setState(state);
+    }
+
     public render() {
 
         return (
@@ -305,7 +340,19 @@ class EditorComponent extends React.Component {
                         <span onClick={this.handelEditorTools.bind(this, 'fontStrikethrough')}><FontAwesomeIcon icon="strikethrough"/></span>
                         <span onClick={this.handelEditorTools.bind(this, 'fontQuoteLeft')}><FontAwesomeIcon icon="quote-left"/></span>
                         <span onClick={this.handelEditorTools.bind(this, 'attached')}><FontAwesomeIcon icon="image"/></span>
+                        <span onClick={this.handelEditorTools.bind(this, 'insertSuperLink')}><FontAwesomeIcon icon="link"/></span>
                     </div>
+                </div>
+                <div className="dialog-tools">
+                    {/*{*/}
+                    {/*    this.state.superLinkPanel.status &&*/}
+                    {/*	<SuperLinkComponent*/}
+                    {/*		selectedTitle={this.state.superLinkPanel.title}*/}
+                    {/*		mod={this.props.displayState}*/}
+                    {/*		handleConfirm={this.superLinkConfirm}*/}
+                    {/*		handelCancel={this.superLinkCancel}*/}
+                    {/*	/>*/}
+                    {/*}*/}
                 </div>
             </div>
         )

@@ -46,6 +46,7 @@ class Attached extends React.Component {
                 if (state.readyUploadList.findIndex((item: any) => item.path === file.path) < 0) {
                     file.status = 0;
                     newFiles.push(file);
+                    state.globalUploadState = 0;
                 }
             });
             state.readyUploadList = [...state.readyUploadList, ...newFiles];
@@ -76,36 +77,60 @@ class Attached extends React.Component {
     }
 
     // 上传文件 //
-    public async handleUploadFiles() {
+    public async handleUploadFiles(): Promise<void | boolean> {
 
-        // 预上传的文件个数
-        let uploadLen = 0;
+        if (this.state.globalUploadState !== 0) {
+            return false;
+        }
 
-        this.state.readyUploadList.forEach(async (item: any, index: number) => {
-            if (item.status === 0) {
+        if (this.state.readyUploadList.length > 0) {
 
-                uploadLen++;
+            let state               = this.state;
+            state.globalUploadState = 1;
+            this.setState(state);
 
-                const state                           = this.state;
-                const itemKey                         = state.readyUploadList.findIndex((sourceItem: any) => sourceItem.path === item.path);
-                state.readyUploadList[itemKey].status = 1;
-                state.globalUploadState               = 1;
-                const response                        = await new Service.ServerProxyUpload('attached', 'upload', item).send();
+            if (this.state.readyUploadList.length > 0) {
+                this.state.readyUploadList.forEach(async (item: any, index: number) => {
+                    if (item.status === 0) {
+                        state                                 = this.state;
+                        const itemKey                         = state.readyUploadList.findIndex((sourceItem: any) => sourceItem.path === item.path);
+                        state.readyUploadList[itemKey].status = 1;
 
-                // 上传成功
-                if (response.result === 0) {
-                    state.readyUploadList[itemKey].status = 2;
-                    state.globalUploadState               = uploadLen === this.state.readyUploadList.length ? 2 : 1;
-                }
-                // 上传失败
-                else {
-                    state.globalUploadState               = uploadLen === this.state.readyUploadList.length ? 0 : 1;
-                    state.readyUploadList[itemKey].status = 3;
-                }
-
-                this.setState(state);
+                        const response = await new Service.ServerProxyUpload('attached', 'upload', item).send();
+                        // 上传成功
+                        if (response.result === 0) {
+                            state.readyUploadList[itemKey].status = 2;
+                            this.uploadListState();
+                        }
+                        // 上传失败
+                        else {
+                            state.readyUploadList[itemKey].status = 3;
+                        }
+                        this.setState(state);
+                    }
+                });
             }
-        });
+
+        }
+    }
+
+    public uploadListState() {
+        const uploadListLen = this.state.readyUploadList.length;
+        let uploadFinisLen  = 0;
+        if (uploadListLen > 0) {
+            this.state.readyUploadList.forEach((item: any) => {
+                if (item.status === 2 || item.status === 3) {
+                    uploadFinisLen++;
+                    if (uploadListLen === uploadFinisLen) {
+                        setTimeout(() => {
+                            const state                  = this.state;
+                            this.state.globalUploadState = 2;
+                            this.setState(state)
+                        }, 10);
+                    }
+                }
+            });
+        }
     }
 
     public render() {
@@ -122,7 +147,7 @@ class Attached extends React.Component {
                         >select
                         </button>
                         <button
-                            className={`upload ${(this.state.readyUploadList.length <= 0) || (this.state.globalUploadState === 1) ? 'disable' : ''}`}
+                            className={`upload ${(this.state.readyUploadList.length <= 0) || (this.state.globalUploadState === 1 || this.state.globalUploadState === 2) ? 'disable' : ''}`}
                             onClick={this.handleUploadFiles}
                         >upload
                         </button>

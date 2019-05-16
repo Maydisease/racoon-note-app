@@ -570,7 +570,6 @@ body[theme='dark'] {
                         overflow-y: auto;
                         box-sizing: border-box;
                         -webkit-user-select: text;
-                        position: relative;
                         display: flex;
                         
                         .columns-line {
@@ -978,6 +977,7 @@ body[theme='dark'] {
                             
                             &.edit-mod {
                                 overflow: hidden;
+                                position: relative;
                             }
                             
                             .editor-container {
@@ -986,6 +986,11 @@ body[theme='dark'] {
                                 box-sizing: border-box;
                                 position: relative;
                                 overflow: hidden;
+                                
+                                .dialog-tools {
+                                    width: 0;
+                                    height: 0;
+                                }
                                 
                                 .editor-tools-bar {
                                     width: 30px;

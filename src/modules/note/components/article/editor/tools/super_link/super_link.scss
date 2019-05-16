@@ -1,0 +1,96 @@
+.super-link-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    
+    .panel {
+        width: 300px;
+        height: 150px;
+        background: #111;
+        box-sizing: border-box;
+        position: relative;
+        box-shadow: 0 3px 20px RGBA(0, 0, 0, .5);
+        border: 1px solid RGBA(0, 0, 0, 1);
+        
+        .top-bar {
+            width: 100%;
+            height: 25px;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        .border {
+            width: calc(100% - 2px);
+            height: calc(100% - 2px);
+            position: absolute;
+            left: 1px;
+            top: 1px;
+            pointer-events: none;
+            box-sizing: border-box;
+            border: 1px solid RGBA(255, 255, 255, .025);
+        }
+        
+        .form-box {
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            
+            .group {
+                width: 100%;
+                height: 25px;
+                line-height: 25px;
+                display: flex;
+                margin-bottom: 10px;
+                border-bottom: 1px solid RGBA(255, 255, 255, .05);
+                
+                span {
+                    width: 50px;
+                    font-size: 12px;
+                    text-align: center;
+                    background: RGBA(255, 255, 255, .05);
+                    font-family: Arial, sans-serif;
+                }
+                
+                input {
+                    flex: 1;
+                    font-size: 12px;
+                    padding: 0 8px;
+                    margin-left: 5px;
+                    box-sizing: border-box;
+                    color: RGBA(39, 106, 179, 1);
+                    border: 1px solid RGBA(39, 106, 179, 0);
+                    
+                    &:focus {
+                        //border: 1px solid RGBA(39, 106, 179, 1);
+                    }
+                }
+            }
+        }
+        
+        .buttons {
+            width: 100%;
+            height: 36px;
+            display: flex;
+            background: RGBA(0, 0, 0, .1);
+            border-top: 1px solid RGBA(0, 0, 0, 1);
+            
+            button {
+                flex: 1;
+                font-size: 14px;
+                color: RGBA(255, 255, 255, .3);
+                
+                &:hover {
+                    background: RGBA(255, 255, 255, 0.025);
+                }
+            }
+            
+            .split-line {
+                width: 1px;
+                height: 20px;
+                margin-top: 8px;
+                background: RGBA(0, 0, 0, 1);
+            }
+        }
+    }
+}

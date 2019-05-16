@@ -11,8 +11,8 @@ export class EditorToolsService {
     // 设置光标位置
     public setCaretPosition(pos: number) {
         if (this.element.setSelectionRange) {
-            this.element.focus();
             setTimeout(() => {
+                this.element.focus();
                 this.element.setSelectionRange(pos, pos);
             }, 0)
 
@@ -41,7 +41,7 @@ export class EditorToolsService {
         const tpl         = `\n![${imageTitle}](${imageUrl})\n`;
         const startValue  = sourceValue.substring(0, selection.start);
         const endValue    = sourceValue.substring(selection.end, selection.maxLength);
-        this.setCaretPosition(selection.start);
+        this.setCaretPosition(selection.start + tpl.length);
         return startValue + tpl + endValue;
     }
 
@@ -64,7 +64,7 @@ export class EditorToolsService {
 
             const startValue = sourceValue.substring(0, selection.start);
             const endValue   = sourceValue.substring(selection.end, selection.maxLength);
-            this.setCaretPosition(selection.start);
+            this.setCaretPosition(selection.start + newSelectedCont.length);
             return `${startValue}${newSelectedCont}${endValue}`;
         } else {
             this.setCaretPosition(selection.start);
@@ -92,7 +92,7 @@ export class EditorToolsService {
 
             const startValue = sourceValue.substring(0, selection.start);
             const endValue   = sourceValue.substring(selection.end, selection.maxLength);
-            this.setCaretPosition(selection.start);
+            this.setCaretPosition(selection.start + newSelectedCont.length);
             return `${startValue}${newSelectedCont}${endValue}`;
         } else {
             this.setCaretPosition(selection.start);
@@ -120,7 +120,7 @@ export class EditorToolsService {
 
             const startValue = sourceValue.substring(0, selection.start);
             const endValue   = sourceValue.substring(selection.end, selection.maxLength);
-            this.setCaretPosition(selection.start);
+            this.setCaretPosition(selection.start + newSelectedCont.length);
             return `${startValue}${newSelectedCont}${endValue}`;
         } else {
             this.setCaretPosition(selection.start);
@@ -150,8 +150,24 @@ export class EditorToolsService {
 
         const startValue = sourceValue.substring(0, selection.start);
         const endValue   = sourceValue.substring(selection.end, selection.maxLength);
-        this.setCaretPosition(selection.start);
+        this.setCaretPosition(selection.start + newSelectedCont.length);
         return `${startValue}${newSelectedCont}${endValue}`;
+    }
+
+    public insertSuperLink(): string {
+        const sourceValue   = this.element.value;
+        const selection     = this.getTextAreaSelection();
+        const startValue    = sourceValue.substring(0, selection.start);
+        const endValue      = sourceValue.substring(selection.end, selection.maxLength);
+        const title         = selection.text;
+        let newSelectedCont = '';
+        if (selection.selectedLength > 0) {
+            newSelectedCont = `[${title}](http://link.com)`;
+        } else {
+            newSelectedCont = `[title](http://link.com)`;
+        }
+        this.setCaretPosition(selection.start + newSelectedCont.length);
+        return `${startValue}${newSelectedCont}${endValue}`
     }
 
 }

@@ -142,6 +142,12 @@ class ArticleComponent extends React.Component {
         const state         = this.state;
         state.editAndBrowse = !this.state.editAndBrowse;
         this.setState(state);
+
+        store.dispatch({
+            type    : 'NOTE$CHANGE_EDITOR_COLUMN',
+            playload: {editLayout: state.editAndBrowse}
+        });
+
     }
 
     public browseComponentRef(refs: React.ComponentClass) {
@@ -157,14 +163,14 @@ class ArticleComponent extends React.Component {
         return (
             <div className="articleContainer">
                 {ARTICLE.id &&
-                <div className="content-bar">
-                    <div className="title">
+				<div className="content-bar">
+					<div className="title">
                         {
                             this.state.editState ?
                                 <input name="title" value={this.state.form.title.value} onChange={this.handleTitleInputChange} placeholder="note title..."/> :
                                 <span>{ARTICLE_TEMP.title}</span>
                         }
-                    </div>
+					</div>
                     {ARTICLE.lock === 0 &&
 					<React.Fragment>
                         {this.state.editState && FRAME.layout === 0 &&
@@ -186,10 +192,10 @@ class ArticleComponent extends React.Component {
 						</div>
 					</React.Fragment>
                     }
-                </div>
+				</div>
                 }
                 {ARTICLE.id &&
-                <div className="content">
+				<div className="content">
                     {ARTICLE.lock === 0 &&
 					<React.Fragment>
                         {
@@ -206,7 +212,7 @@ class ArticleComponent extends React.Component {
                     {ARTICLE.lock === 1 &&
 					<LockComponent/>
                     }
-                </div>
+				</div>
                 }
             </div>
         );
