@@ -1,15 +1,16 @@
-import * as React          from 'react';
-import RenamePanel         from './rename';
-import CategoryTree        from './categoryTree';
-import {ArticleService}    from "../../services/article.service";
-import {EventEmitter}      from "../../services/events.service";
-import {Service}           from "../../../../lib/master.electron.lib";
-import {storeSubscribe}    from "../../../../store/middleware/storeActionEvent.middleware";
-import {VMessageService}   from "../../../component/message";
-import {FontAwesomeIcon}   from '@fortawesome/react-fontawesome';
-import {store}             from "../../../../store";
-import {AppCommandService} from "../../services/appCommand.service";
-import {AttachedService, $AttachedService}   from '../../services/window_manage/attached.server';
+import * as React                          from 'react';
+import RenamePanel                         from './rename';
+import CategoryIconPanel                   from './categoryIconPanel';
+import CategoryTree                        from './categoryTree';
+import {ArticleService}                    from "../../services/article.service";
+import {EventEmitter}                      from "../../services/events.service";
+import {Service}                           from "../../../../lib/master.electron.lib";
+import {storeSubscribe}                    from "../../../../store/middleware/storeActionEvent.middleware";
+import {VMessageService}                   from "../../../component/message";
+import {FontAwesomeIcon}                   from '@fortawesome/react-fontawesome';
+import {store}                             from "../../../../store";
+import {AppCommandService}                 from "../../services/appCommand.service";
+import {AttachedService, $AttachedService} from '../../services/window_manage/attached.server';
 
 interface CategoryItemEdit {
     state: boolean,
@@ -29,6 +30,11 @@ interface RenamePanelPos {
     y?: number
 }
 
+interface CategoryIconPanelPos {
+    x?: number,
+    y?: number
+}
+
 interface IState {
     contextMenu: string,
     categoryObj: CategoryItem | any,
@@ -38,8 +44,13 @@ interface IState {
     isDidMount: boolean;
     renamePanelPos: RenamePanelPos,
     renamePanelState: boolean,
+    categoryIconPanelState: boolean,
     renameValue: string,
-    componentShowState: boolean
+    componentShowState: boolean,
+    categoryIconPanelPos: CategoryIconPanelPos,
+    selectedIcon: string,
+    defaultIcon: string
+
 }
 
 class CategoryContainer extends React.Component {
@@ -47,16 +58,20 @@ class CategoryContainer extends React.Component {
     public contextMenu: any;
 
     public state: IState = {
-        componentShowState: true,
-        contextMenu       : '',
-        categoryObj       : {},
-        categoryTree      : [],
-        categorySource    : [],
-        categoryElement   : null,
-        isDidMount        : false,
-        renamePanelPos    : {},
-        renamePanelState  : false,
-        renameValue       : ''
+        componentShowState    : true,
+        contextMenu           : '',
+        categoryObj           : {},
+        categoryTree          : [],
+        categorySource        : [],
+        categoryElement       : null,
+        isDidMount            : false,
+        renamePanelPos        : {},
+        renamePanelState      : false,
+        categoryIconPanelState: false,
+        renameValue           : '',
+        categoryIconPanelPos  : {},
+        selectedIcon          : 'folder',
+        defaultIcon           : 'folder'
     };
 
     public categoryMenusElement: HTMLElement | any;
@@ -69,13 +84,17 @@ class CategoryContainer extends React.Component {
         super(props);
         this.contextMenu = new Service.Menu();
         this.contextMenuInit();
-        this.categoryMenusElement = undefined;
-        this.articleService       = new ArticleService();
-        this.attachedService      = $AttachedService;
-        this.appCommandService    = new AppCommandService();
-        this.closeRenamePanel     = this.closeRenamePanel.bind(this);
-        this.confirmRenamePanel   = this.confirmRenamePanel.bind(this);
-        this.handleActionBar      = this.handleActionBar.bind(this);
+        this.categoryMenusElement         = undefined;
+        this.articleService               = new ArticleService();
+        this.attachedService              = $AttachedService;
+        this.appCommandService            = new AppCommandService();
+        this.closeRenamePanel             = this.closeRenamePanel.bind(this);
+        this.closeChangeCategoryIconPanel = this.closeChangeCategoryIconPanel.bind(this);
+        this.confirmRenamePanel           = this.confirmRenamePanel.bind(this);
+        this.setRenamePanelPos            = this.setRenamePanelPos.bind(this);
+        this.setIconPanelPos              = this.setIconPanelPos.bind(this);
+        this.handleActionBar              = this.handleActionBar.bind(this);
+        this.changeCategoryIconEvent      = this.changeCategoryIconEvent.bind(this);
     }
 
     public async componentWillMount() {
@@ -119,6 +138,34 @@ class CategoryContainer extends React.Component {
         this.setState(state);
     }
 
+    // 关闭ICON选择面板
+    public async closeChangeCategoryIconPanel(): Promise<void> {
+        const state: any             = this.state;
+        state.categoryIconPanelState = false;
+        this.setState(state);
+
+        // 如果当前ICON面板选择的ICON与之前的ICON不一致的话
+        if (this.state.selectedIcon !== this.state.defaultIcon) {
+            const updateIconBody = {
+                id      : this.state.categoryObj.id,
+                iconText: this.state.selectedIcon
+            };
+
+            const response = await new Service.ServerProxy('note', 'updateCategoryIcon', updateIconBody).send();
+            let msg        = '';
+            let type: 'success' | 'error';
+            if (response.result !== 1) {
+                msg  = 'Change Category Icon success';
+                type = 'success'
+            } else {
+                msg  = 'Change Category Icon fail';
+                type = 'error'
+            }
+            new VMessageService(msg, type, 2000).init();
+        }
+
+    }
+
     // 更换category名确认面板事件
     public async confirmRenamePanel(newName: string): Promise<boolean | void> {
         if (newName !== '' && this.state.categoryObj.name !== newName) {
@@ -139,6 +186,7 @@ class CategoryContainer extends React.Component {
                 return false;
             }
 
+            // 分类更名成功
             if (request.result !== 1) {
                 new VMessageService('Category renamed success', 'success', 3000).init();
                 await this.updateCategoryDom();
@@ -199,10 +247,23 @@ class CategoryContainer extends React.Component {
                 const state: any      = this.state;
                 state.categoryObj     = this.state.categorySource.filter((item: any) => item.id === Number(menuId))[0];
                 state.categoryElement = itemElement;
+                state.defaultIcon     = (itemElement.querySelector('img') as HTMLElement).title;
                 this.setState(state);
 
+                // 分类更名组件
                 if (this.state.renamePanelState) {
-                    this.closeRenamePanel()
+                    this.closeRenamePanel();
+                } else {
+                    this.setRenamePanelPos();
+                }
+
+                // 分类图标组件
+                if (this.state.categoryIconPanelState) {
+                    console.log('closeChangeCategoryIconPanel');
+                    this.closeChangeCategoryIconPanel();
+                } else {
+                    console.log('setIconPanelPos');
+                    this.setIconPanelPos();
                 }
 
                 event.stopPropagation();
@@ -226,15 +287,19 @@ class CategoryContainer extends React.Component {
                             // item[1] Created category;
                             // item[2] Separator;
                             // item[3] Rename category;
+                            // item[4] Remove category;
+                            // item[5] Change icon;
 
                             if (!this.state.categoryObj) {
                                 items[0].enabled = false;
                                 items[2].enabled = false;
                                 items[4].enabled = false;
+                                items[5].enabled = false;
                             } else {
                                 items[0].enabled = true;
                                 items[2].enabled = true;
                                 items[4].enabled = true;
+                                items[5].enabled = true;
                             }
 
                             // if (isLast === 'true') {
@@ -287,6 +352,14 @@ class CategoryContainer extends React.Component {
             accelerator: 'D',
             label      : 'Remove category', click() {
                 $this.removeCategory()
+            }
+        }));
+        // item[5];
+        this.contextMenu.append(new Service.MenuItem({
+            enabled    : true,
+            accelerator: 'I',
+            label      : 'Change icon', click() {
+                $this.changeCategoryIcon();
             }
         }));
     }
@@ -361,17 +434,48 @@ class CategoryContainer extends React.Component {
         const state: any       = this.state;
         state.renamePanelState = false;
         if (this.state.categoryObj) {
-            state.renamePanelPos.y = (this.state.categoryElement as HTMLElement).offsetTop;
             state.renamePanelState = true;
             state.renameValue      = this.state.categoryObj.name;
+            this.setRenamePanelPos();
         }
         this.setState(state);
     }
 
+    // 更改分类图标
+    public changeCategoryIcon() {
+        const state: any             = this.state;
+        state.categoryIconPanelState = false;
+        if (this.state.categoryObj) {
+            state.categoryIconPanelState = true;
+            this.setIconPanelPos();
+        }
+        this.setState(state);
+    }
+
+    // 设置分类更名面板的位置
+    public setRenamePanelPos() {
+        const categoryElement  = (this.state.categoryElement as HTMLElement);
+        const state            = this.state;
+        state.renamePanelPos.y = Number(categoryElement.getBoundingClientRect().top);
+        this.setState(state);
+    }
+
+    // 设置ICON面板的位置
+    public setIconPanelPos() {
+        const categoryElement        = (this.state.categoryElement as HTMLElement);
+        const {top}                  = categoryElement.getBoundingClientRect();
+        const state                  = this.state;
+        state.categoryIconPanelPos.y = Number(top);
+        state.categoryIconPanelPos.x = (categoryElement.querySelector('.icon-2') as HTMLElement).offsetLeft;
+        this.setState(state);
+    }
+
+    // 打开附件window
     public openAttached() {
         this.attachedService.open();
     }
 
+    // 分类边栏下方的动作栏事件
     public handleActionBar(actionType: string): void {
         switch (actionType) {
             case 'setting':
@@ -391,6 +495,16 @@ class CategoryContainer extends React.Component {
         }
     }
 
+    // 当ICON面板中ICON被点击后的事件
+    public changeCategoryIconEvent(item: { icon: string }) {
+        const state                        = this.state;
+        const key                          = this.state.categorySource.findIndex((sourceItem: any) => sourceItem.id === this.state.categoryObj.id);
+        state.categorySource[key].iconText = item.icon;
+        state.selectedIcon                 = item.icon;
+        this.setState(state);
+        this.categoryMenusEventBind();
+    }
+
     public render() {
 
         return (
@@ -405,8 +519,18 @@ class CategoryContainer extends React.Component {
                                 <span className="text">default</span>
                             </label>
                         </div>
-                        {this.state.categorySource && this.state.categorySource.length > 0 && <CategoryTree data={this.state.categorySource}/>}
+                        {
+                            this.state.categorySource &&
+                            this.state.categorySource.length > 0 &&
+                            // 分类树组件
+							<CategoryTree
+								selectedIcon={this.state.selectedIcon}
+								data={this.state.categorySource}
+							/>
+                        }
                     </div>
+
+                    {/*控制栏*/}
                     <div className="action-bar">
                         <label onClick={this.handleActionBar.bind(null, 'setting')}>
                             <FontAwesomeIcon className="fa-icon left" icon="sliders-h"/>
@@ -428,6 +552,8 @@ class CategoryContainer extends React.Component {
                         </label>
                     </div>
                 </div>
+
+                {/*更名面板组件*/}
                 <RenamePanel
                     pos={this.state.renamePanelPos}
                     name={this.state.renameValue}
@@ -435,6 +561,16 @@ class CategoryContainer extends React.Component {
                     cancelEvent={this.closeRenamePanel}
                     confirmEvent={this.confirmRenamePanel}
                 />
+
+                {/*分类ICON选择面板组件*/}
+                <CategoryIconPanel
+                    pos={this.state.categoryIconPanelPos}
+                    show={this.state.categoryIconPanelState}
+                    defaultIcon={this.state.defaultIcon}
+                    cancelEvent={this.closeChangeCategoryIconPanel}
+                    changeIconEvent={this.changeCategoryIconEvent}
+                />
+
             </div>
         );
     }

@@ -106,7 +106,7 @@ class RenamePanel extends React.Component {
         document.body.appendChild(tempContainer);
         this.mountContainer = tempContainer;
         this.renderModalContent(this.props, this.mountContainer);
-        document.body.onclick = (event: MouseEvent) => {
+        window.addEventListener('click', (event: Event) => {
             if (this.props.show) {
                 let isSelf = false;
                 (event as any).path.some((el: any) => {
@@ -119,7 +119,7 @@ class RenamePanel extends React.Component {
                     this.closeRenamePanel();
                 }
             }
-        }
+        });
     }
 
     public render() {

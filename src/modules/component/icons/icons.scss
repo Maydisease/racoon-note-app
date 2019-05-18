@@ -1,10 +1,18 @@
-.iconsComponents {
-    .icon {
-        width: 80px;
-        height: 80px;
-        line-height: 80px;
-        text-align: center;
-        display: inline-block;
-        font-size: 20px;
+.svgIconsComponents {
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    max-width: 16px;
+    max-height: 16px;
+    display: inline-block;
+    
+    svg {
+        max-width: 16px;
+        max-height: 16px;
+        
+        * {
+            opacity: 1;
+            fill: RGBA(255, 255, 255, .8);
+        }
     }
 }

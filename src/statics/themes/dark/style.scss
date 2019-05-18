@@ -47,6 +47,7 @@ body[theme='dark'] {
                         display: flex;
                         flex-direction: column;
                         flex-wrap: wrap;
+                        overflow: hidden;
                         background: RGBA(44, 45, 47, 1);
                         
                         .action-bar {
@@ -124,6 +125,7 @@ body[theme='dark'] {
                                 margin: 0;
                                 padding: 0;
                                 font-size: 0;
+                                position: relative;
                                 font-family: Arial, sans-serif;
                                 
                                 label {
@@ -183,6 +185,16 @@ body[theme='dark'] {
                                     
                                     &.icon-2 {
                                         text-align: left;
+                                        position: relative;
+                                        
+                                        img {
+                                            max-width: 16px;
+                                            max-height: 16px;
+                                            position: absolute;
+                                            left: 0;
+                                            top: 50%;
+                                            transform: translate(0, -50%);
+                                        }
                                     }
                                 }
                                 

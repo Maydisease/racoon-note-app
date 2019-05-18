@@ -12,7 +12,18 @@ class Index extends React.Component {
     }
 
     public shouldComponentUpdate(nextProps: any, nextState: any) {
-        return !(this.props.data === nextProps.data);
+
+        let flag = false;
+
+        if (this.props.data !== nextProps.data) {
+            flag = true;
+        }
+
+        if (this.props.selectedIcon !== nextProps.selectedIcon) {
+            flag = true;
+        }
+
+        return flag;
     }
 
     public handelMoveArticleDragOver(event: any) {
@@ -61,6 +72,7 @@ class Index extends React.Component {
             if (categoryData && categoryData.length > 0) {
                 const loop = (categoryDataTemps: any) => {
                     return categoryDataTemps.map((item: any) => {
+
                         return (
                             <div
                                 onDragOver={this.handelMoveArticleDragOver}
@@ -73,7 +85,7 @@ class Index extends React.Component {
                                         {item.children && <FontAwesomeIcon className="fa-icon" icon="angle-right"/>}
                                     </span>
                                     <span className={`icon icon-2`}>
-                                        <FontAwesomeIcon className="fa-icon" icon="folder"/>
+                                        <img title={item.iconText || 'folder'} src={require(`../../../../../statics/common/images/svg/${item.iconText || 'folder'}.svg`)}/>
                                     </span>
                                     <span className="text">{item.name}</span>
                                 </label>
