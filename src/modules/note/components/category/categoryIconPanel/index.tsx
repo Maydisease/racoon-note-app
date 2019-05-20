@@ -35,6 +35,9 @@ class CategoryIconPanel extends React.Component {
     }
 
     public closeIconPanel() {
+        const state   = this.state;
+        state.curIcon = '';
+        this.setState(state);
         this.props.cancelEvent();
     }
 

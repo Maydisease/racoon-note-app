@@ -105,7 +105,6 @@ class CategoryContainer extends React.Component {
         });
     }
 
-
     // 获取分类数据
     public async getCategoryData(): Promise<void> {
         const state: any = this.state;
@@ -142,11 +141,12 @@ class CategoryContainer extends React.Component {
     public async closeChangeCategoryIconPanel(): Promise<void> {
         const state: any             = this.state;
         state.categoryIconPanelState = false;
-        this.setState(state);
+        const key                    = this.state.categorySource.findIndex((sourceItem: any) => sourceItem.id === this.state.categoryObj.id);
+        const categorySource         = [...state.categorySource];
 
-        // 如果当前ICON面板选择的ICON与之前的ICON不一致的话
-        if (this.state.selectedIcon !== this.state.defaultIcon) {
-            const updateIconBody = {
+        if (this.state.categorySource[key].iconText !== this.state.selectedIcon) {
+            categorySource[key].iconText = this.state.selectedIcon;
+            const updateIconBody         = {
                 id      : this.state.categoryObj.id,
                 iconText: this.state.selectedIcon
             };
@@ -156,13 +156,19 @@ class CategoryContainer extends React.Component {
             let type: 'success' | 'error';
             if (response.result !== 1) {
                 msg  = 'Change Category Icon success';
-                type = 'success'
+                type = 'success';
+
             } else {
                 msg  = 'Change Category Icon fail';
-                type = 'error'
+                type = 'error';
             }
             new VMessageService(msg, type, 2000).init();
         }
+
+        const newState = {...this.state, categorySource};
+
+        this.setState(newState);
+        this.categoryMenusEventBind();
 
     }
 
@@ -228,6 +234,7 @@ class CategoryContainer extends React.Component {
 
             // category分类menu节点事件处理(关闭/展开/选中)
             const categoryMenusEventBind = (event: MouseEvent, itemElement: HTMLElement, isContextMenu: boolean = false) => {
+
                 clearSelectedState();
                 const labelElement: HTMLElement = (itemElement.querySelector('label') as HTMLElement);
                 labelElement.setAttribute('current', 'true');
@@ -240,14 +247,20 @@ class CategoryContainer extends React.Component {
 
                 const menuId = Number(itemElement.getAttribute('data-menu-id'));
 
+                const state: any      = this.state;
+                state.categoryObj     = this.state.categorySource.filter((item: any) => item.id === Number(menuId))[0];
+                state.categoryElement = itemElement;
+
                 if (menuId !== 0 && (!this.state.categoryObj) || (this.state.categoryObj && this.state.categoryObj.id !== menuId)) {
                     EventEmitter.emit('selectedCategory', menuId);
                 }
 
-                const state: any      = this.state;
-                state.categoryObj     = this.state.categorySource.filter((item: any) => item.id === Number(menuId))[0];
-                state.categoryElement = itemElement;
-                state.defaultIcon     = (itemElement.querySelector('img') as HTMLElement).title;
+                if (menuId === 0) {
+                    state.selectedIcon = 'folder';
+                } else {
+                    state.selectedIcon = (itemElement.querySelector('img') as HTMLElement).title;
+                }
+
                 this.setState(state);
 
                 // 分类更名组件
@@ -259,10 +272,8 @@ class CategoryContainer extends React.Component {
 
                 // 分类图标组件
                 if (this.state.categoryIconPanelState) {
-                    console.log('closeChangeCategoryIconPanel');
                     this.closeChangeCategoryIconPanel();
                 } else {
-                    console.log('setIconPanelPos');
                     this.setIconPanelPos();
                 }
 
@@ -285,28 +296,27 @@ class CategoryContainer extends React.Component {
 
                             // item[0] Add article;
                             // item[1] Created category;
-                            // item[2] Separator;
-                            // item[3] Rename category;
-                            // item[4] Remove category;
-                            // item[5] Change icon;
+                            // item[2] Change icon;
+                            // item[3] Separator;
+                            // item[4] Rename category;
+                            // item[5] Remove category;
 
                             if (!this.state.categoryObj) {
                                 items[0].enabled = false;
+                                items[1].enabled = true;
                                 items[2].enabled = false;
+                                items[3].enabled = false;
                                 items[4].enabled = false;
                                 items[5].enabled = false;
                             } else {
                                 items[0].enabled = true;
+                                items[1].enabled = true;
                                 items[2].enabled = true;
+                                items[3].enabled = true;
                                 items[4].enabled = true;
                                 items[5].enabled = true;
                             }
 
-                            // if (isLast === 'true') {
-                            //     items[0].enabled = isLast === 'true';
-                            // } else {
-                            //     items[0].enabled = false;
-                            // }
                             this.contextMenu.popup({window: Service.getWindow('master')});
                             categoryMenusEventBind(event, itemElement, true);
                         }
@@ -320,6 +330,7 @@ class CategoryContainer extends React.Component {
     // contextMenu初始化
     public contextMenuInit() {
         const $this: this = this;
+
         // item[0];
         this.contextMenu.append(new Service.MenuItem({
             enabled    : true,
@@ -328,6 +339,7 @@ class CategoryContainer extends React.Component {
                 $this.createdNote()
             }
         }));
+
         // item[1];
         this.contextMenu.append(new Service.MenuItem({
             enabled    : true,
@@ -336,6 +348,7 @@ class CategoryContainer extends React.Component {
                 $this.createdCategory()
             }
         }));
+
         // item[2];
         this.contextMenu.append(new Service.MenuItem({
             enabled    : true,
@@ -344,22 +357,25 @@ class CategoryContainer extends React.Component {
                 $this.renameCategory()
             }
         }));
+
         // item[3];
-        this.contextMenu.append(new Service.MenuItem({type: 'separator'}));
-        // item[4];
-        this.contextMenu.append(new Service.MenuItem({
-            enabled    : true,
-            accelerator: 'D',
-            label      : 'Remove category', click() {
-                $this.removeCategory()
-            }
-        }));
-        // item[5];
         this.contextMenu.append(new Service.MenuItem({
             enabled    : true,
             accelerator: 'I',
             label      : 'Change icon', click() {
                 $this.changeCategoryIcon();
+            }
+        }));
+
+        // item[4];
+        this.contextMenu.append(new Service.MenuItem({type: 'separator'}));
+
+        // item[5];
+        this.contextMenu.append(new Service.MenuItem({
+            enabled    : true,
+            accelerator: 'D',
+            label      : 'Remove category', click() {
+                $this.removeCategory()
             }
         }));
     }
@@ -374,7 +390,8 @@ class CategoryContainer extends React.Component {
 
     // 创建分类
     public async createdCategory() {
-        let postfix          = new Date().getTime() + '';
+        console.log('createdCategory');
+        let postfix          = String(new Date().getTime());
         postfix              = postfix.substring(postfix.length - 4, postfix.length);
         const name: string   = 'temp' + postfix;
         const parent: number = this.state.categoryObj ? this.state.categoryObj.id : 0;
@@ -497,12 +514,9 @@ class CategoryContainer extends React.Component {
 
     // 当ICON面板中ICON被点击后的事件
     public changeCategoryIconEvent(item: { icon: string }) {
-        const state                        = this.state;
-        const key                          = this.state.categorySource.findIndex((sourceItem: any) => sourceItem.id === this.state.categoryObj.id);
-        state.categorySource[key].iconText = item.icon;
-        state.selectedIcon                 = item.icon;
+        const state        = this.state;
+        state.selectedIcon = item.icon;
         this.setState(state);
-        this.categoryMenusEventBind();
     }
 
     public render() {
@@ -524,7 +538,6 @@ class CategoryContainer extends React.Component {
                             this.state.categorySource.length > 0 &&
                             // 分类树组件
 							<CategoryTree
-								selectedIcon={this.state.selectedIcon}
 								data={this.state.categorySource}
 							/>
                         }
@@ -566,7 +579,7 @@ class CategoryContainer extends React.Component {
                 <CategoryIconPanel
                     pos={this.state.categoryIconPanelPos}
                     show={this.state.categoryIconPanelState}
-                    defaultIcon={this.state.defaultIcon}
+                    defaultIcon={this.state.selectedIcon}
                     cancelEvent={this.closeChangeCategoryIconPanel}
                     changeIconEvent={this.changeCategoryIconEvent}
                 />

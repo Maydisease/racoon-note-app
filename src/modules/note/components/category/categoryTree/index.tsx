@@ -1,6 +1,5 @@
 import * as React        from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {store}           from "../../../../../store";
 
 class Index extends React.Component {
 
@@ -8,7 +7,6 @@ class Index extends React.Component {
 
     constructor(props: any) {
         super(props);
-        this.handelMoveArticleDrop = this.handelMoveArticleDrop.bind(this);
     }
 
     public shouldComponentUpdate(nextProps: any, nextState: any) {
@@ -19,31 +17,15 @@ class Index extends React.Component {
             flag = true;
         }
 
-        if (this.props.selectedIcon !== nextProps.selectedIcon) {
-            flag = true;
-        }
-
         return flag;
-    }
-
-    public handelMoveArticleDragOver(event: any) {
-        event.stopPropagation();
-        event.preventDefault();
-    }
-
-    public handelMoveArticleDrop(item: any, event: any) {
-        event.stopPropagation();
-        const moveArticleId = Number(event.dataTransfer.getData("moveArticle")) || undefined;
-        if (moveArticleId) {
-            store.dispatch({type: 'NOTE$MOVE_ARTICLE', playload: {moveArticleId, receiveCategoryId: item.id}});
-        }
     }
 
     public render() {
 
         const Tree = (props: any, data: any = undefined): any => {
 
-            let categoryData = props && props.data && props.data.length > 0 ? props.data : data;
+            const categorySourceData = props && props.data && props.data.length > 0 ? props.data : data;
+            let categoryData         = JSON.parse(JSON.stringify(categorySourceData));
 
             const sourceCategoryDataToTreeData = (sourceData: any) => {
 
@@ -75,8 +57,6 @@ class Index extends React.Component {
 
                         return (
                             <div
-                                onDragOver={this.handelMoveArticleDragOver}
-                                onDrop={this.handelMoveArticleDrop.bind(this, item)}
                                 className="item" key={item.id}
                                 data-menu-id={item.id} data-is-last={!item.children && 'true'}
                             >
