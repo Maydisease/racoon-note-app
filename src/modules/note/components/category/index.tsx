@@ -247,13 +247,14 @@ class CategoryContainer extends React.Component {
 
                 const menuId = Number(itemElement.getAttribute('data-menu-id'));
 
+                if (menuId !== 0 && (!this.state.categoryObj) || (this.state.categoryObj && this.state.categoryObj.id !== menuId)) {
+                    console.log('menuId: ', menuId);
+                    EventEmitter.emit('selectedCategory', menuId);
+                }
+
                 const state: any      = this.state;
                 state.categoryObj     = this.state.categorySource.filter((item: any) => item.id === Number(menuId))[0];
                 state.categoryElement = itemElement;
-
-                if (menuId !== 0 && (!this.state.categoryObj) || (this.state.categoryObj && this.state.categoryObj.id !== menuId)) {
-                    EventEmitter.emit('selectedCategory', menuId);
-                }
 
                 if (menuId === 0) {
                     state.selectedIcon = 'folder';
