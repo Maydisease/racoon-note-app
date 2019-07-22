@@ -26,20 +26,21 @@ pre[class*="language-"] {
     border: 1px solid RGBA(0, 0, 0, 0.4);
 }
 
-pre[class*="language-"] code{
+pre[class*="language-"] code {
     font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
 }
 
 /* Code blocks */
 pre[class*="language-"] {
     width: calc(100% - 20px);
-    padding: 1em;
+    padding: 20px 5px 20px 5px;
     margin: .5em 0 .5em 20px;
     overflow: auto;
     position: relative;
     border-radius: 0.3em;
     box-sizing: border-box;
-    &:before{
+    
+    &:before {
         right: 5px;
         top: 3px;
         font-size: 11px;
