@@ -33,7 +33,7 @@ pre[class*="language-"] code {
 /* Code blocks */
 pre[class*="language-"] {
     width: calc(100% - 20px);
-    padding: 20px 5px 20px 5px;
+    padding: 20px;
     margin: .5em 0 .5em 20px;
     overflow: auto;
     position: relative;
@@ -47,6 +47,11 @@ pre[class*="language-"] {
         color: hsla(0, 0%, 100%, .4);
         position: absolute;
         content: attr(language);
+        transition: top .2s;
+    }
+    
+    &:hover:before {
+        top: -15px;
     }
 }
 

@@ -841,7 +841,7 @@ body[theme='dark'] {
                                 
                                 h1, h2, h3, h4, h5, h6 {
                                     padding-left: 0;
-                                    margin: 20px 0 15px;
+                                    margin: 35px 0 15px;
                                     color: RGBA(255, 255, 255, .8);
                                 }
                                 
@@ -852,7 +852,7 @@ body[theme='dark'] {
                                 }
                                 
                                 & > p {
-                                    margin: 0 0 15px 0;
+                                    padding-bottom: 15px;
                                     line-height: 1.6;
                                     padding-left: 20px;
                                 }
@@ -868,6 +868,7 @@ body[theme='dark'] {
                                 }
                                 
                                 & > pre {
+                                    margin: 20px 0 20px 20px;
                                     overflow-x: auto;
                                 }
                                 
