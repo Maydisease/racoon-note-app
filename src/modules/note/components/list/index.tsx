@@ -38,7 +38,7 @@ class ListComponent extends React.Component {
         this.handleInputActive            = this.handleInputActive.bind(this);
         this.handleChange                 = this.handleChange.bind(this);
         this.clearSearchKeys              = this.clearSearchKeys.bind(this);
-        this.getActiveList                = this.getActiveList.bind(this);
+        this.getArticleList               = this.getArticleList.bind(this);
         this.handleItemClick              = this.handleItemClick.bind(this);
         this.removeNote                   = this.removeNote.bind(this);
         this.clearItemSelectedState       = this.clearItemSelectedState.bind(this);
@@ -225,6 +225,7 @@ class ListComponent extends React.Component {
         }, 200)
     }
 
+    // 全局搜索事件
     public quickSearchEvent() {
         switch (this.state.quickSearchType) {
             case 0:
@@ -252,7 +253,7 @@ class ListComponent extends React.Component {
     public async UpdateArticleListDom(cid: number) {
         const state       = this.state;
         state.currentCid  = cid;
-        state.articleList = await this.getActiveList(cid);
+        state.articleList = await this.getArticleList(cid);
         if (state.articleList) {
             state.articleList.map((item: any, index: number) => {
                 state.articleList[index].selected = false;
@@ -315,8 +316,8 @@ class ListComponent extends React.Component {
     }
 
     // 获取文章列表
-    public async getActiveList(cid: number) {
-        const request = await new Service.ServerProxy('note', 'getArticleData', {cid}).send();
+    public async getArticleList(cid: number) {
+        const request = await new Service.ServerProxy('note', 'getArticleList', {cid}).send();
         if (request.result !== 1) {
             return request.data;
         } else {
@@ -336,8 +337,18 @@ class ListComponent extends React.Component {
         this.setState(state);
     }
 
+    // 获取文章详情
+    public async getArticleData(id: number) {
+        const request = await new Service.ServerProxy('note', 'getArticleData', {id}).send();
+        if (request.result !== 1) {
+            return request.data;
+        } else {
+            return [];
+        }
+    }
+
     // 文章列表被点击
-    public handleItemClick(item: any, forceUpdate?: boolean): boolean | void {
+    public async handleItemClick(item: any, forceUpdate: boolean = false): Promise<boolean | void> {
 
         const state = this.state;
         const key   = state.articleList.findIndex((sourceItem: any) => item === sourceItem);
@@ -353,16 +364,18 @@ class ListComponent extends React.Component {
         state.articleObj                = item;
         this.setState(state);
 
+        const response = await this.getArticleData(item.id);
+
         // 更新store中NOTE内的文章字段组
         store.dispatch({
             type    : 'NOTE$UPDATE_ARTICLE',
             playload: {
-                id              : item.id,
-                cid             : item.cid,
-                title           : item.title,
-                lock            : item.lock,
-                markdown_content: item.markdown_content,
-                html_content    : item.html_content,
+                id              : response.id,
+                cid             : response.cid,
+                title           : response.title,
+                lock            : response.lock,
+                markdown_content: response.markdown_content,
+                html_content    : response.html_content,
             }
         });
 
@@ -370,9 +383,9 @@ class ListComponent extends React.Component {
         store.dispatch({
             type    : 'NOTE$UPDATE_ARTICLE_TEMP',
             playload: {
-                title           : item.title,
-                markdown_content: item.markdown_content,
-                html_content    : item.html_content
+                title           : response.title,
+                markdown_content: response.markdown_content,
+                html_content    : response.html_content
             }
         });
 
@@ -425,10 +438,10 @@ class ListComponent extends React.Component {
                             <div
                                 className={`item ${item.selected === true && 'current'}`}
                                 key={item.id}
-                                onClick={this.handleItemClick.bind(this, item)}
+                                onClick={this.handleItemClick.bind(this, item, false)}
                                 onContextMenu={this.handleItemContextMenu.bind(this, item)}
                             >
-                                <div className="date">{friendlyDate(item.inputTime)}</div>
+                                <div className="date">{friendlyDate(item.updateTime)}</div>
                                 <div className="context">
                                     <h2>{item.title}</h2>
                                     <div className="description">
