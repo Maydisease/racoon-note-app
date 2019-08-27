@@ -1,5 +1,6 @@
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import * as React        from "react";
+import {request}         from "../../note/services/requst.service";
 import {Service}         from "../../../lib/master.electron.lib";
 import {VLoadingService} from "../../component/loading";
 
@@ -29,7 +30,7 @@ class FinishList extends React.Component {
         loading = new VLoadingService({});
         loading.init();
 
-        const response = await new Service.ServerProxy('attached', 'getAttachedData').send();
+        const response = await request('attached', 'getAttachedData');
         if (response.result !== 1) {
             const state              = this.state;
             state.finishAttachedList = response.data;
@@ -52,7 +53,7 @@ class FinishList extends React.Component {
             // btn 按钮被点击，删除被选中的Note
             async (btnIndex: number) => {
                 if (btnIndex === 0) {
-                    const response = await new Service.ServerProxy('attached', 'removeAttached', {ids: [id]}).send();
+                    const response = await request('attached', 'removeAttached', {ids: [id]});
 
                     if (response.result !== 1) {
                         const state = this.state;

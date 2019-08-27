@@ -2,6 +2,7 @@ import * as React        from 'react';
 import {EventEmitter}    from "../../services/events.service";
 import {ArticleService}  from "../../services/article.service";
 import {Service}         from "../../../../lib/master.electron.lib";
+import {request}         from "../../services/requst.service";
 import {store}           from "../../../../store";
 import {storeSubscribe}  from "../../../../store/middleware/storeActionEvent.middleware";
 import {connect}         from "react-redux";
@@ -123,9 +124,9 @@ class ListComponent extends React.Component {
             async (btnIndex: number) => {
                 if (btnIndex === 0) {
                     const articleId = this.state.articleObj.id;
-                    const request   = await new Service.ServerProxy('note', 'setArticleDisableState', {id: articleId, disable: 1}).send();
+                    const response  = await request('note', 'setArticleDisableState', {id: articleId, disable: 1});
 
-                    if (request.result !== 1) {
+                    if (response.result !== 1) {
 
                         store.dispatch({
                             type: 'NOTE$SELECTED_ARTICLE'
@@ -153,8 +154,8 @@ class ListComponent extends React.Component {
     // 锁定文章
     public async lockNote() {
         const articleId = this.state.articleObj.id;
-        const request   = await new Service.ServerProxy('note', 'setArticleLockState', {id: articleId, lock: 1}).send();
-        if (request.result === 0) {
+        const response  = await request('note', 'setArticleLockState', {id: articleId, lock: 1});
+        if (response.result === 0) {
             const state                 = this.state;
             const key                   = state.articleList.findIndex((sourceItem: any) => articleId === sourceItem.id);
             state.articleList[key].lock = 1;
@@ -317,9 +318,9 @@ class ListComponent extends React.Component {
 
     // 获取文章列表
     public async getArticleList(cid: number) {
-        const request = await new Service.ServerProxy('note', 'getArticleList', {cid}).send();
-        if (request.result !== 1) {
-            return request.data;
+        const response = await request('note', 'getArticleList', {cid});
+        if (response.result !== 1) {
+            return response.data;
         } else {
             return [];
         }
@@ -339,9 +340,9 @@ class ListComponent extends React.Component {
 
     // 获取文章详情
     public async getArticleData(id: number) {
-        const request = await new Service.ServerProxy('note', 'getArticleData', {id}).send();
-        if (request.result !== 1) {
-            return request.data;
+        const response = await request('note', 'getArticleData', {id});
+        if (response.result !== 1) {
+            return response.data;
         } else {
             return [];
         }
@@ -364,7 +365,21 @@ class ListComponent extends React.Component {
         state.articleObj                = item;
         this.setState(state);
 
-        const response = await this.getArticleData(item.id);
+        let response;
+
+        response = await Service.ClientCache('/note/article').getArticle(item.id);
+
+        if (!response) {
+            console.log('no cache0');
+            response = await this.getArticleData(item.id);
+            await Service.ClientCache('/note/article').addArticle(response);
+        } else if (response.updateTime < item.updateTime) {
+            console.log('no cache1');
+            response = await this.getArticleData(item.id);
+            await Service.ClientCache('/note/article').updateArticle(item.id, response);
+        } else {
+            console.log('cache');
+        }
 
         // 更新store中NOTE内的文章字段组
         store.dispatch({

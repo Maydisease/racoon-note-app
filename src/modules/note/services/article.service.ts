@@ -1,6 +1,6 @@
-import {Service}         from "../../../lib/master.electron.lib";
 import {VMessageService} from "../../component/message";
 import {store}           from "../../../store";
+import {request}         from "./requst.service";
 
 export class ArticleService {
 
@@ -17,8 +17,8 @@ export class ArticleService {
             html_content    : 'html balabala'
         };
 
-        const request = await new Service.ServerProxy('note', 'addArticleData', noteBody).send();
-        return request.result !== 1;
+        const response = await request('note', 'addArticleData', noteBody);
+        return response.result !== 1;
     }
 
     public async saveNote(): Promise<boolean | void> {
@@ -46,9 +46,9 @@ export class ArticleService {
             markdown_content: ARTICLE_TEMP.markdown_content
         };
 
-        const request = await new Service.ServerProxy('note', 'updateArticleData', updateContentBody).send();
+        const response = await request('note', 'updateArticleData', updateContentBody);
 
-        if (request.result !== 1) {
+        if (response.result !== 1) {
 
             new VMessageService('note update success!', 'success').init();
 

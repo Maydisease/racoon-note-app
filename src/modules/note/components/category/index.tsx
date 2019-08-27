@@ -9,6 +9,7 @@ import {storeSubscribe}                    from "../../../../store/middleware/st
 import {VMessageService}                   from "../../../component/message";
 import {FontAwesomeIcon}                   from '@fortawesome/react-fontawesome';
 import {store}                             from "../../../../store";
+import {request}                           from '../../services/requst.service';
 import {AppCommandService}                 from "../../services/appCommand.service";
 import {AttachedService, $AttachedService} from '../../services/window_manage/attached.server';
 
@@ -108,9 +109,10 @@ class CategoryContainer extends React.Component {
     // 获取分类数据
     public async getCategoryData(): Promise<void> {
         const state: any = this.state;
-        const request    = await new Service.ServerProxy('note', 'getCategoryData').send();
-        if (request.request !== 1 && request.data && request.data.length > 0) {
-            state.categorySource = request.data;
+        const response   = await request('note', 'getCategoryData');
+        console.log(1111, response);
+        if (response.request !== 1 && response.data && response.data.length > 0) {
+            state.categorySource = response.data;
         } else {
             state.categorySource = [];
         }
@@ -151,7 +153,7 @@ class CategoryContainer extends React.Component {
                 iconText: this.state.selectedIcon
             };
 
-            const response = await new Service.ServerProxy('note', 'updateCategoryIcon', updateIconBody).send();
+            const response = await request('note', 'updateCategoryIcon', updateIconBody);
             let msg        = '';
             let type: 'success' | 'error';
             if (response.result !== 1) {
@@ -182,10 +184,10 @@ class CategoryContainer extends React.Component {
                 newName
             };
 
-            const request = await new Service.ServerProxy('note', 'renameCategory', renameBody).send();
+            const response = await request('note', 'renameCategory', renameBody);
 
             // 当前父级分类下只允许一个同名子分类
-            if (request.messageCode === 1010) {
+            if (response.messageCode === 1010) {
                 const msg = 'There is a brother of the same name';
                 new VMessageService(msg, 'error', 5000).init();
                 this.closeRenamePanel();
@@ -193,7 +195,7 @@ class CategoryContainer extends React.Component {
             }
 
             // 分类更名成功
-            if (request.result !== 1) {
+            if (response.result !== 1) {
                 new VMessageService('Category renamed success', 'success', 3000).init();
                 await this.updateCategoryDom();
                 this.closeRenamePanel();
@@ -396,8 +398,8 @@ class CategoryContainer extends React.Component {
         postfix              = postfix.substring(postfix.length - 4, postfix.length);
         const name: string   = 'temp' + postfix;
         const parent: number = this.state.categoryObj ? this.state.categoryObj.id : 0;
-        const request        = await new Service.ServerProxy('note', 'addCategoryData', {parent, name}).send();
-        if (request.result !== 1) {
+        const response       = await request('note', 'addCategoryData', {parent, name});
+        if (response.result !== 1) {
             await this.updateCategoryDom();
         }
     }
@@ -417,11 +419,11 @@ class CategoryContainer extends React.Component {
                 // btn 按钮被点击，提交删除分类操作
                 async (btnIndex: number): Promise<void | boolean> => {
                     if (btnIndex === 0) {
-                        const id      = this.state.categoryObj.id;
-                        const request = await new Service.ServerProxy('note', 'removeCategory', {id}).send();
+                        const id       = this.state.categoryObj.id;
+                        const response = await request('note', 'removeCategory', {id});
 
                         // 当前父级分类下只允许一个同名子分类
-                        if (request.messageCode === 1013) {
+                        if (response.messageCode === 1013) {
                             const msg = 'Current category has subcategories!';
                             new VMessageService(msg, 'error', 3000).init();
                             this.closeRenamePanel();
@@ -429,14 +431,14 @@ class CategoryContainer extends React.Component {
                         }
 
                         // 当前分类下有文章
-                        if (request.messageCode === 1014) {
+                        if (response.messageCode === 1014) {
                             const msg = 'Current category has articles!';
                             new VMessageService(msg, 'error', 3000).init();
                             this.closeRenamePanel();
                             return false;
                         }
 
-                        if (request.result !== 1) {
+                        if (response.result !== 1) {
                             await this.updateCategoryDom();
                         }
                     }

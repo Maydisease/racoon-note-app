@@ -1,5 +1,6 @@
 import * as React from "react";
 import './search.scss';
+import {request}  from "../../services/requst.service";
 import {Service}  from "../../../../lib/master.electron.lib";
 
 class SuperSearch extends React.Component {
@@ -113,12 +114,12 @@ class SuperSearch extends React.Component {
         this.timer = setTimeout(async () => {
             const type    = this.state.filterType;
             const keys    = this.state.from.searchKeys.value;
-            const request = await new Service.ServerProxy('note', 'search', {type, keys}).send();
-            if (request.result !== 1) {
-                request.data.forEach((item: any, index: number) => {
-                    request.data[index].selected = index === 0;
+            const response = await request('note', 'search', {type, keys});
+            if (response.result !== 1) {
+                response.data.forEach((item: any, index: number) => {
+                    response.data[index].selected = index === 0;
                 });
-                state.searchData = request.data;
+                state.searchData = response.data;
             } else {
                 state.searchData = [];
             }

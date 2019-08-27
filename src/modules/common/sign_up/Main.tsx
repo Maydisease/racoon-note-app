@@ -1,6 +1,7 @@
 import * as React        from 'react';
 import {Service}         from '../../../lib/master.electron.lib';
 import {Link, Redirect}  from "react-router-dom";
+import {request}         from "../../note/services/requst.service";
 import {VMessageService} from '../../component/message';
 
 interface Props {
@@ -98,10 +99,10 @@ class SignUpMain extends React.Component<Props, State> {
         };
 
         // 向服务端发送注册用户请求
-        const request = await new Service.ServerProxy('User', 'addUserData', postBody).send();
+        const response = await request('User', 'addUserData', postBody);
 
         // 如果注册成功
-        if (request.result === 0) {
+        if (response.result === 0) {
             // 'sign', 'registration success'
             Service.Dialog.showMessageBox({
                     title  : 'sign',
@@ -146,15 +147,15 @@ class SignUpMain extends React.Component<Props, State> {
         else if (new RegExp(/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/).test(username)) {
 
             // 校验用户是否存在
-            const request = await new Service.ServerProxy('User', 'asyncVerifyUser', {username}).send();
+            const response = await request('User', 'asyncVerifyUser', {username});
 
-            if (request.result === 1) {
+            if (response.result === 1) {
                 Service.Dialog.showErrorBox('sign', 'registration failure');
                 return false;
             }
 
             // 如果存在，那么设置表单校验状态
-            if (request.data.state === 1) {
+            if (response.data.state === 1) {
                 state.from.username.verify = 2;
                 this.setState(state);
                 const message = 'The email already exists';

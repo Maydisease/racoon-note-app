@@ -1,7 +1,7 @@
 import * as React        from 'react';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {connect}         from "react-redux";
-import {Service}         from "../../../../../lib/master.electron.lib";
+import {request}         from "../../../services/requst.service";
 import {store}           from "../../../../../store";
 import {VMessageService} from "../../../../component/message";
 import {VLoadingService} from "../../../../component/loading";
@@ -68,15 +68,15 @@ class LockComponent extends React.Component {
         loading.init();
         const ARTICLE  = (this.props as any).STORE_NOTE$ARTICLE;
         const password = this.state.from.lockPassword.value;
-        const request  = await new Service.ServerProxy('note', 'setArticleLockState', {id: ARTICLE.id, lock: 0, password}).send();
+        const response = await request('note', 'setArticleLockState', {id: ARTICLE.id, lock: 0, password});
         loading.destroy();
 
-        if (request.result === 0) {
+        if (response.result === 0) {
             store.dispatch({
                 type: 'NOTE$UNLOCK_ARTICLE'
             });
         } else {
-            switch (request.messageCode) {
+            switch (response.messageCode) {
                 case 1004:
                     const msg = 'Unlock failed, password error!';
                     new VMessageService(msg, 'error', 3000).init();

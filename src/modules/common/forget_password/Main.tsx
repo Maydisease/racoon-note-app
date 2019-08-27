@@ -1,6 +1,7 @@
 import * as React        from 'react';
 import {Service}         from '../../../lib/master.electron.lib';
 import {Link}            from "react-router-dom";
+import {request}         from "../../note/services/requst.service";
 import {VLoadingService} from "../../component/loading";
 import {VMessageService} from '../../component/message';
 
@@ -102,7 +103,7 @@ class ForgetPasswordMain extends React.Component<Props, State> {
 
         const vload = new VLoadingService({});
         vload.init();
-        const response = await new Service.ServerProxy('User', 'changeUserPassword', {verifycode, username, password}).send();
+        const response = await request('User', 'changeUserPassword', {verifycode, username, password});
         vload.destroy();
         if (response.result === 1) {
             const state = this.state;
@@ -175,7 +176,7 @@ class ForgetPasswordMain extends React.Component<Props, State> {
         }
 
         // 向服务端发送用户有效性校验请求
-        const asyncVerifyUserResponse = await new Service.ServerProxy('User', 'asyncVerifyUser', {username}).send();
+        const asyncVerifyUserResponse = await request('User', 'asyncVerifyUser', {username});
 
         // 网络出错
         if (asyncVerifyUserResponse.result === 1 && asyncVerifyUserResponse.err) {
@@ -251,7 +252,7 @@ class ForgetPasswordMain extends React.Component<Props, State> {
         const vload = new VLoadingService({});
         vload.init();
 
-        const sendVerifyMailResponse = await new Service.ServerProxy('user', 'sendForgetPasswordVerifyMail', {username}).send();
+        const sendVerifyMailResponse = await request('user', 'sendForgetPasswordVerifyMail', {username});
         this.setSendFlagTimer();
         vload.destroy();
         if (sendVerifyMailResponse.result === 1) {

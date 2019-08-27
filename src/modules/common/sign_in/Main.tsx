@@ -1,6 +1,7 @@
 import * as React        from 'react';
 import {Service}         from '../../../lib/master.electron.lib';
 import {Link}            from "react-router-dom";
+import {request}         from "../../note/services/requst.service";
 import {VMessageService} from '../../component/message';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
@@ -89,7 +90,7 @@ class SignInMain extends React.Component<Props, State> {
         }
 
         // 用户登录请求
-        const signInResponse = await new Service.ServerProxy('User', 'signIn', {username, password}).send();
+        const signInResponse = await request('User', 'signIn', {username, password});
 
         // 网络出错
         if (signInResponse.result === 1 && signInResponse.err) {
@@ -139,7 +140,7 @@ class SignInMain extends React.Component<Props, State> {
         }
 
         // 向服务端发送用户有效性校验请求
-        const asyncVerifyUserResponse = await new Service.ServerProxy('User', 'asyncVerifyUser', {username}).send();
+        const asyncVerifyUserResponse = await request('User', 'asyncVerifyUser', {username});
 
         // 网络出错
         if (asyncVerifyUserResponse.result === 1 && asyncVerifyUserResponse.err) {
