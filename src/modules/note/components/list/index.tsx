@@ -156,9 +156,10 @@ class ListComponent extends React.Component {
         const articleId = this.state.articleObj.id;
         const response  = await request('note', 'setArticleLockState', {id: articleId, lock: 1});
         if (response.result === 0) {
-            const state                 = this.state;
-            const key                   = state.articleList.findIndex((sourceItem: any) => articleId === sourceItem.id);
-            state.articleList[key].lock = 1;
+            const state                       = this.state;
+            const key                         = state.articleList.findIndex((sourceItem: any) => articleId === sourceItem.id);
+            state.articleList[key].lock       = 1;
+            state.articleList[key].updateTime = new Date().toTimeString();
             this.setState(state);
             this.handleItemClick(this.state.articleList[key], true);
         }
@@ -170,9 +171,10 @@ class ListComponent extends React.Component {
         // 如果list是被选中的文章
         if (this.state.articleObj.cid === this.state.currentCid) {
 
-            const state                 = this.state;
-            const key                   = state.articleList.findIndex((sourceItem: any) => articleId === sourceItem.id);
-            state.articleList[key].lock = 0;
+            const state                       = this.state;
+            const key                         = state.articleList.findIndex((sourceItem: any) => articleId === sourceItem.id);
+            state.articleList[key].lock       = 0;
+            state.articleList[key].updateTime = new Date().toTimeString();
             this.setState(state);
             this.handleItemClick(this.state.articleObj, true);
 
@@ -373,13 +375,15 @@ class ListComponent extends React.Component {
             console.log('no cache0');
             response = await this.getArticleData(item.id);
             await Service.ClientCache('/note/article').addArticle(response);
-        } else if (response.updateTime < item.updateTime) {
+        } else if ((response.updateTime < item.updateTime) || forceUpdate) {
             console.log('no cache1');
             response = await this.getArticleData(item.id);
             await Service.ClientCache('/note/article').updateArticle(item.id, response);
         } else {
             console.log('cache');
         }
+
+        console.log(111, response);
 
         // 更新store中NOTE内的文章字段组
         store.dispatch({
