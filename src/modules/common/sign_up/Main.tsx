@@ -136,7 +136,7 @@ class SignUpMain extends React.Component<Props, State> {
 
         // 用户名不能为空
         if (!username || username === '') {
-            state.from.username.verify     = 2;
+            state.from.username.verify = 2;
             this.setState(state);
             const message = 'Email cannot be empty';
             new VMessageService(message, 'validate', 5000).init();
@@ -149,13 +149,15 @@ class SignUpMain extends React.Component<Props, State> {
             // 校验用户是否存在
             const response = await request('User', 'asyncVerifyUser', {username});
 
+            console.log(response);
+
             if (response.result === 1) {
                 Service.Dialog.showErrorBox('sign', 'registration failure');
                 return false;
             }
 
             // 如果存在，那么设置表单校验状态
-            if (response.data.state === 1) {
+            if (response.data && response.data.state === 1) {
                 state.from.username.verify = 2;
                 this.setState(state);
                 const message = 'The email already exists';
@@ -165,7 +167,7 @@ class SignUpMain extends React.Component<Props, State> {
 
             // 如果不存在，那么设置表单校验状态
             else {
-                state.from.username.verify     = 1;
+                state.from.username.verify = 1;
                 this.setState(state);
                 return true;
             }
@@ -232,7 +234,7 @@ class SignUpMain extends React.Component<Props, State> {
             }
             // 校验两次密码是否相等，并设置表单校验状态
             else {
-                state.from.repassword.verify     = 2;
+                state.from.repassword.verify = 2;
                 this.setState(state);
                 const message = 'The repassword do not match';
                 new VMessageService(message, 'validate', 5000).init();
@@ -241,7 +243,7 @@ class SignUpMain extends React.Component<Props, State> {
         }
         // 意外的错误
         else {
-            state.from.repassword.verify     = 2;
+            state.from.repassword.verify = 2;
             this.setState(state);
             const message = 'Unexpected error';
             new VMessageService(message, 'validate', 5000).init();

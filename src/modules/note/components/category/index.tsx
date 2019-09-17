@@ -68,9 +68,9 @@ class CategoryContainer extends React.Component {
         isDidMount            : false,
         renamePanelPos        : {},
         renamePanelState      : false,
-        categoryIconPanelState: false,
         renameValue           : '',
         categoryIconPanelPos  : {},
+        categoryIconPanelState: false,
         selectedIcon          : 'folder',
         defaultIcon           : 'folder'
     };
@@ -110,7 +110,6 @@ class CategoryContainer extends React.Component {
     public async getCategoryData(): Promise<void> {
         const state: any = this.state;
         const response   = await request('note', 'getCategoryData');
-        console.log(1111, response);
         if (response.request !== 1 && response.data && response.data.length > 0) {
             state.categorySource = response.data;
         } else {
@@ -250,7 +249,6 @@ class CategoryContainer extends React.Component {
                 const menuId = Number(itemElement.getAttribute('data-menu-id'));
 
                 if (menuId !== 0 && (!this.state.categoryObj) || (this.state.categoryObj && this.state.categoryObj.id !== menuId)) {
-                    console.log('menuId: ', menuId);
                     EventEmitter.emit('selectedCategory', menuId);
                 }
 
@@ -393,7 +391,6 @@ class CategoryContainer extends React.Component {
 
     // 创建分类
     public async createdCategory() {
-        console.log('createdCategory');
         let postfix          = String(new Date().getTime());
         postfix              = postfix.substring(postfix.length - 4, postfix.length);
         const name: string   = 'temp' + postfix;

@@ -1,0 +1,76 @@
+.switch {
+    width: 80px;
+    height: 25px;
+    text-align: left;
+    position: relative;
+    display: inline-block;
+    
+    label {
+        width: 100%;
+        height: 25px;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+    
+    span {
+        width: 40px;
+        height: 25px;
+        line-height: 25px;
+        text-align: center;
+        display: inline-block;
+        font-family: Arial, sans-serif;
+        color: RGBA(255, 255, 255, 0.5);
+        position: relative;
+        z-index: 401;
+        font-size: 12px;
+        font-weight: normal;
+        
+        &.active {
+            color: #FFF;
+        }
+        
+        &.side-block {
+            width: 40px;
+            height: 25px;
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 14px;
+            z-index: 400;
+            transition: transform .3s;
+            background: RGBA(39, 106, 179, 1);
+        }
+        
+    }
+    
+    &.type-1 .side-block {
+        transform: translateX(0);
+    }
+    
+    &.type-2 .side-block {
+        color: #FFF;
+        transform: translateX(100%);
+    }
+    
+    &.type-3 .side-block {
+        color: #FFF;
+        transform: translateX(200%);
+    }
+    
+    &.type-4 .side-block {
+        color: #FFF;
+        transform: translateX(300%);
+    }
+    
+    &.type-5 .side-block {
+        color: #FFF;
+        transform: translateX(400%);
+    }
+    
+    &.type-6 .side-block {
+        color: #FFF;
+        transform: translateX(500%);
+    }
+}

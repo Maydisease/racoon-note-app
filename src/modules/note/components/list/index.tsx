@@ -8,6 +8,7 @@ import {storeSubscribe}  from "../../../../store/middleware/storeActionEvent.mid
 import {connect}         from "react-redux";
 import {friendlyDate}    from '../../../../utils/friendlyDate.utils';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import SharePanel        from "./sharePanel";
 
 class ListComponent extends React.Component {
 
@@ -22,9 +23,15 @@ class ListComponent extends React.Component {
             }
         },
 
-        currentCid : null,
-        articleList: [],
-        articleObj : null
+        currentCid     : null,
+        articleList    : [],
+        articleObj     : null,
+        sharePanelPos  : {
+            x: 0,
+            y: 0
+        },
+        sharePanelState: false,
+        shareInfo      : {}
     };
 
     public listContextMenu: any;
@@ -32,6 +39,7 @@ class ListComponent extends React.Component {
     public quickSearchTimer: number;
     public articleService: ArticleService;
     public searchElement: React.RefObject<HTMLInputElement>;
+    public listElement: HTMLElement | null;
 
     constructor(props: any) {
         super(props);
@@ -46,6 +54,8 @@ class ListComponent extends React.Component {
         this.handleItemContextMenu        = this.handleItemContextMenu.bind(this);
         this.handleQuickSearchContextMenu = this.handleQuickSearchContextMenu.bind(this);
         this.quickSearchContextMenuInit   = this.quickSearchContextMenuInit.bind(this);
+        this.closeSharePanel              = this.closeSharePanel.bind(this);
+        this.updateShareInfo              = this.updateShareInfo.bind(this);
         this.listContextMenu              = new Service.Menu();
         this.quickSearchContextMenu       = new Service.Menu();
         this.searchElement                = React.createRef();
@@ -60,8 +70,16 @@ class ListComponent extends React.Component {
 
         this.listContextMenu.append(new Service.MenuItem({
             enabled    : true,
+            accelerator: 'S',
+            label      : 'Share Note', click() {
+                $this.shareNote()
+            }
+        }));
+
+        this.listContextMenu.append(new Service.MenuItem({
+            enabled    : true,
             accelerator: 'L',
-            label      : 'Lock note', click() {
+            label      : 'Lock Note', click() {
                 $this.lockNote()
             }
         }));
@@ -71,12 +89,39 @@ class ListComponent extends React.Component {
         this.listContextMenu.append(new Service.MenuItem({
             enabled    : true,
             accelerator: 'D',
-            label      : 'Delete note', click() {
+            label      : 'Delete Note', click() {
                 $this.removeNote()
             }
         }));
 
     }
+
+    public shareNote() {
+        const state: any      = this.state;
+        state.sharePanelState = true;
+        this.setState(state);
+        this.setSharePanelPos();
+    }
+
+    public closeSharePanel() {
+        const state: any      = this.state;
+        state.sharePanelState = false;
+        this.setState(state);
+        this.UpdateArticleListDom(this.state.currentCid);
+    }
+
+    // 设置ICON面板的位置
+    public setSharePanelPos() {
+        setTimeout(() => {
+            const listElement     = document.getElementById(`list_element_${this.state.articleObj.id}`) as HTMLElement | any;
+            const state           = this.state;
+            state.sharePanelPos.y = listElement.getBoundingClientRect().top;
+            state.sharePanelPos.x = listElement.offsetLeft;
+            this.setState(state);
+        }, 0);
+
+    }
+
 
     // 更改快速搜索的类型
     public changeQuickSearchType(type: number) {
@@ -141,7 +186,7 @@ class ListComponent extends React.Component {
                         });
 
                         const state = this.state;
-                        const index = state.articleList.findIndex((sourceItem: any) => this.state.articleObj === sourceItem);
+                        const index = state.articleList.findIndex((sourceItem: any) => this.state.articleObj.id === sourceItem.id);
                         state.articleList.splice(index, 1);
                         this.setState(state);
 
@@ -271,6 +316,7 @@ class ListComponent extends React.Component {
         }
 
         this.setState(state);
+
     }
 
     public async componentDidMount() {
@@ -350,8 +396,20 @@ class ListComponent extends React.Component {
         }
     }
 
+    public updateShareInfo(item: any) {
+        const state = this.state;
+        const key   = state.articleList.findIndex((sourceItem: any) => item.id === sourceItem.id);
+        state.shareInfo = {
+            aid           : state.articleList[key].id,
+            share_code    : state.articleList[key].share_code,
+            on_share      : state.articleList[key].on_share,
+            use_share_code: state.articleList[key].use_share_code
+        };
+        this.setState(state);
+    }
+
     // 文章列表被点击
-    public async handleItemClick(item: any, forceUpdate: boolean = false): Promise<boolean | void> {
+    public async handleItemClick(item: any, forceUpdate: boolean = false, e?: any): Promise<boolean | void> {
 
         const state = this.state;
         const key   = state.articleList.findIndex((sourceItem: any) => item === sourceItem);
@@ -365,12 +423,20 @@ class ListComponent extends React.Component {
 
         state.articleList[key].selected = true;
         state.articleObj                = item;
+        state.shareInfo                 = {
+            aid           : state.articleList[key].id,
+            share_code    : state.articleList[key].share_code,
+            on_share      : state.articleList[key].on_share,
+            use_share_code: state.articleList[key].use_share_code,
+            share_address : state.articleList[key].share_address
+        };
         this.setState(state);
 
         let response;
 
         response = await Service.ClientCache('/note/article').getArticle(item.id);
 
+        // 使用文章列表缓存机制
         if (!response) {
             console.log('no cache0');
             response = await this.getArticleData(item.id);
@@ -382,8 +448,6 @@ class ListComponent extends React.Component {
         } else {
             console.log('cache');
         }
-
-        console.log(111, response);
 
         // 更新store中NOTE内的文章字段组
         store.dispatch({
@@ -414,7 +478,7 @@ class ListComponent extends React.Component {
     }
 
     // 被响应的文章列表右键上下文菜单事件
-    public handleItemContextMenu(item: any) {
+    public handleItemContextMenu(item: any, e?: any) {
         if (item.selected) {
 
             const items = this.listContextMenu.items;
@@ -457,6 +521,7 @@ class ListComponent extends React.Component {
                             <div
                                 className={`item ${item.selected === true && 'current'}`}
                                 key={item.id}
+                                id={`list_element_${item.id}`}
                                 onClick={this.handleItemClick.bind(this, item, false)}
                                 onContextMenu={this.handleItemContextMenu.bind(this, item)}
                             >
@@ -511,6 +576,15 @@ class ListComponent extends React.Component {
                 <div className="article-list">
                     {this.state.articleList && this.state.articleList.length > 0 ? <ArticleItem data={this.state.articleList}/> : <div className="not-data">No notes ...</div>}
                 </div>
+
+                {/*分类ICON选择面板组件*/}
+                <SharePanel
+                    key={this.state.shareInfo.aid}
+                    shareInfo={this.state.shareInfo}
+                    pos={this.state.sharePanelPos}
+                    show={this.state.sharePanelState}
+                    cancelEvent={this.closeSharePanel}
+                />
             </div>
         );
     }
