@@ -397,8 +397,8 @@ class ListComponent extends React.Component {
     }
 
     public updateShareInfo(item: any) {
-        const state = this.state;
-        const key   = state.articleList.findIndex((sourceItem: any) => item.id === sourceItem.id);
+        const state     = this.state;
+        const key       = state.articleList.findIndex((sourceItem: any) => item.id === sourceItem.id);
         state.shareInfo = {
             aid           : state.articleList[key].id,
             share_code    : state.articleList[key].share_code,
@@ -525,7 +525,15 @@ class ListComponent extends React.Component {
                                 onClick={this.handleItemClick.bind(this, item, false)}
                                 onContextMenu={this.handleItemContextMenu.bind(this, item)}
                             >
-                                <div className="date">{friendlyDate(item.updateTime)}</div>
+                                <div className="subscript">
+                                    <span>{friendlyDate(item.updateTime)}</span>
+                                    {
+                                        item.on_share &&
+										<span className='share-icon'>
+                                            <FontAwesomeIcon className="fa-icon" icon="share-alt"/>
+                                        </span>
+                                    }
+                                </div>
                                 <div className="context">
                                     <h2>{item.title}</h2>
                                     <div className="description">

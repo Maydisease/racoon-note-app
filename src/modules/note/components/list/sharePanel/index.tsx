@@ -42,6 +42,10 @@ class SharePanel extends React.Component {
     public mountContainer: HTMLElement;
     public shareCodeElement: React.RefObject<HTMLInputElement>;
     public serverAddress = `${Service.Config.SERVER.HOST}:${Service.Config.SERVER.PORT}`;
+    public shareConfChangeTimer: number;
+    public getNewShareCodeTimer: number;
+    public copyClipboardTimer: number;
+    public toBrowserOpenShareLinkTimer: number;
 
     constructor(props: any) {
         super(props);
@@ -71,54 +75,79 @@ class SharePanel extends React.Component {
         this.props.cancelEvent();
     }
 
-    public async getNewShareCode() {
-        const params   = {
-            id: this.state.conf.aid
-        };
-        const response = await request('note', 'updateArticleShareCode', {...params});
-        if (response.result === 0) {
-            const state            = this.state;
-            const shareCodeElement = this.shareCodeElement.current as HTMLInputElement;
-            shareCodeElement.value = response.data.shareCode;
-            state.conf.share_code  = response.data.shareCode;
-            this.setState(this.state);
+    public async getNewShareCode(): Promise<void | boolean> {
+
+        if (this.state.conf.on_share === 0) {
+            return false;
         }
+
+        clearTimeout(this.getNewShareCodeTimer);
+
+        this.getNewShareCodeTimer = window.setTimeout(async () => {
+
+            const params   = {
+                id: this.state.conf.aid
+            };
+            const response = await request('note', 'updateArticleShareCode', {...params});
+            if (response.result === 0) {
+                const state            = this.state;
+                const shareCodeElement = this.shareCodeElement.current as HTMLInputElement;
+                shareCodeElement.value = response.data.shareCode;
+                state.conf.share_code  = response.data.shareCode;
+                this.setState(this.state);
+            }
+        }, 250);
 
     }
 
-    public copy(text: string) {
-        Service.Clipboard.writeText(text);
-        new VMessageService('copy to clipboard success!', 'success', 5000).init();
+    public toBrowserOpenShareLink(link: string): void {
+        clearTimeout(this.toBrowserOpenShareLinkTimer);
+        this.toBrowserOpenShareLinkTimer = window.setTimeout(() => {
+            Service.Shell.openExternal(link);
+        }, 250);
+    }
+
+    public copyClipboard(text: string): void {
+
+        clearTimeout(this.copyClipboardTimer);
+        this.copyClipboardTimer = window.setTimeout(() => {
+            Service.Clipboard.writeText(text);
+            new VMessageService('copy to clipboard success!', 'success', 5000).init();
+        }, 250);
     }
 
     // 更改分享配置
-    public async shareConfChange(name: string, value: number) {
+    public async shareConfChange(name: string, value: number): Promise<void> {
 
-        const state = this.state;
+        clearTimeout(this.shareConfChangeTimer);
 
-        switch (name) {
-            case 'onShare':
-                state.conf.on_share = value;
-                break;
-            case 'useShareCode':
-                state.conf.use_share_code = value;
-                break;
-        }
-        this.setState(state);
+        this.shareConfChangeTimer = window.setTimeout(async () => {
+            const state = this.state;
 
-        const params = {
-            id            : this.state.conf.aid,
-            on_share      : this.state.conf.on_share,
-            use_share_code: this.state.conf.use_share_code
-        };
+            switch (name) {
+                case 'onShare':
+                    state.conf.on_share = value;
+                    break;
+                case 'useShareCode':
+                    state.conf.use_share_code = value;
+                    break;
+            }
+            this.setState(state);
 
-        console.log('source', {...params});
+            const params = {
+                id            : this.state.conf.aid,
+                on_share      : this.state.conf.on_share,
+                use_share_code: this.state.conf.use_share_code
+            };
 
-        const response = await request('note', 'updateArticleShareConf', {...params});
+            console.log('source', {...params});
 
-        if (response.result === 0) {
-            console.log('更新成功', response);
-        }
+            const response = await request('note', 'updateArticleShareConf', {...params});
+
+            if (response.result === 0) {
+                console.log('更新成功', response);
+            }
+        }, 200);
 
     }
 
@@ -128,8 +157,8 @@ class SharePanel extends React.Component {
         let isReverse = false;
 
         // 判断展示的面板高度，当前视口是否能容纳的下，若无法容纳，则反向展示
-        if (y + 260 > document.body.clientHeight) {
-            y         = y - 70;
+        if (y + 240 > document.body.clientHeight) {
+            y         = y - 50;
             isReverse = true;
         }
 
@@ -144,7 +173,7 @@ class SharePanel extends React.Component {
             >
                 <div className="wrap">
 
-                    <div className="block">
+                    <div className="inline-block">
                         <VRadio
                             name="onShare"
                             selected={this.props.shareInfo.on_share}
@@ -153,7 +182,7 @@ class SharePanel extends React.Component {
                         />
                     </div>
 
-                    <div className="block last">
+                    <div className="inline-block last">
                         <VRadio
                             name="useShareCode"
                             disable={this.state.conf.on_share === 0}
@@ -173,9 +202,15 @@ class SharePanel extends React.Component {
                         />
                         <div
                             className="btn"
-                            onClick={this.copy.bind(this, `${this.serverAddress}${this.props.shareInfo.share_address}`)}
+                            onClick={this.copyClipboard.bind(this, `${this.serverAddress}${this.props.shareInfo.share_address}`)}
                         >
                             <FontAwesomeIcon icon="copy"/>
+                        </div>
+                        <div
+                            className="btn"
+                            onClick={this.toBrowserOpenShareLink.bind(this, `${this.serverAddress}${this.props.shareInfo.share_address}`)}
+                        >
+                            <FontAwesomeIcon icon="external-link-alt"/>
                         </div>
                     </div>
 
@@ -191,7 +226,7 @@ class SharePanel extends React.Component {
                         />
                         <div
                             className="btn"
-                            onClick={this.copy.bind(this, this.state.conf.share_code || this.props.shareInfo.share_code)}
+                            onClick={this.copyClipboard.bind(this, this.state.conf.share_code || this.props.shareInfo.share_code)}
                         >
                             <FontAwesomeIcon icon="copy"/>
                         </div>
