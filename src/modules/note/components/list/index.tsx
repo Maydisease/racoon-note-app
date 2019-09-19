@@ -531,7 +531,7 @@ class ListComponent extends React.Component {
                                         item.on_share &&
 										<span className='share-icon'>
                                             <FontAwesomeIcon className="fa-icon" icon="share-alt"/>
-                                        </span>
+                                        </span> || null
                                     }
                                 </div>
                                 <div className="context">
