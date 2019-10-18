@@ -111,20 +111,23 @@ class SuperSearch extends React.Component {
         if (this.timer) {
             clearTimeout(this.timer)
         }
+
         this.timer = setTimeout(async () => {
-            const type    = this.state.filterType;
-            const keys    = this.state.from.searchKeys.value;
-            const response = await request('note', 'search', {type, keys});
-            if (response.result !== 1) {
-                response.data.forEach((item: any, index: number) => {
-                    response.data[index].selected = index === 0;
-                });
-                state.searchData = response.data;
-            } else {
-                state.searchData = [];
+            const type = this.state.filterType;
+            const keys = this.state.from.searchKeys.value;
+            if (keys) {
+                const response = await request('note', 'search', {type, keys});
+                if (response.result !== 1) {
+                    response.data.forEach((item: any, index: number) => {
+                        response.data[index].selected = index === 0;
+                    });
+                    state.searchData = response.data;
+                } else {
+                    state.searchData = [];
+                }
+                state.selectedObj = undefined;
+                this.setState(state);
             }
-            state.selectedObj = undefined;
-            this.setState(state);
             clearTimeout(this.timer);
         }, 200)
     }
