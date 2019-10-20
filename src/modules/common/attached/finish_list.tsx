@@ -55,11 +55,14 @@ class FinishList extends React.Component {
                 if (btnIndex === 0) {
                     const response = await request('attached', 'removeAttached', {ids: [id]});
 
+                    console.log(1111111, response);
+
                     if (response.result !== 1) {
-                        const state = this.state;
-                        const index = state.finishAttachedList.findIndex((sourceItem: any) => sourceItem.id === id);
-                        state.finishAttachedList.splice(index, index + 1);
-                        this.setState(state);
+                        await this.getAttachedData();
+                        // const state = this.state;
+                        // const index = state.finishAttachedList.findIndex((sourceItem: any) => sourceItem.id === id);
+                        // state.finishAttachedList.splice(index, index + 1);
+                        // this.setState(state);
                     }
                 }
             }
