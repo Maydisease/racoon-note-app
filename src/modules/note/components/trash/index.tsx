@@ -67,7 +67,7 @@ class TrashArticle extends React.Component {
     }
 
     // 垃圾箱中的文章被点击时的触发
-    public itemSelectedHandel(id: number) {
+    public itemSelectedHandel(id: number): any {
         const state = this.state;
 
         if (state.trashArticleSelectedMaps[id]) {
