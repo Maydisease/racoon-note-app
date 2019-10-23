@@ -74,7 +74,8 @@ class TrashArticle extends React.Component {
             return false;
         }
 
-        Object.keys(state.trashArticleSelectedMaps).some((key: string, index: number) => {
+        const arrayMaps: any[] = Object.keys(state.trashArticleSelectedMaps);
+        arrayMaps.some((key: string, index: number) => {
             if (this.state.trashArticleSelectedMaps[key]) {
                 state.trashArticleSelectedMaps[key] = false;
             }
