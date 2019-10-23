@@ -77,8 +77,8 @@ class SuperLinkComponent extends React.Component {
             const curDragObjectY: number = Number(dragObject.getAttribute('Y'));
             const dragZoneMaxW: number   = dragZone.clientWidth - moveW;
             const dragZoneMaxH: number   = dragZone.clientHeight - moveH;
-            const dragObjectInDragZoneX  = e.layerX;
-            const dragObjectInDragZoneY  = e.layerY;
+            const dragObjectInDragZoneX  = (e as any).layerX;
+            const dragObjectInDragZoneY  = (e as any).layerY;
 
             document.body.style.pointerEvents = 'none';
 
