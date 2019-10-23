@@ -61,33 +61,11 @@ body[theme='dark'] {
                             background: RGBA(26, 26, 26, 1);
                             border-top: 1px solid RGBA(0, 0, 0, .1);
                             
-                            .line {
-                                width: 1px;
-                                height: 16px;
-                                margin-top: 6px;
-                                border-right: 1px solid RGBA(255, 255, 255, .07);
-                                
-                                &.left {
-                                    float: left;
-                                }
-                                
-                                &.right {
-                                    float: right;
-                                }
-                            }
-                            
-                            .fa-icon {
+                            label {
                                 width: 30px;
                                 height: 30px;
-                                padding: 8px;
-                                box-sizing: border-box;
-                                text-align: center;
-                                transition: color .2s;
-                                color: RGBA(255, 255, 255, .3);
-                                
-                                &:hover {
-                                    color: RGBA(255, 255, 255, .7);
-                                }
+                                float: left;
+                                cursor: pointer;
                                 
                                 &.left {
                                     float: left;
@@ -96,6 +74,45 @@ body[theme='dark'] {
                                 &.right {
                                     float: right;
                                 }
+                                
+                                
+                                .line {
+                                    width: 1px;
+                                    height: 16px;
+                                    margin-top: 6px;
+                                    border-right: 1px solid RGBA(255, 255, 255, .07);
+                                    
+                                    &.left {
+                                        float: left;
+                                    }
+                                    
+                                    &.right {
+                                        float: right;
+                                    }
+                                }
+                                
+                                .fa-icon {
+                                    width: 30px;
+                                    height: 30px;
+                                    padding: 8px;
+                                    box-sizing: border-box;
+                                    text-align: center;
+                                    transition: color .2s;
+                                    color: RGBA(255, 255, 255, .3);
+                                }
+                                
+                                &:not(.active) {
+                                    .fa-icon:hover {
+                                        color: RGBA(255, 255, 255, .7);
+                                    }
+                                }
+                                
+                                &.active {
+                                    .fa-icon {
+                                        color: RGBA(39, 106, 179, 1);
+                                    }
+                                }
+                                
                             }
                             
                             .logo-text {

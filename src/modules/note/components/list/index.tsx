@@ -88,8 +88,8 @@ class ListComponent extends React.Component {
 
         this.listContextMenu.append(new Service.MenuItem({
             enabled    : true,
-            accelerator: 'D',
-            label      : 'Delete Note', click() {
+            accelerator: 'T',
+            label      : 'Move To Trash', click() {
                 $this.removeNote()
             }
         }));
@@ -157,10 +157,10 @@ class ListComponent extends React.Component {
 
     public async removeNote() {
         Service.Dialog.showMessageBox({
-                title    : 'Delete this note',
+                title    : 'Move To Trash',
                 type     : 'question',
-                message  : 'Delete this note',
-                detail   : 'Do you really want to delete this note?',
+                message  : 'Move To Trash',
+                detail   : 'Are you sure you want to move this note to the trash?',
                 defaultId: 0,
                 cancelId : 1,
                 buttons  : ['Yes', 'Cancel']
@@ -494,7 +494,7 @@ class ListComponent extends React.Component {
              *
              * list context menu index
              *
-             * items[0] -> Delete
+             * items[0] -> Move To Trash
              * items[1] -> Lock
              *
              */

@@ -10,19 +10,27 @@ class TrashArticle extends React.Component {
     public state: any = {
         trashArticleList        : [],
         trashArticleSelectedMaps: {},
-        trashArticleDetail      : {
-            id          : 0,
-            title       : '',
-            description : '',
-            categoryPath: '',
-            date        : ''
-        }
+        trashArticleDetail      : {}
     };
 
     constructor(props: any) {
         super(props);
         this.actionCrush   = this.actionCrush.bind(this);
         this.actionRestore = this.actionRestore.bind(this);
+    }
+
+    // 初始化当前的trashArticleDetail对象
+    public async initTrashArticleDetail() {
+        const state              = this.state;
+        state.trashArticleDetail = {
+            id          : 0,
+            title       : '',
+            description : '',
+            categoryPath: '',
+            date        : ''
+        };
+        this.setState(state);
+        await this.getTrashArticleList();
     }
 
     // 获取垃圾箱中的文章数据
@@ -47,7 +55,7 @@ class TrashArticle extends React.Component {
     }
 
     public async componentDidMount(): Promise<void> {
-        await this.getTrashArticleList();
+        this.initTrashArticleDetail();
         this.setTrashArticleListSelectedState();
     }
 
@@ -92,7 +100,7 @@ class TrashArticle extends React.Component {
         if (response.result === 0) {
             const msg = 'crush success!';
             new VMessageService(msg, 'success', 3000).init();
-            await this.getTrashArticleList();
+            await this.initTrashArticleDetail();
             this.writeUpdateCategoryTask();
         }
     }
@@ -103,7 +111,7 @@ class TrashArticle extends React.Component {
         if (response.result === 0) {
             const msg = 'restore this note success!';
             new VMessageService(msg, 'success', 3000).init();
-            await this.getTrashArticleList();
+            await this.initTrashArticleDetail();
             this.writeUpdateCategoryTask();
         }
     }
@@ -114,7 +122,7 @@ class TrashArticle extends React.Component {
         if (response.result === 0) {
             const msg = 'restore this note success!';
             new VMessageService(msg, 'success', 3000).init();
-            await this.getTrashArticleList();
+            await this.initTrashArticleDetail();
             this.writeUpdateCategoryTask();
         }
     }
@@ -197,21 +205,23 @@ class TrashArticle extends React.Component {
     public render() {
         return (
             <div className="trashArticleContainer">
-                <div className="list">
-                    {
-                        this.state.trashArticleList.map((item: any) => {
-                            return (
-                                <div
-                                    className={`item ${this.state.trashArticleSelectedMaps[item.id] ? 'active' : ''}`}
-                                    key={item.id}
-                                    onClick={this.itemSelectedHandel.bind(this, item.id)}
-                                >
-                                    <div className="text">{item.title}</div>
-                                </div>
-                            )
-                        })
-                    }
+                <div className="wrap">
+                    <div className="list">
+                        {
+                            this.state.trashArticleList.map((item: any) => {
+                                return (
+                                    <div
+                                        className={`item ${this.state.trashArticleSelectedMaps[item.id] ? 'active' : ''}`}
+                                        key={item.id}
+                                        onClick={this.itemSelectedHandel.bind(this, item.id)}
+                                    >
+                                        <div className="text">{item.title}</div>
+                                    </div>
+                                )
+                            })
+                        }
 
+                    </div>
                 </div>
                 <div className="preview">
                     <div className="image"/>

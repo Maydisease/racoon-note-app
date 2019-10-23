@@ -546,12 +546,14 @@ class CategoryContainer extends React.Component {
 
     // 当ICON面板中ICON被点击后的事件
     public changeCategoryIconEvent(item: { icon: string }) {
-        const state        = this.state;
+        const state: any   = this.state;
         state.selectedIcon = item.icon;
         this.setState(state);
     }
 
     public render() {
+
+        const isTrashMode = store.getState().STORE_NOTE$FRAME.trashMode;
 
         return (
             <div className={`categoryContainer ${this.state.componentShowState ? 'show' : ''}`}>
@@ -577,23 +579,23 @@ class CategoryContainer extends React.Component {
 
                     {/*控制栏*/}
                     <div className="action-bar">
-                        <label onClick={this.handleActionBar.bind(null, 'setting')}>
-                            <FontAwesomeIcon className="fa-icon left" icon="sliders-h"/>
+                        <label className={`left`} onClick={this.handleActionBar.bind(null, 'setting')}>
+                            <FontAwesomeIcon className="fa-icon" icon="sliders-h"/>
                         </label>
                         <span className="line left"/>
-                        <label onClick={this.handleActionBar.bind(null, 'search')}>
-                            <FontAwesomeIcon className="fa-icon left" icon="search"/>
+                        <label className={`left`} onClick={this.handleActionBar.bind(null, 'search')}>
+                            <FontAwesomeIcon className="fa-icon" icon="search"/>
                         </label>
                         <span className="line left"/>
-                        <label onClick={this.handleActionBar.bind(null, 'attached')}>
-                            <FontAwesomeIcon className="fa-icon left" icon="paperclip"/>
+                        <label className={`left`} onClick={this.handleActionBar.bind(null, 'attached')}>
+                            <FontAwesomeIcon className="fa-icon" icon="paperclip"/>
                         </label>
                         <span className="line left"/>
-                        <label onClick={this.handleActionBar.bind(null, 'trash')}>
-                            <FontAwesomeIcon className="fa-icon left" icon="trash"/>
+                        <label className={`left ${isTrashMode ? 'active' : ''}`} onClick={this.handleActionBar.bind(null, 'trash')}>
+                            <FontAwesomeIcon className="fa-icon" icon="trash"/>
                         </label>
-                        <label onClick={this.handleActionBar.bind(null, 'signOut')}>
-                            <FontAwesomeIcon className="fa-icon right" icon="sign-out-alt"/>
+                        <label className={`right`} onClick={this.handleActionBar.bind(null, 'signOut')}>
+                            <FontAwesomeIcon className="fa-icon" icon="sign-out-alt"/>
                         </label>
                     </div>
                 </div>
