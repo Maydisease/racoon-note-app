@@ -62,6 +62,7 @@ class VMessageService {
     public destroy() {
         clearTimeout(this.timer);
         ReactDOM.unmountComponentAtNode(this.tempContainer);
+        document.body.removeChild(this.tempContainer);
     }
 
     public renderModalContent(mountContainer: HTMLElement) {

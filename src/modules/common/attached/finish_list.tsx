@@ -32,6 +32,7 @@ class FinishList extends React.Component {
 
         const response = await request('attached', 'getAttachedData');
         if (response.result !== 1) {
+            console.log(8891);
             const state              = this.state;
             state.finishAttachedList = response.data;
             this.setState(state);

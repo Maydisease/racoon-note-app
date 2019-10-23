@@ -299,8 +299,9 @@ class ListComponent extends React.Component {
 
     // 更新文章列表
     public async UpdateArticleListDom(cid: number) {
-        const state       = this.state;
-        state.currentCid  = cid;
+        const state      = this.state;
+        state.currentCid = cid;
+        console.log('UpdateArticleListDom');
         state.articleList = await this.getArticleList(cid);
         if (state.articleList) {
             state.articleList.map((item: any, index: number) => {
@@ -322,14 +323,19 @@ class ListComponent extends React.Component {
     public async componentDidMount() {
 
         // 监听categoryComment组件传递过来的选中事件
-        EventEmitter.on('selectedCategory', async (cid: number) => {
-            await this.UpdateArticleListDom(cid);
-        });
+        if (!EventEmitter.listenerCount('selectedCategory')) {
+            EventEmitter.addListener('selectedCategory', async (cid: number) => {
+                console.log('-------', cid, EventEmitter.listenerCount('selectedCategory'));
+                await this.UpdateArticleListDom(cid);
+            });
+        }
 
         // 监听categoryComment传递过来的创建日志事件
-        EventEmitter.on('createdNote', async (cid: number) => {
-            await this.UpdateArticleListDom(cid);
-        });
+        if (!EventEmitter.listenerCount('createdNote')) {
+            EventEmitter.on('createdNote', async (cid: number) => {
+                await this.UpdateArticleListDom(cid);
+            });
+        }
 
         // 监听监听articleComment传递过来的保存日志事件
         storeSubscribe('NOTE$SAVE_ARTICLE', async (action: any) => {
@@ -355,6 +361,7 @@ class ListComponent extends React.Component {
 
         // 订阅搜索页面发送过来的选择搜索结果双击事件
         Service.RenderToRender.subject('search@superSearchSelectedList', async (event: any, params: any): Promise<boolean | void> => {
+            store.dispatch({'type': `NOTE$CHANGE_TRASH_MODE_STATE`, playload: {trashMode: false}});
             const cid = params.data.cid;
             const id  = params.data.id;
             await this.UpdateArticleListDom(cid);
@@ -511,7 +518,7 @@ class ListComponent extends React.Component {
     }
 
     public render() {
-
+        console.log('render...');
         const ArticleItem = (props: any): any => {
             const articleList = props.data;
             if (articleList.length > 0) {
@@ -557,7 +564,7 @@ class ListComponent extends React.Component {
         const STORE_NOTE$FRAME = (this.props as any).STORE_NOTE$FRAME;
 
         return (
-            <div className={`listContainer ${STORE_NOTE$FRAME.layout === 1 ? 'show' : ''}`}>
+            <div className={`listContainer ${STORE_NOTE$FRAME.layout === 1 ? 'show' : ''} ${STORE_NOTE$FRAME.trashMode ? 'hide' : ''}`}>
                 <div className="searchContainer">
                     <div className={`wrap ${this.state.inputFocusState && 'focus'}`}>
                         <div className={`formBox ${this.state.inputFocusState && 'focus'}`}>

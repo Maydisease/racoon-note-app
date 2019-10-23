@@ -58,7 +58,7 @@ body[theme='dark'] {
                             text-align: left;
                             padding: 0 5px;
                             overflow: hidden;
-                            background: RGBA(30, 32, 34, .3);
+                            background: RGBA(26, 26, 26, 1);
                             border-top: 1px solid RGBA(0, 0, 0, .1);
                             
                             .line {
@@ -127,6 +127,30 @@ body[theme='dark'] {
                                 font-size: 0;
                                 position: relative;
                                 font-family: Arial, sans-serif;
+                                
+                                &.independent {
+                                    height: 47px;
+                                    background: RGBA(26, 26, 26, 1);
+                                    
+                                    .icon {
+                                        width: 37px;
+                                        height: 47px;
+                                        line-height: 47px;
+                                        text-align: center;
+                                        font-size: 16px;
+                                    }
+                                    
+                                    .text {
+                                        height: 47px;
+                                        line-height: 47px;
+                                        font-size: 16px;
+                                    }
+                                    
+                                    &.line {
+                                        height: 1px;
+                                        background: RGBA(0, 0, 0, 1);
+                                    }
+                                }
                                 
                                 label {
                                     width: 100%;
@@ -231,6 +255,10 @@ body[theme='dark'] {
                     
                     &.show {
                         display: flex;
+                    }
+                    
+                    &.hide, &.show.hide {
+                        display: none;
                     }
                     
                     .searchContainer {
@@ -452,6 +480,10 @@ body[theme='dark'] {
                     flex-wrap: wrap;
                     width: 0;
                     flex-direction: column;
+                    
+                    &.hide, &.show.hide {
+                        display: none;
+                    }
                     
                     .content-bar {
                         width: 100%;

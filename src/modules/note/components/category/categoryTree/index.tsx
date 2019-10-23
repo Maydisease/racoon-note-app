@@ -54,11 +54,13 @@ class Index extends React.Component {
             if (categoryData && categoryData.length > 0) {
                 const loop = (categoryDataTemps: any) => {
                     return categoryDataTemps.map((item: any) => {
-
+                        console.log(item);
                         return (
                             <div
                                 className="item" key={item.id}
-                                data-menu-id={item.id} data-is-last={!item.children && 'true'}
+                                data-menu-id={item.id}
+                                data-is-last={!item.children && 'true'}
+                                data-is-super={item.is_super}
                             >
                                 <label>
                                     <span className={`icon extension ${item.children ? 'icon-1' : ''}`}>

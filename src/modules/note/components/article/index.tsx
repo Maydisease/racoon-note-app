@@ -159,9 +159,10 @@ class ArticleComponent extends React.Component {
         const FRAME        = (this.props as any).STORE_NOTE$FRAME;
         const ARTICLE      = (this.props as any).STORE_NOTE$ARTICLE;
         const ARTICLE_TEMP = (this.props as any).STORE_NOTE$ARTICLE_TEMP;
+        const STORE_NOTE$FRAME = (this.props as any).STORE_NOTE$FRAME;
 
         return (
-            <div className="articleContainer">
+            <div className={`articleContainer ${STORE_NOTE$FRAME.trashMode ? 'hide' : ''}`}>
                 {ARTICLE.id &&
 				<div className="content-bar">
 					<div className="title">

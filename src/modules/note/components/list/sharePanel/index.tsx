@@ -61,13 +61,6 @@ class SharePanel extends React.Component {
         return true;
     }
 
-    // public componentWillUpdate(nextProps: any, nextState: any, nextContext: any): void {
-    // console.log('---v', nextProps);
-    // const state = this.state;
-    // state.conf = nextProps.shareInfo;
-    // this.setState(state);
-    // }
-
     // 向伏组件传递关闭事件
     public closeSharePanel() {
         const state = this.state;
@@ -168,6 +161,7 @@ class SharePanel extends React.Component {
             <div
                 key={this.props.shareInfo.aid}
                 id="v-sharePanel"
+                data-com-id={this.props.shareInfo.aid}
                 className={`${this.props.show ? 'show' : ''} ${isReverse ? 'reverse' : ''}`}
                 style={{top: y, left: x}}
             >
@@ -247,7 +241,7 @@ class SharePanel extends React.Component {
         }
     }
 
-    public componentDidMount() {
+    public componentDidMount(): boolean {
 
         const state = this.state;
 
@@ -260,7 +254,16 @@ class SharePanel extends React.Component {
 
         this.setState(state);
 
-        console.log('init:', this.props.shareInfo, this.state.conf);
+        // 清除重复已添加的面板
+        if (document.body.querySelectorAll('.body-component-container')) {
+            const nodeList: NodeList = document.body.querySelectorAll('.body-component-container');
+            nodeList.forEach((item: HTMLDivElement) => {
+                const sonElement = item.querySelector('#v-sharePanel');
+                if (sonElement && Number(sonElement.getAttribute('data-com-id')) === this.state.conf.aid) {
+                    document.body.removeChild((item as any).closest('.body-component-container'));
+                }
+            })
+        }
 
         const tempContainer     = document.createElement('div');
         tempContainer.className = 'body-component-container';
@@ -278,12 +281,13 @@ class SharePanel extends React.Component {
                 });
 
                 if (!isSelf) {
-                    console.log('----111');
                     this.closeSharePanel();
                 }
             }
             event.preventDefault();
         }, true);
+
+        return true;
 
     }
 

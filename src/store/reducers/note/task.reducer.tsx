@@ -1,7 +1,5 @@
 interface DefaultState {
-    layout?: number,
-    editLayout?: boolean,
-    trashMode?: boolean,
+    isTrashCrush?: boolean
 }
 
 declare type Playload = DefaultState;
@@ -11,7 +9,7 @@ interface Action {
     playload: Playload
 }
 
-export class FrameStateReducer {
+export class TaskReducer {
 
     public body: DefaultState;
     public state: DefaultState;
@@ -21,35 +19,19 @@ export class FrameStateReducer {
     constructor(ModelName: string) {
         this.modelName = ModelName;
         this.body      = {
-            layout    : 1,
-            editLayout: true,
-            trashMode : false
+            isTrashCrush: false
         };
         this.playload  = {};
         this.Action    = this.Action.bind(this);
     }
 
-    // 更新UI框架状态
-    public CHANGE_FRAME_STATE() {
-
-        const {layout}   = this.playload;
-        this.body.layout = layout;
-
+    public WRITE_UPDATE_CATEGORY_TASK() {
+        this.body.isTrashCrush = true;
         return {...this.state, ...this.body};
     }
 
-    public CHANGE_EDITOR_COLUMN() {
-        const {editLayout}   = this.playload;
-        this.body.editLayout = editLayout;
-
-        return {...this.state, ...this.body};
-    }
-
-    public CHANGE_TRASH_MODE_STATE() {
-        console.log(11111);
-        const {trashMode}   = this.playload;
-        this.body.trashMode = trashMode;
-
+    public CLEAN_UPDATE_CATEGORY_TASK() {
+        this.body.isTrashCrush = true;
         return {...this.state, ...this.body};
     }
 
