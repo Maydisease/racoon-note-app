@@ -24,6 +24,7 @@ class TrashArticle extends React.Component {
         const state              = this.state;
         state.trashArticleDetail = {
             id          : 0,
+            cid         : null,
             title       : '',
             description : '',
             categoryPath: '',
@@ -66,6 +67,7 @@ class TrashArticle extends React.Component {
         if (response.result === 0) {
             const state                           = this.state;
             state.trashArticleDetail.id           = response.data.id;
+            state.trashArticleDetail.cid          = response.data.cid;
             state.trashArticleDetail.title        = response.data.title;
             state.trashArticleDetail.categoryPath = response.data.crumbs;
             state.trashArticleDetail.description  = response.data.description;
@@ -106,13 +108,35 @@ class TrashArticle extends React.Component {
     }
 
     // 恢复垃圾箱中的文章到原本的分类中
-    public async resetTrashArticle(id: number) {
-        const response = await request('note', 'setArticleDisableState', {id, disable: 0});
+    public async resetTrashArticle(id: number, cid: number) {
+        const response = await request('note', 'resetTrashArticle', {id, cid});
         if (response.result === 0) {
             const msg = 'restore this note success!';
             new VMessageService(msg, 'success', 3000).init();
             await this.initTrashArticleDetail();
             this.writeUpdateCategoryTask();
+        }
+
+        switch (response.messageCode) {
+            case 1003:
+                Service.Dialog.showMessageBox({
+                        title    : 'Loss of category information',
+                        type     : 'question',
+                        message  : 'Loss of category information',
+                        detail   : 'The category information for this note has been lost. Do you need to move to the tmp category?',
+                        defaultId: 0,
+                        cancelId : 1,
+                        buttons  : ['Yes', 'Cancel']
+                    },
+                    // btn 按钮被点击，提交删除分类操作
+                    async (btnIndex: number): Promise<void | boolean> => {
+                        if (btnIndex === 0) {
+                            this.resetTrashArticleToTmpCategory(this.state.trashArticleDetail.id);
+                        }
+                    }
+                );
+
+                break;
         }
     }
 
@@ -157,7 +181,7 @@ class TrashArticle extends React.Component {
                     title    : 'Loss of category information',
                     type     : 'question',
                     message  : 'Loss of category information',
-                    detail   : 'The category information for this note has been lost. Do you need to move to the tmp category?',
+                    detail   : 'The category information for this note has been lost. Do you need to move to the "tmp" category?',
                     defaultId: 0,
                     cancelId : 1,
                     buttons  : ['Yes', 'Cancel']
@@ -190,7 +214,7 @@ class TrashArticle extends React.Component {
                 // btn 按钮被点击，提交删除分类操作
                 async (btnIndex: number): Promise<void | boolean> => {
                     if (btnIndex === 0) {
-                        this.resetTrashArticle(this.state.trashArticleDetail.id);
+                        this.resetTrashArticle(this.state.trashArticleDetail.id, this.state.trashArticleDetail.cid);
                     }
                 }
             );
@@ -224,30 +248,32 @@ class TrashArticle extends React.Component {
                     </div>
                 </div>
                 <div className="preview">
-                    <div className="image"/>
-                    <div className="item category-path">
-                        <label>Category:</label>
-                        <div className="text" key={this.state.trashArticleDetail.id}>
-                            {
-                                (this.state.trashArticleDetail.categoryPath &&
-                                    this.state.trashArticleDetail.categoryPath.length > 0) ?
-                                    this.state.trashArticleDetail.categoryPath.map((c: string, index: number) => {
-                                        return (<React.Fragment key={index}><em>.</em>{c}</React.Fragment>)
-                                    }) : 'none'
-                            }
+                    <div className="params">
+                        <div className="image"/>
+                        <div className="item category-path">
+                            <label>Category:</label>
+                            <div className="text" key={this.state.trashArticleDetail.id}>
+                                {
+                                    (this.state.trashArticleDetail.categoryPath &&
+                                        this.state.trashArticleDetail.categoryPath.length > 0) ?
+                                        this.state.trashArticleDetail.categoryPath.map((c: string, index: number) => {
+                                            return (<React.Fragment key={index}><em>.</em>{c}</React.Fragment>)
+                                        }) : 'none'
+                                }
+                            </div>
                         </div>
-                    </div>
-                    <div className="item">
-                        <label>Title:</label>
-                        <div className="text">{this.state.trashArticleDetail.title}</div>
-                    </div>
-                    <div className="item">
-                        <label>Date:</label>
-                        <div className="text">{this.state.trashArticleDetail.date}</div>
-                    </div>
-                    <div className="item">
-                        <label>Summary:</label>
-                        <div className="text">{this.state.trashArticleDetail.description}</div>
+                        <div className="item">
+                            <label>Title:</label>
+                            <div className="text">{this.state.trashArticleDetail.title}</div>
+                        </div>
+                        <div className="item">
+                            <label>Date:</label>
+                            <div className="text">{this.state.trashArticleDetail.date}</div>
+                        </div>
+                        <div className="item">
+                            <label>Summary:</label>
+                            <div className="text">{this.state.trashArticleDetail.description}</div>
+                        </div>
                     </div>
                     {
                         this.state.trashArticleDetail.id ?

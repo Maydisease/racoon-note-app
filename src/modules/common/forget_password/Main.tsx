@@ -262,7 +262,7 @@ class ForgetPasswordMain extends React.Component<Props, State> {
                     message = 'please enter your vaild email';
                     new VMessageService(message, 'validate', 5000).init();
                     break;
-                case 1003:
+                case 1004:
                     message = 'username does not exist';
                     new VMessageService(message, 'validate', 5000).init();
                     break;

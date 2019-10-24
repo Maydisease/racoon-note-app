@@ -71,6 +71,11 @@
         background: RGBA(44, 45, 47, 1);
         text-align: center;
         
+        .params{
+            width: 100%;
+            height: 540px;
+        }
+        
         .item {
             width: 100%;
             padding: 0 40px;
@@ -94,6 +99,7 @@
                 text-align: left;
                 font-size: 12px;
                 font-weight: 200;
+                word-break:break-all;
             }
             
             &.category-path {
@@ -140,7 +146,7 @@
         .action {
             width: calc(100% - 20px);
             padding-top: 20px;
-            margin: 60px auto 0 auto;
+            margin: 0 auto;
             border-top: 1px solid RGBA(255, 255, 255, .1);
             
             .btn {
