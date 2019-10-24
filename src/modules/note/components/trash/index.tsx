@@ -5,18 +5,58 @@ import {request}         from "../../services/requst.service";
 import {Service}         from "../../../../lib/master.electron.lib";
 import {VMessageService} from "../../../component/message";
 
+interface KeyboardState {
+    leftShift: boolean;
+}
+
 class TrashArticle extends React.Component {
+
+    public contextMenu: any;
+    public keyboard: KeyboardState;
 
     public state: any = {
         trashArticleList        : [],
         trashArticleSelectedMaps: {},
-        trashArticleDetail      : {}
+        trashArticleDetail      : {},
+        contextMenu             : '',
     };
 
     constructor(props: any) {
         super(props);
-        this.actionCrush   = this.actionCrush.bind(this);
-        this.actionRestore = this.actionRestore.bind(this);
+        this.contextMenu = new Service.Menu();
+        this.contextMenuInit();
+        this.actionCrush           = this.actionCrush.bind(this);
+        this.actionRestore         = this.actionRestore.bind(this);
+        this.handleItemContextMenu = this.handleItemContextMenu.bind(this);
+        this.keyboard              = {leftShift: false}
+    }
+
+    // contextMenu初始化
+    public contextMenuInit() {
+        const $this: this = this;
+
+        // item[0];
+        this.contextMenu.append(new Service.MenuItem({
+            enabled    : true,
+            accelerator: 'C',
+            label      : 'Crush', click() {
+                $this.actionCrush()
+            }
+        }));
+
+        // item[1];
+        this.contextMenu.append(new Service.MenuItem({
+            enabled    : true,
+            accelerator: 'R',
+            label      : 'Restore', click() {
+                $this.actionRestore()
+            }
+        }));
+    }
+
+    public handleItemContextMenu(id: number) {
+        this.itemSelectedHandel(id);
+        this.contextMenu.popup({window: Service.getWindow('master')});
     }
 
     // 初始化当前的trashArticleDetail对象
@@ -58,6 +98,23 @@ class TrashArticle extends React.Component {
     public async componentDidMount(): Promise<void> {
         this.initTrashArticleDetail();
         this.setTrashArticleListSelectedState();
+
+        // todo 增加多选
+        window.onkeydown = (e: KeyboardEvent) => {
+            console.log(e);
+            if (e.code === 'ShiftLeft') {
+                this.keyboard.leftShift = true;
+            }
+        };
+
+        // todo 增加多选
+        window.onkeyup = (e: KeyboardEvent) => {
+            console.log(e);
+            if (e.code === 'ShiftLeft') {
+                this.keyboard.leftShift = false;
+            }
+        }
+
     }
 
     // 获取垃圾箱中的文章详情数据
@@ -78,6 +135,7 @@ class TrashArticle extends React.Component {
 
     // 垃圾箱中的文章被点击时的触发
     public itemSelectedHandel(id: number): any {
+
         const state = this.state;
 
         if (state.trashArticleSelectedMaps[id]) {
@@ -152,7 +210,7 @@ class TrashArticle extends React.Component {
     }
 
     // 预览详情中的粉碎按钮被点击时
-    public actionCrush(index: number) {
+    public actionCrush() {
         if (this.state.trashArticleDetail.id) {
             Service.Dialog.showMessageBox({
                     title    : 'Crush this note',
@@ -174,7 +232,7 @@ class TrashArticle extends React.Component {
     }
 
     // 预览详情中的恢复按钮被点击时
-    public actionRestore(index: number) {
+    public actionRestore() {
         if (!(this.state.trashArticleDetail.categoryPath && this.state.trashArticleDetail.categoryPath.length > 0)) {
 
             Service.Dialog.showMessageBox({
@@ -238,6 +296,7 @@ class TrashArticle extends React.Component {
                                         className={`item ${this.state.trashArticleSelectedMaps[item.id] ? 'active' : ''}`}
                                         key={item.id}
                                         onClick={this.itemSelectedHandel.bind(this, item.id)}
+                                        onContextMenu={this.handleItemContextMenu.bind(this, item.id)}
                                     >
                                         <div className="text">{item.title}</div>
                                     </div>
@@ -278,8 +337,8 @@ class TrashArticle extends React.Component {
                     {
                         this.state.trashArticleDetail.id ?
                             <div className="action">
-                                <button className="btn waring" onClick={this.actionCrush.bind(this, 2)}>Crush</button>
-                                <button className="btn" onClick={this.actionRestore.bind(this, 3)}>Restore</button>
+                                <button className="btn waring" onClick={this.actionCrush}>Crush</button>
+                                <button className="btn" onClick={this.actionRestore}>Restore</button>
                             </div> : null
                     }
                 </div>
