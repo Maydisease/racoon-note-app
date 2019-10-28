@@ -335,7 +335,7 @@ body[theme='dark'] {
                                     color: RGBA(255, 255, 255, .5);
                                     right: 20px;
                                     font-size: 10px;
-                                    background: #111;
+                                    background: #222;
                                     padding: 0 3px;
                                     border-radius: 3px;
                                     font-family: Arial, sans-serif;
@@ -473,6 +473,11 @@ body[theme='dark'] {
                                     -webkit-user-select: text;
                                     font-family: Arial, 'Microsoft YaHei', sans-serif;
                                     color: RGBA(255, 255, 255, .7);
+                                    
+                                    em {
+                                        font-style: normal;
+                                        color: RGBA(255, 150, 50, 1);
+                                    }
                                 }
                                 
                                 .description {

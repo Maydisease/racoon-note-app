@@ -17,6 +17,7 @@ class ListComponent extends React.Component {
         clearInputBtnState : false,
         quickSearchType    : 0, // 0 title 1 article
         quickSearchResTotal: 0,
+        isUseQuickSearch   : false,
 
         from: {
             searchKeys: {
@@ -48,6 +49,7 @@ class ListComponent extends React.Component {
         this.handleInputActive            = this.handleInputActive.bind(this);
         this.handleInputClick             = this.handleInputClick.bind(this);
         this.handleSearchValueChange      = this.handleSearchValueChange.bind(this);
+        this.handleInputKeyDown           = this.handleInputKeyDown.bind(this);
         this.clearSearchKeys              = this.clearSearchKeys.bind(this);
         this.getArticleList               = this.getArticleList.bind(this);
         this.handleItemClick              = this.handleItemClick.bind(this);
@@ -141,7 +143,6 @@ class ListComponent extends React.Component {
         this.quickSearchContextMenu.append(
             new Service.MenuItem({
                 type: 'radio', label: 'search title', click() {
-                    console.log(arguments);
                     $this.changeQuickSearchType(0);
                 }
             })
@@ -256,8 +257,22 @@ class ListComponent extends React.Component {
         state.inputFocusState       = false;
         this.setState(state);
         this.quickSearchEvent();
+        if (this.state.quickSearchType === 1) {
+            this.getQuickSearchDataList();
+        }
     }
 
+    // 表单输入时的按下监听
+    public handleInputKeyDown(event: KeyboardEventInit) {
+        const keys = this.state.from.searchKeys.value;
+
+        // 快捷键 Ctrl + Backspace 清除搜索关键字
+        if (event.key === 'Backspace' && event.shiftKey && keys) {
+            const element = (this.searchElement.current as HTMLInputElement);
+            element.blur();
+            this.clearSearchKeys();
+        }
+    }
 
     // 表单修改时的数据同步
     public handleSearchValueChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -285,8 +300,8 @@ class ListComponent extends React.Component {
         const state = this.state;
 
         if (!keys && cid) {
-            state.articleList         = [];
             state.quickSearchResTotal = 0;
+            await this.UpdateArticleListDom(cid);
             this.setState(state);
             return;
         }
@@ -300,8 +315,12 @@ class ListComponent extends React.Component {
 
         if (state.articleList) {
             state.articleList.map((item: any, index: number) => {
+                const title                       = state.articleList[index].title;
+                const regx                        = new RegExp(`(${keys})`, 'ig');
+                state.articleList[index].title    = title.replace(regx, '<em>$1</em>');
                 state.articleList[index].selected = false;
             });
+            state.isUseQuickSearch = true;
         }
 
         this.setState(state);
@@ -328,22 +347,9 @@ class ListComponent extends React.Component {
 
     // 搜索框聚焦/onFocus失焦/onBlur事件
     public async handleInputActive(sourceState: boolean) {
-
-
         const state           = this.state;
         state.inputFocusState = !(!sourceState && this.state.from.searchKeys.value.length === 0);
         this.setState(state);
-
-        if (!sourceState) {
-            const keys = this.state.from.searchKeys.value;
-            const cid  = this.state.currentCid;
-
-            if (!keys && cid) {
-                await this.UpdateArticleListDom(cid);
-                return;
-            }
-        }
-
     }
 
     // 切换搜索框搜索的类型
@@ -485,13 +491,10 @@ class ListComponent extends React.Component {
     // 文章列表被点击
     public async handleItemClick(item: any, forceUpdate: boolean = false, e?: any): Promise<boolean | void> {
 
-        console.log(111111);
-
         const state = this.state;
         const key   = state.articleList.findIndex((sourceItem: any) => item === sourceItem);
 
         if (!forceUpdate && this.state.articleObj && item.id === this.state.articleObj.id && state.articleList[key].selected) {
-            console.log(111111, 'stop');
             return false;
         }
 
@@ -612,7 +615,7 @@ class ListComponent extends React.Component {
                                     }
                                 </div>
                                 <div className="context">
-                                    <h2>{item.title}</h2>
+                                    <h2 dangerouslySetInnerHTML={{__html: item.title}}/>
                                     <div className="description">
                                         {item.lock === 0 &&
 										<dl>{item.description}</dl>
@@ -650,6 +653,7 @@ class ListComponent extends React.Component {
                                 onBlur={this.handleInputActive.bind(this, false)}
                                 placeholder="Search Notes"
                                 onChange={this.handleSearchValueChange}
+                                onKeyDown={this.handleInputKeyDown}
                             />
                             <label className="searchResTotalNum" style={{display: this.state.quickSearchResTotal ? 'block' : 'none'}}>
                                 <span>{this.state.quickSearchResTotal}</span>
