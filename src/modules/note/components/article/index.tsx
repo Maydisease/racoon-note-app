@@ -3,6 +3,7 @@ import EditorComponent   from './editor';
 import BrowseComponent   from "./browse";
 import LockComponent     from "./lock";
 import {connect}         from 'react-redux';
+import DesktopComponent  from './desktop';
 import {store}           from "../../../../store";
 import {storeSubscribe}  from "../../../../store/middleware/storeActionEvent.middleware";
 import {ArticleService}  from "../../services/article.service";
@@ -156,13 +157,19 @@ class ArticleComponent extends React.Component {
 
     public render() {
 
-        const FRAME        = (this.props as any).STORE_NOTE$FRAME;
-        const ARTICLE      = (this.props as any).STORE_NOTE$ARTICLE;
-        const ARTICLE_TEMP = (this.props as any).STORE_NOTE$ARTICLE_TEMP;
+        const FRAME            = (this.props as any).STORE_NOTE$FRAME;
+        const ARTICLE          = (this.props as any).STORE_NOTE$ARTICLE;
+        const ARTICLE_TEMP     = (this.props as any).STORE_NOTE$ARTICLE_TEMP;
         const STORE_NOTE$FRAME = (this.props as any).STORE_NOTE$FRAME;
 
         return (
             <div className={`articleContainer ${STORE_NOTE$FRAME.trashMode ? 'hide' : ''}`}>
+
+                {
+                    !ARTICLE.id &&
+					<DesktopComponent />
+                }
+
                 {ARTICLE.id &&
 				<div className="content-bar">
 					<div className="title">

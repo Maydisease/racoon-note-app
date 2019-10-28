@@ -13,9 +13,10 @@ import SharePanel        from "./sharePanel";
 class ListComponent extends React.Component {
 
     public state: any = {
-        inputFocusState   : false,
-        clearInputBtnState: false,
-        quickSearchType   : 0, // 0 title 1 article
+        inputFocusState    : false,
+        clearInputBtnState : false,
+        quickSearchType    : 0, // 0 title 1 article
+        quickSearchResTotal: 0,
 
         from: {
             searchKeys: {
@@ -45,7 +46,8 @@ class ListComponent extends React.Component {
         super(props);
         this.articleService               = new ArticleService();
         this.handleInputActive            = this.handleInputActive.bind(this);
-        this.handleChange                 = this.handleChange.bind(this);
+        this.handleInputClick             = this.handleInputClick.bind(this);
+        this.handleSearchValueChange      = this.handleSearchValueChange.bind(this);
         this.clearSearchKeys              = this.clearSearchKeys.bind(this);
         this.getArticleList               = this.getArticleList.bind(this);
         this.handleItemClick              = this.handleItemClick.bind(this);
@@ -139,6 +141,7 @@ class ListComponent extends React.Component {
         this.quickSearchContextMenu.append(
             new Service.MenuItem({
                 type: 'radio', label: 'search title', click() {
+                    console.log(arguments);
                     $this.changeQuickSearchType(0);
                 }
             })
@@ -221,6 +224,7 @@ class ListComponent extends React.Component {
             state.articleList[key].lock       = 0;
             state.articleList[key].updateTime = new Date().toTimeString();
             this.setState(state);
+
             this.handleItemClick(this.state.articleObj, true);
 
         }
@@ -256,7 +260,7 @@ class ListComponent extends React.Component {
 
 
     // 表单修改时的数据同步
-    public handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    public handleSearchValueChange(event: React.ChangeEvent<HTMLInputElement>) {
 
         const state                         = this.state;
         state.clearInputBtnState            = event.target.value.length > 0;
@@ -273,6 +277,37 @@ class ListComponent extends React.Component {
         }, 200)
     }
 
+    // 快速搜索
+    public async getQuickSearchDataList() {
+
+        const keys  = this.state.from.searchKeys.value;
+        const cid   = this.state.currentCid;
+        const state = this.state;
+
+        if (!keys && cid) {
+            state.articleList         = [];
+            state.quickSearchResTotal = 0;
+            this.setState(state);
+            return;
+        }
+
+        const response = await request('note', 'getQuickSearchDataList', {keys, cid});
+
+        if (response.result === 0) {
+            state.articleList         = response.data;
+            state.quickSearchResTotal = state.articleList.length;
+        }
+
+        if (state.articleList) {
+            state.articleList.map((item: any, index: number) => {
+                state.articleList[index].selected = false;
+            });
+        }
+
+        this.setState(state);
+
+    }
+
     // 全局搜索事件
     public quickSearchEvent() {
         switch (this.state.quickSearchType) {
@@ -280,6 +315,7 @@ class ListComponent extends React.Component {
                 store.dispatch({
                     type: 'NOTE$UN_SEARCH_TAG'
                 });
+                this.getQuickSearchDataList();
                 break;
             case 1:
                 store.dispatch({
@@ -291,10 +327,35 @@ class ListComponent extends React.Component {
     }
 
     // 搜索框聚焦/onFocus失焦/onBlur事件
-    public handleInputActive(sourceState: any) {
+    public async handleInputActive(sourceState: boolean) {
+
+
         const state           = this.state;
         state.inputFocusState = !(!sourceState && this.state.from.searchKeys.value.length === 0);
         this.setState(state);
+
+        if (!sourceState) {
+            const keys = this.state.from.searchKeys.value;
+            const cid  = this.state.currentCid;
+
+            if (!keys && cid) {
+                await this.UpdateArticleListDom(cid);
+                return;
+            }
+        }
+
+    }
+
+    // 切换搜索框搜索的类型
+    public handleInputClick() {
+        const nextTypeStatus    = this.state.quickSearchType === 0 ? 1 : 0;
+        const state             = this.state;
+        state.quickSearchType   = nextTypeStatus;
+        const item              = this.quickSearchContextMenu.items;
+        const menuIndex         = nextTypeStatus === 0 ? 0 : 1;
+        item[menuIndex].checked = true;
+        this.setState(state);
+
     }
 
     // 更新文章列表
@@ -325,8 +386,14 @@ class ListComponent extends React.Component {
         // 监听categoryComment组件传递过来的选中事件
         if (!EventEmitter.listenerCount('selectedCategory')) {
             EventEmitter.addListener('selectedCategory', async (cid: number) => {
-                console.log('-------', cid, EventEmitter.listenerCount('selectedCategory'));
-                await this.UpdateArticleListDom(cid);
+                if (this.state.from.searchKeys.value && this.state.quickSearchType === 0) {
+                    const state      = this.state;
+                    state.currentCid = cid;
+                    this.setState(state);
+                    this.quickSearchEvent();
+                } else {
+                    await this.UpdateArticleListDom(cid);
+                }
             });
         }
 
@@ -418,10 +485,13 @@ class ListComponent extends React.Component {
     // 文章列表被点击
     public async handleItemClick(item: any, forceUpdate: boolean = false, e?: any): Promise<boolean | void> {
 
+        console.log(111111);
+
         const state = this.state;
         const key   = state.articleList.findIndex((sourceItem: any) => item === sourceItem);
 
         if (!forceUpdate && this.state.articleObj && item.id === this.state.articleObj.id && state.articleList[key].selected) {
+            console.log(111111, 'stop');
             return false;
         }
 
@@ -568,7 +638,9 @@ class ListComponent extends React.Component {
                 <div className="searchContainer">
                     <div className={`wrap ${this.state.inputFocusState && 'focus'}`}>
                         <div className={`formBox ${this.state.inputFocusState && 'focus'}`}>
-                            <FontAwesomeIcon className="searchIcon fa-icon" icon="search"/>
+                            <label onDoubleClick={this.handleInputClick.bind(true)}>
+                                <FontAwesomeIcon className="searchIcon fa-icon" icon="search"/>
+                            </label>
                             <input
                                 ref={this.searchElement}
                                 name="searchKeys"
@@ -577,8 +649,11 @@ class ListComponent extends React.Component {
                                 onFocus={this.handleInputActive.bind(this, true)}
                                 onBlur={this.handleInputActive.bind(this, false)}
                                 placeholder="Search Notes"
-                                onChange={this.handleChange}
+                                onChange={this.handleSearchValueChange}
                             />
+                            <label className="searchResTotalNum" style={{display: this.state.quickSearchResTotal ? 'block' : 'none'}}>
+                                <span>{this.state.quickSearchResTotal}</span>
+                            </label>
                             <label className="clearIcon" onClick={this.clearSearchKeys} style={{display: this.state.clearInputBtnState ? 'block' : 'none'}}>
                                 <FontAwesomeIcon className="clearSearchKey fa-icon" icon="times-circle"/>
                             </label>

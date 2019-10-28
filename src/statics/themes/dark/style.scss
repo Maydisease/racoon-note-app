@@ -307,7 +307,7 @@ body[theme='dark'] {
                             .formBox {
                                 width: 100%;
                                 height: 100%;
-                                padding: 0 16px;
+                                padding: 0 42px 0 16px;
                                 position: relative;
                                 box-sizing: border-box;
                                 transition: transform .2s;
@@ -323,6 +323,22 @@ body[theme='dark'] {
                                     height: 16px;
                                     position: absolute;
                                     color: RGBA(255, 255, 255, .3);
+                                }
+                                
+                                .searchResTotalNum {
+                                    max-width: 26px;
+                                    overflow: hidden;
+                                    top: 1px;
+                                    height: 14px;
+                                    line-height: 14px;
+                                    position: absolute;
+                                    color: RGBA(255, 255, 255, .5);
+                                    right: 20px;
+                                    font-size: 10px;
+                                    background: #111;
+                                    padding: 0 3px;
+                                    border-radius: 3px;
+                                    font-family: Arial, sans-serif;
                                 }
                                 
                                 .searchIcon {
@@ -500,6 +516,14 @@ body[theme='dark'] {
                     
                     &.hide, &.show.hide {
                         display: none;
+                    }
+                    
+                    .desktop {
+                        width: 100%;
+                        display: flex;
+                        padding: 0 20px;
+                        box-sizing: border-box;
+                        background: RGBA(0, 0, 0, .1);
                     }
                     
                     .content-bar {
