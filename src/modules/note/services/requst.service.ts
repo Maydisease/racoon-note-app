@@ -19,7 +19,6 @@ interface Response {
 }
 
 export const request = (moduleName: string, actionName: string, params: object | undefined = {}): Promise<Response | any> => {
-    console.log(moduleName, actionName, params);
     return new Promise((resolve, reject) => {
         new Service.ServerProxy(moduleName, actionName, params)
             .send()

@@ -127,9 +127,7 @@ class CategoryContainer extends React.Component {
     public componentDidMount() {
 
         storeSubscribe('NOTE$CHANGE_TRASH_MODE_STATE', (action: any) => {
-            console.log('category for action:', action);
             if (!action.playload.trashMode && store.getState().STORE_NOTE$Task.isTrashCrush) {
-                console.log('执行了...');
                 EventEmitter.emit('selectedCategory', this.state.categoryObj.id);
             }
         });
@@ -263,7 +261,6 @@ class CategoryContainer extends React.Component {
                 }
 
                 if (menuId !== 0 && (!this.state.categoryObj) || isTrashCrush || (this.state.categoryObj && this.state.categoryObj.id !== menuId)) {
-                    console.log('更新了...');
                     EventEmitter.emit('selectedCategory', menuId);
                 }
 

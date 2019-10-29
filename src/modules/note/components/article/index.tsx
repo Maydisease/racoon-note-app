@@ -48,6 +48,14 @@ class ArticleComponent extends React.Component {
         state.editState        = !this.state.editState;
         state.form.title.value = ARTICLE_TEMP.title;
         this.setState(state);
+
+        store.dispatch({
+            type    : 'NOTE$CHANGE_EDITOR_MODE',
+            playload: {
+                editMode: state.editState
+            }
+        });
+
     }
 
     // 表单修改时的数据同步
@@ -167,7 +175,7 @@ class ArticleComponent extends React.Component {
 
                 {
                     !ARTICLE.id &&
-					<DesktopComponent />
+					<DesktopComponent/>
                 }
 
                 {ARTICLE.id &&

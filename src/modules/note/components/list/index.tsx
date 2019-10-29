@@ -18,8 +18,7 @@ class ListComponent extends React.Component {
         quickSearchType    : 0, // 0 title 1 article
         quickSearchResTotal: 0,
         isUseQuickSearch   : false,
-
-        from: {
+        from               : {
             searchKeys: {
                 value: ''
             }
@@ -41,7 +40,6 @@ class ListComponent extends React.Component {
     public quickSearchTimer: number;
     public articleService: ArticleService;
     public searchElement: React.RefObject<HTMLInputElement>;
-    public listElement: HTMLElement | null;
 
     constructor(props: any) {
         super(props);
@@ -277,8 +275,8 @@ class ListComponent extends React.Component {
     // 表单修改时的数据同步
     public handleSearchValueChange(event: React.ChangeEvent<HTMLInputElement>) {
 
-        const state                         = this.state;
-        state.clearInputBtnState            = event.target.value.length > 0;
+        const state              = this.state;
+        state.clearInputBtnState = event.target.value.length > 0;
         state.from[event.target.name].value = event.target.value;
         this.setState(state);
 
@@ -591,7 +589,6 @@ class ListComponent extends React.Component {
     }
 
     public render() {
-        console.log('render...');
         const ArticleItem = (props: any): any => {
             const articleList = props.data;
             if (articleList.length > 0) {

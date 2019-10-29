@@ -1,6 +1,7 @@
 interface DefaultState {
     layout?: number,
     editLayout?: boolean,
+    editMode?: boolean,
     trashMode?: boolean,
 }
 
@@ -41,6 +42,13 @@ export class FrameStateReducer {
     public CHANGE_EDITOR_COLUMN() {
         const {editLayout}   = this.playload;
         this.body.editLayout = editLayout;
+
+        return {...this.state, ...this.body};
+    }
+
+    public CHANGE_EDITOR_MODE() {
+        const {editMode}   = this.playload;
+        this.body.editMode = editMode;
 
         return {...this.state, ...this.body};
     }

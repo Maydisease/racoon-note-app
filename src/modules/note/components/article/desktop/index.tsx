@@ -55,7 +55,6 @@ class DesktopComponent extends React.Component {
     }
 
     public getCpuUsage() {
-        console.log(Service.Remote.process.cpuUsage().system);
         setInterval(() => {
             const state      = this.state;
             const cpuUsage   = Service.Remote.process.cpuUsage();
@@ -66,7 +65,6 @@ class DesktopComponent extends React.Component {
     }
 
     public getSystemVersions() {
-        console.log(666, Service.Remote.process.versions);
         const state             = this.state;
         const versions          = Service.Remote.process.versions;
         state.versions.electron = versions.electron;

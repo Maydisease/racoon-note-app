@@ -54,7 +54,6 @@ class Index extends React.Component {
             if (categoryData && categoryData.length > 0) {
                 const loop = (categoryDataTemps: any) => {
                     return categoryDataTemps.map((item: any) => {
-                        console.log(item);
                         return (
                             <div
                                 className="item" key={item.id}

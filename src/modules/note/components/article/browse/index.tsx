@@ -1,6 +1,7 @@
 import * as React         from "react";
 import {connect}          from "react-redux";
 import * as Mark          from 'mark.js';
+import OverviewRuler      from '../../../../component/overview_ruler';
 import './prism-okaidia.scss';
 import './dark-mermaid.scss';
 import {Service}          from '../../../../../lib/master.electron.lib';
@@ -23,14 +24,16 @@ class BrowseComponent extends React.Component {
     public intersectionObserver: IntersectionObserver;
 
     public props: DefaultProps = {
-        onRef: ''
+        onRef       : '',
+        displayState: false
     };
 
     public state = {
         isSearchModel: false
     };
 
-    public $element: any;
+    public $element: React.RefObject<HTMLDivElement>;
+    public $contentViewElement: React.RefObject<HTMLDivElement>;
     public selectedText: string;
     public browseContextMenu: any;
 
@@ -38,6 +41,7 @@ class BrowseComponent extends React.Component {
         super(props);
         this.props                = props;
         this.$element             = React.createRef();
+        this.$contentViewElement  = React.createRef();
         this.intersectionObserver = new IntersectionObserver(this.mermaidObserve);
         this.unTagMark            = this.unTagMark.bind(this);
         this.setTagMark           = this.setTagMark.bind(this);
@@ -72,7 +76,7 @@ class BrowseComponent extends React.Component {
             this.unTagMark();
         });
 
-        this.$element.current.oncontextmenu = () => {
+        (this.$element.current as HTMLDivElement).oncontextmenu = () => {
             const selected: any = window.getSelection();
             if (selected.focusNode.data && selected.focusNode.data.length > 0) {
                 this.selectedText = selected.focusNode.data;
@@ -170,7 +174,7 @@ class BrowseComponent extends React.Component {
     // 移除搜索关键字高亮
     public unTagMark() {
         try {
-            const instance = new Mark(this.$element.current);
+            const instance = new Mark(this.$element.current as HTMLDivElement);
             instance.unmark({
                 'element'         : 'span',
                 'className'       : 'sch-highlight',
@@ -189,7 +193,7 @@ class BrowseComponent extends React.Component {
         this.unTagMark();
         if (ARTICLE.quickSearchKey) {
             try {
-                const instance = new Mark(this.$element.current);
+                const instance = new Mark(this.$element.current as HTMLDivElement);
                 instance.mark(searchKey, {
                     'element'         : 'span',
                     'className'       : 'sch-highlight',
@@ -207,7 +211,22 @@ class BrowseComponent extends React.Component {
         this.rewriteATagLink();
         this.bindImageLightBoxEvent();
         const ARTICLE_TEMP = (this.props as any).STORE_NOTE$ARTICLE_TEMP;
-        return (<div ref={this.$element} className="wrap browse-mod" style={{display: this.props.displayState ? 'none' : 'block'}} dangerouslySetInnerHTML={{__html: ARTICLE_TEMP.html_content}}/>);
+        const ARTICLE      = (this.props as any).STORE_NOTE$ARTICLE;
+        const FRAME        = (this.props as any).STORE_NOTE$FRAME;
+        return (
+            <div
+                ref={this.$element}
+                className="wrap browse-mod"
+                style={{display: this.props.displayState ? 'none' : 'block'}}
+            >
+                {
+                    this.$contentViewElement && this.$contentViewElement.current &&
+					<OverviewRuler key={`${ARTICLE.id}_${FRAME.editMode}`} listenRef={this.$contentViewElement}/>
+                }
+
+                <div ref={this.$contentViewElement} className="content-view" dangerouslySetInnerHTML={{__html: ARTICLE_TEMP.html_content}}/>
+            </div>
+        );
     }
 }
 

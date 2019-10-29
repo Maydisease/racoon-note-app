@@ -7,8 +7,6 @@ import VRadio            from '../../../../component/radio';
 import {request}         from "../../../services/requst.service";
 import {VMessageService} from "../../../../component/message";
 
-console.log();
-
 class SharePanel extends React.Component {
 
     public props: any = {
@@ -133,8 +131,6 @@ class SharePanel extends React.Component {
                 use_share_code: this.state.conf.use_share_code
             };
 
-            console.log('source', {...params});
-
             const response = await request('note', 'updateArticleShareConf', {...params});
 
             if (response.result === 0) {
@@ -154,8 +150,6 @@ class SharePanel extends React.Component {
             y         = y - 50;
             isReverse = true;
         }
-
-        console.log('sharePanel', this.props.shareInfo);
 
         ReactDOM.render(
             <div

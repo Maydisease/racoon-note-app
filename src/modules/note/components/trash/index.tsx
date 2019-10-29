@@ -120,7 +120,6 @@ class TrashArticle extends React.Component {
     // 获取垃圾箱中的文章详情数据
     public async getTrashArticleDetail(id: number) {
         const response = await request('note', 'getTrashArticleDetail', {id});
-        console.log(response);
         if (response.result === 0) {
             const state                           = this.state;
             state.trashArticleDetail.id           = response.data.id;
