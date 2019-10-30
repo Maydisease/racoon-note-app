@@ -62,16 +62,22 @@ class OverviewRuler extends React.Component {
             this.drawElementVmContext.clearRect(0, 0, this.drawElementVm.width, this.drawElementVm.height);
         }
         setTimeout(() => {
+
+            const listenElement = this.props.listenRef.current as HTMLDivElement;
+
+            if (!this.drawElementVm || !listenElement) {
+                return;
+            }
+
             this.clearDraw();
             this.drawElementVm.width            = this.drawElementVm.clientWidth;
             this.drawElementVm.height           = this.drawElementVm.clientHeight;
-            const listenElement                 = this.props.listenRef.current as HTMLDivElement;
             const listenRefScrollHeight         = listenElement.scrollHeight;
             const listenClientHeight            = listenElement.clientHeight;
             const lisentGetBoundingClientRect   = listenElement.getBoundingClientRect();
             let zoomRatio                       = listenClientHeight / listenRefScrollHeight;
             zoomRatio                           = Number(zoomRatio.toFixed(2));
-            this.drawElementVmContext.fillStyle = "RGB(255, 0, 0, 1)";
+            this.drawElementVmContext.fillStyle = "RGB(255, 150, 50, 1)";
 
             const markElements = listenElement.querySelectorAll('.sch-highlight');
             markElements.forEach((element: any) => {
