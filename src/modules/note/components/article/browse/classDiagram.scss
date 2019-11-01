@@ -1,0 +1,69 @@
+$lineColor: #777;
+$backgroundColor: #222;
+$fontColor: #CCC;
+
+&[mermaid-type= 'classDiagram'] {
+    g {
+        &.classGroup text {
+            font-weight: normal;
+            fill: $fontColor !important;
+            font-size: 9px !important;
+            stroke: transparent;
+        }
+        
+        rect {
+            fill: $backgroundColor !important;
+            stroke: #555 !important;
+            vector-effect: non-scaling-stroke;
+        }
+        
+        line {
+            stroke: $lineColor !important;
+            stroke-width: 1 !important;
+            vector-effect: non-scaling-stroke;
+        }
+        
+        &.classLabel {
+            rect {
+                &.box {
+                    opacity: 0 !important;
+                }
+            }
+            
+            text {
+                &.label {
+                    fill: $fontColor !important;
+                }
+            }
+        }
+    }
+    
+    path {
+        &.relation {
+            stroke: $lineColor !important;
+            vector-effect: non-scaling-stroke;
+        }
+    }
+    
+    defs {
+        marker {
+            &#extensionStart,
+            &#extensionEnd,
+            &#compositionStart,
+            &#compositionEnd,
+            &#dependencyStart,
+            &#dependencyEnd {
+                fill: $lineColor !important;
+                stroke: $lineColor !important;
+                vector-effect: non-scaling-stroke;
+            }
+            
+            &#aggregationStart,
+            &#aggregationEnd {
+                fill: $backgroundColor !important;
+                stroke: $lineColor !important;
+                vector-effect: non-scaling-stroke;
+            }
+        }
+    }
+}

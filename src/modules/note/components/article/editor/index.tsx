@@ -4,6 +4,7 @@ import {store}                             from "../../../../../store";
 import * as MarkdownIt                     from 'markdown-it';
 import {EditorToolsService}                from '../../../services/editorTools.service';
 import {Service}                           from "../../../../../lib/master.electron.lib";
+import markdownItMermaid                   from "../../../../../lib/plugins/markdown_it/mermaid";
 import {ArticleService}                    from "../../../services/article.service";
 import {FontAwesomeIcon}                   from "@fortawesome/react-fontawesome";
 import {$AttachedService, AttachedService} from '../../../services/window_manage/attached.server';
@@ -32,8 +33,7 @@ import 'prismjs/components/prism-dart';
 import 'prismjs/components/prism-yaml';
 
 
-const markdownItMermaid = require('markdown-it-mermaid').default;
-const markdownItImsize  = require('markdown-it-imsize');
+const markdownItImsize = require('markdown-it-imsize');
 
 declare var Prism: any;
 
@@ -99,7 +99,13 @@ class EditorComponent extends React.Component {
                     htmlStr  = Prism.highlight(str, Prism.languages[language], language);
                 }
 
-                html = `<pre class="language-${language}" language="${language}"><code>${htmlStr}</code></pre>`;
+                try {
+                    html = `<pre class="language-${language}" language="${language}"><code>${htmlStr}</code></pre>`;
+                } catch (e) {
+                    html = '';
+                }
+
+                console.log('html:', html);
 
                 return html;
             }
@@ -156,6 +162,7 @@ class EditorComponent extends React.Component {
         const timeShuttle = () => {
             store.dispatch({type});
             const history = store.getState().EDITOR$HISTORY;
+            console.log(666, history);
             store.dispatch({
                 type    : 'NOTE$UPDATE_ARTICLE_TEMP',
                 playload: {
@@ -282,7 +289,7 @@ class EditorComponent extends React.Component {
         const state        = this.state;
         state.content      = contentValue;
         this.setState(state);
-
+        console.log('contentValue', contentValue);
         this.writeArticleToStore(contentValue);
 
     }

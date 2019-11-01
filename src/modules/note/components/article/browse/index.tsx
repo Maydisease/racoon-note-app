@@ -7,12 +7,10 @@ import './dark-mermaid.scss';
 import {Service}          from '../../../../../lib/master.electron.lib';
 import {VLightBoxService} from "../../../../component/light_box";
 import {storeSubscribe}   from "../../../../../store/middleware/storeActionEvent.middleware";
+import mermaid            from 'mermaid';
 
-const mermaid = require('mermaid');
+console.log(mermaid);
 
-mermaid.initialize({
-    theme: 'dark'
-});
 
 interface DefaultProps {
     onRef?: any,
@@ -36,17 +34,21 @@ class BrowseComponent extends React.Component {
     public $contentViewElement: React.RefObject<HTMLDivElement>;
     public selectedText: string;
     public browseContextMenu: any;
+    public tempTimer: number;
+    public umlRenderMaps: any;
 
     constructor(props: any) {
         super(props);
         this.props                = props;
         this.$element             = React.createRef();
         this.$contentViewElement  = React.createRef();
+        this.mermaidObserve       = this.mermaidObserve.bind(this);
         this.intersectionObserver = new IntersectionObserver(this.mermaidObserve);
         this.unTagMark            = this.unTagMark.bind(this);
         this.setTagMark           = this.setTagMark.bind(this);
         this.browseContextMenu    = new Service.Menu();
         this.selectedText         = '';
+        this.umlRenderMaps        = {};
         this.browseContextMenuInit();
     }
 
@@ -67,11 +69,13 @@ class BrowseComponent extends React.Component {
 
         this.setSearchTagInit();
 
+        // 订阅快速搜索
         storeSubscribe('NOTE$QUICK_SEARCH', (action: any) => {
             const ARTICLE = (this.props as any).STORE_NOTE$ARTICLE;
             this.setTagMark(ARTICLE.quickSearchKey);
         });
 
+        // 订阅搜索高亮标签销毁
         storeSubscribe('NOTE$UN_SEARCH_TAG', () => {
             this.unTagMark();
         });
@@ -102,27 +106,77 @@ class BrowseComponent extends React.Component {
         }
     }
 
+    // mermaid 可视区观察器
     public mermaidObserve<IntersectionObserverCallback>(entries: IntersectionObserverEntry[]) {
-        entries.forEach((entrie: IntersectionObserverEntry, index) => {
-            if (entrie.isIntersecting && !entrie.target.getAttribute('mermaid-render-state')) {
-                const element                 = entrie.target;
-                const graphDefinition: string = (element.textContent as string);
-                const elementId               = `graphContainer${element.getAttribute('key-index')}`;
-                const mermaidRenderHtml       = mermaid.render(elementId, graphDefinition);
-                element.innerHTML             = mermaidRenderHtml;
-                element.setAttribute('mermaid-render-state', 'true');
+        entries.forEach((entry: IntersectionObserverEntry) => {
+            if (entry.isIntersecting) {
+                const item           = entry.target;
+                const displayElement = (item.querySelector('.display') as HTMLDivElement);
+                const key: string    = item.getAttribute('_key') as string;
+                if (this.umlRenderMaps && this.umlRenderMaps[key]) {
+                    let renderState = false;
+
+                    try {
+                        displayElement.innerHTML = this.umlRenderMaps[key].content;
+                        renderState              = true;
+                    } catch (e) {
+                        renderState = false;
+                    }
+
+                    item.setAttribute('mermaid-render-state', `${renderState}`);
+                }
             }
         });
     }
 
+    // 渲染 mermaid
     public renderMermaid() {
-        setTimeout(() => {
-            const elementAll: NodeListOf<Element> = document.querySelectorAll(".mermaid");
-            elementAll.forEach((item: HTMLElement, index: number) => {
-                item.setAttribute('key-index', index + '');
-                this.intersectionObserver.observe(item);
-            });
-        }, 200);
+
+        const $contentViewElement             = this.$contentViewElement.current as HTMLDivElement;
+        const elementAll: NodeListOf<Element> = $contentViewElement.querySelectorAll(".mermaid");
+        elementAll.forEach((item: HTMLElement, index: number) => {
+
+            if (item.getAttribute('mermaid-render-state') === 'true') {
+                return;
+            }
+
+            let isRenderFail     = true;
+            const id             = 'mermaid_' + new Date().getTime().toString() + '_' + index;
+            const sourceText     = (item.querySelector('.source') as HTMLDivElement).innerText;
+            const displayElement = (item.querySelector('.display') as HTMLDivElement);
+            const mermaidType    = item.getAttribute('mermaid-type') as string || '';
+
+            item.setAttribute('_key', id);
+            item.setAttribute('mermaid-render-state', 'false');
+
+            if (mermaidType && sourceText.indexOf(mermaidType) as number >= 0) {
+                try {
+                    mermaid.render(id, sourceText, (response: any) => {
+                        if (response) {
+                            isRenderFail           = false;
+                            this.umlRenderMaps[id] = {
+                                element: item,
+                                content: response
+                            };
+                        }
+                    });
+                } catch (e) {
+                    console.warn(e);
+                }
+            }
+
+            if (isRenderFail) {
+                item.setAttribute('mermaid-render-state', 'error');
+                displayElement.innerHTML = `` +
+                    `<div class="tips">⚠️️ The <b>${mermaidType}</b> chart drawn is wrong.</div>` +
+                    `<pre>` +
+                    `<small>\`\`\`mermaid</small>\n${sourceText}\n<small>\`\`\`</small>` +
+                    `</pre>`;
+            }
+
+            this.intersectionObserver.observe(item);
+
+        });
     }
 
     // 重写超链接，由系统默认浏览器打开
@@ -207,12 +261,18 @@ class BrowseComponent extends React.Component {
     }
 
     public render() {
-        this.renderMermaid();
+
+        clearTimeout(this.tempTimer);
+        this.tempTimer = window.setTimeout(() => {
+            this.renderMermaid();
+        }, 10);
+
         this.rewriteATagLink();
         this.bindImageLightBoxEvent();
         const ARTICLE_TEMP = (this.props as any).STORE_NOTE$ARTICLE_TEMP;
         const ARTICLE      = (this.props as any).STORE_NOTE$ARTICLE;
         const FRAME        = (this.props as any).STORE_NOTE$FRAME;
+
         return (
             <div
                 ref={this.$element}

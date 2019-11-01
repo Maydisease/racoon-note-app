@@ -222,7 +222,10 @@ class ArticleComponent extends React.Component {
 							</React.Fragment>
                         }
 						<EditorComponent displayState={this.state.editState}/>
-						<BrowseComponent displayState={this.state.editState}/>
+                        {
+                            !(this.state.editAndBrowse && this.state.editState && FRAME.layout === 0) &&
+							<BrowseComponent displayState={this.state.editState}/>
+                        }
 					</React.Fragment>
                     }
                     {ARTICLE.lock === 1 &&
