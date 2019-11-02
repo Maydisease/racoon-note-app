@@ -1,0 +1,51 @@
+@import "./variableMermaid.scss";
+
+&[mermaid-type= 'graph LR'] {
+    
+    .display {
+        max-width: 80%;
+    }
+    
+    g {
+        
+        &.cluster {
+            .label {
+                color: $fontColor !important;
+                font-size: 12px;
+            }
+            
+            rect {
+                stroke: $lineColor !important;
+                vector-effect: non-scaling-stroke;
+                
+            }
+        }
+        
+        &.edgePaths {
+            path.path {
+                stroke: $lineColor !important;
+                vector-effect: non-scaling-stroke;
+            }
+            
+            defs {
+                marker {
+                    path.arrowheadPath {
+                        fill: $lineColor !important;
+                        vector-effect: non-scaling-stroke;
+                    }
+                }
+            }
+        }
+        
+        &.nodes {
+            .node {
+                
+                .label {
+                    font-size: $fontsize;
+                }
+            }
+        }
+    }
+    
+    
+}

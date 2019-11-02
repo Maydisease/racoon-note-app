@@ -1,22 +1,37 @@
 @import "./variableMermaid.scss";
 
-&[mermaid-type= 'classDiagram'] {
+&[mermaid-type= 'sequenceDiagram'] {
     
     .display {
-        width: auto;
+        max-width: 80%;
     }
     
     g {
-        &.classGroup text {
-            font-weight: normal;
+        
+        text {
+            font-weight: normal !important;
             fill: $fontColor !important;
-            font-size: 9px !important;
+            font-size: 14px !important;
             stroke: transparent;
+            font-family: Arial, sans-serif;
         }
         
-        rect {
+        circle {
+        
+        }
+        
+        rect.note {
+            fill: $fillColor !important;
+            stroke: none !important;
+        }
+        
+        text.noteText {
+            fill: $fillFontColor !important;
+        }
+        
+        rect, circle {
             fill: $backgroundColor !important;
-            stroke: #555 !important;
+            stroke: $lineColor !important;
             vector-effect: non-scaling-stroke;
         }
         
@@ -25,24 +40,11 @@
             stroke-width: 1 !important;
             vector-effect: non-scaling-stroke;
         }
-        
-        &.classLabel {
-            rect {
-                &.box {
-                    opacity: 0 !important;
-                }
-            }
-            
-            text {
-                &.label {
-                    fill: $fontColor !important;
-                }
-            }
-        }
     }
     
     path {
-        &.relation {
+        &.relation,
+        &.transition {
             stroke: $lineColor !important;
             vector-effect: non-scaling-stroke;
         }

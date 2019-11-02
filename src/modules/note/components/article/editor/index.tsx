@@ -5,6 +5,7 @@ import * as MarkdownIt                     from 'markdown-it';
 import {EditorToolsService}                from '../../../services/editorTools.service';
 import {Service}                           from "../../../../../lib/master.electron.lib";
 import markdownItMermaid                   from "../../../../../lib/plugins/markdown_it/mermaid";
+import markdownItToDoList                  from "../../../../../lib/plugins/markdown_it/toDoList";
 import {ArticleService}                    from "../../../services/article.service";
 import {FontAwesomeIcon}                   from "@fortawesome/react-fontawesome";
 import {$AttachedService, AttachedService} from '../../../services/window_manage/attached.server';
@@ -111,6 +112,7 @@ class EditorComponent extends React.Component {
             }
         })
             .use(markdownItImsize)
+            .use(markdownItToDoList)
             .use(markdownItMermaid);
 
     }

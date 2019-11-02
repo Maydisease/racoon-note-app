@@ -9,7 +9,9 @@
     position: relative;
     
     .display {
+        width: 100%;
         max-width: 100%;
+        overflow: hidden;
         padding: 20px !important;
         box-sizing: border-box;
         background: RGBA(0, 0, 0, 0.1);
@@ -17,7 +19,8 @@
         display: inline-block;
         
         svg {
-            width: 100%;
+            max-width: 100%;
+            float: left;
         }
     }
     
@@ -110,4 +113,8 @@
     }
     
     @import "./classDiagram.scss";
+    @import "./stateDiagram.scss";
+    @import "./sequenceDiagram.scss";
+    @import "./graphTB.scss";
+    @import "./graphLR.scss";
 }

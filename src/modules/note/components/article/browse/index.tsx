@@ -9,9 +9,6 @@ import {VLightBoxService} from "../../../../component/light_box";
 import {storeSubscribe}   from "../../../../../store/middleware/storeActionEvent.middleware";
 import mermaid            from 'mermaid';
 
-console.log(mermaid);
-
-
 interface DefaultProps {
     onRef?: any,
     displayState?: boolean
@@ -120,6 +117,7 @@ class BrowseComponent extends React.Component {
                         displayElement.innerHTML = this.umlRenderMaps[key].content;
                         renderState              = true;
                     } catch (e) {
+                        console.log('error', e);
                         renderState = false;
                     }
 
@@ -170,7 +168,7 @@ class BrowseComponent extends React.Component {
                 displayElement.innerHTML = `` +
                     `<div class="tips">⚠️️ The <b>${mermaidType}</b> chart drawn is wrong.</div>` +
                     `<pre>` +
-                    `<small>\`\`\`mermaid</small>\n${sourceText}\n<small>\`\`\`</small>` +
+                    `<small>\`\`\`uml</small>\n${sourceText}\n<small>\`\`\`</small>` +
                     `</pre>`;
             }
 

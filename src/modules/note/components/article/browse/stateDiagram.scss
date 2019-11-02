@@ -1,22 +1,26 @@
 @import "./variableMermaid.scss";
 
-&[mermaid-type= 'classDiagram'] {
+&[mermaid-type= 'stateDiagram'] {
     
     .display {
-        width: auto;
+        max-width: 80%;
     }
     
     g {
-        &.classGroup text {
-            font-weight: normal;
+        &.stateGroup text {
+            font-weight: normal !important;
             fill: $fontColor !important;
             font-size: 9px !important;
             stroke: transparent;
         }
         
-        rect {
+        circle {
+        
+        }
+        
+        rect, circle {
             fill: $backgroundColor !important;
-            stroke: #555 !important;
+            stroke: $lineColor !important;
             vector-effect: non-scaling-stroke;
         }
         
@@ -26,7 +30,7 @@
             vector-effect: non-scaling-stroke;
         }
         
-        &.classLabel {
+        &.stateLabel {
             rect {
                 &.box {
                     opacity: 0 !important;
@@ -42,7 +46,8 @@
     }
     
     path {
-        &.relation {
+        &.relation,
+        &.transition {
             stroke: $lineColor !important;
             vector-effect: non-scaling-stroke;
         }
