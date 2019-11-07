@@ -8,6 +8,31 @@ export class EditorToolsService {
         this.element = element;
     }
 
+    // 获取当前行数信息
+    public getCurrentLineStartAndEnd() {
+        const sourceValue        = this.element.value;
+        const selection          = this.getTextAreaSelection();
+        const enter              = '\n';
+        let tempSourceValueList  = sourceValue.substring(0, selection.start).split(enter);
+        const sourceValueList    = sourceValue.split(enter);
+        const currentLineIndex   = tempSourceValueList.length - 1;
+        tempSourceValueList      = sourceValueList.slice(0, currentLineIndex);
+        const tempSourceValue    = tempSourceValueList.join('-');
+        const currentLineContent = sourceValueList[currentLineIndex];
+        const lineStart          = tempSourceValue.length + (currentLineIndex === 0 ? 0 : 1);
+        const lineEnd            = lineStart + currentLineContent.length + (currentLineIndex === 0 ? 0 : 1);
+
+        const newSelection = {
+            start    : lineStart,
+            end      : lineEnd,
+            lineIndex: currentLineIndex,
+            maxLine  : sourceValueList.length,
+            text     : currentLineContent
+        };
+
+        return newSelection
+    }
+
     // 设置光标位置
     public setCaretPosition(startPos: number, endPos?: number, autoFocus = true) {
         if (this.element.setSelectionRange) {
@@ -274,9 +299,9 @@ export class EditorToolsService {
         const selection     = this.getTextAreaSelection();
         const startValue    = sourceValue.substring(0, selection.start);
         const endValue      = sourceValue.substring(selection.end, selection.maxLength);
-        let newSelectedCont = '';
         const enter         = '\n';
         const space         = ' ';
+        let newSelectedCont = '';
 
         const tempSourceValue    = sourceValue.substring(0, selection.start).split(enter);
         const currentLineContent = tempSourceValue[tempSourceValue.length - 1];
@@ -294,6 +319,45 @@ export class EditorToolsService {
         this.setCaretPosition(selection.end + (spaceLen > 1 ? (spaceLen + enter.length) : 1));
 
         return `${startValue}${newSelectedCont}${endValue}`;
+    }
+
+    // 选中一整行
+    public insertSelectedLine(): string {
+        const sourceValue  = this.element.value;
+        const selection    = this.getTextAreaSelection();
+        const startValue   = sourceValue.substring(0, selection.start);
+        const endValue     = sourceValue.substring(selection.end, selection.maxLength);
+        const {start, end} = this.getCurrentLineStartAndEnd();
+        this.setCaretPosition(start, end);
+
+        return `${startValue}${selection.text}${endValue}`;
+    }
+
+    // 克隆行单行/多行（选中）
+    public insertCloneLine() {
+        const sourceValue                     = this.element.value;
+        const selection                       = this.getTextAreaSelection();
+        const {end, text, maxLine, lineIndex} = this.getCurrentLineStartAndEnd();
+        const lineStartValue                  = sourceValue.substring(0, end);
+        const lineEndValue                    = sourceValue.substring(end, sourceValue.maxLength);
+        const isFirstLine                     = lineIndex === 0;
+        const isLastLine                      = lineIndex === maxLine - 1;
+        const enter                           = '\n';
+        let newContent                        = text;
+        let isSelected                        = false;
+
+        if (selection.text) {
+            if (selection.text.split(enter) && selection.text.split(enter).length > 1) {
+                isSelected = true;
+                newContent = selection.text;
+            }
+        }
+
+        const insertedContent = (isFirstLine || isLastLine) ? `\n${newContent}` : `${newContent}\n`;
+
+        this.setCaretPosition(end + insertedContent.length * (isSelected ? 2 : 1) - (isFirstLine ? 0 : 1));
+
+        return `${lineStartValue}${insertedContent}${lineEndValue}`;
     }
 
 }

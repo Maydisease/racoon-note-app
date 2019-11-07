@@ -277,6 +277,22 @@ class EditorComponent extends React.Component {
                 }
                 break;
 
+            case  'insertSelectedLine':
+                returnContent = this.editorTools.insertSelectedLine();
+                if (returnContent) {
+                    state.content = returnContent;
+                    this.setState(state);
+                }
+                break;
+
+            case  'insertCloneLine':
+                returnContent = this.editorTools.insertCloneLine();
+                if (returnContent) {
+                    state.content = returnContent;
+                    this.setState(state);
+                }
+                break;
+
         }
         if (state.content) {
             (this.textareaElement.current as HTMLTextAreaElement).dispatchEvent(new Event('textarea', {bubbles: true}));
@@ -314,6 +330,13 @@ class EditorComponent extends React.Component {
             case 'insertEnter':
                 this.insertContent(type);
                 break;
+            case 'insertSelectedLine':
+                this.insertContent(type);
+                break;
+            case 'insertCloneLine':
+                this.insertContent(type);
+                break;
+
 
         }
     }
@@ -330,6 +353,8 @@ class EditorComponent extends React.Component {
 
     public handelEditorKeyDown(event: KeyboardEventInit) {
 
+        console.log(event, event.key, event.metaKey);
+
         // 缩进
         if (event.key === 'Tab' && !event.shiftKey) {
             this.handelEditorTools('insertIncreaseIndent');
@@ -345,6 +370,18 @@ class EditorComponent extends React.Component {
         // 换行
         if (event.key === 'Enter') {
             this.handelEditorTools('insertEnter');
+            (event as any).preventDefault();
+        }
+
+        // 选中整行
+        if (event.key === 'Home' && event.shiftKey) {
+            this.handelEditorTools('insertSelectedLine');
+            (event as any).preventDefault();
+        }
+
+        // 克隆当前行
+        if (event.key === 'd' && event.metaKey) {
+            this.handelEditorTools('insertCloneLine');
             (event as any).preventDefault();
         }
 
