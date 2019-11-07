@@ -1,5 +1,6 @@
 interface DefaultState {
     content?: string
+    cursor?: number
 }
 
 declare type Playload = DefaultState;
@@ -19,7 +20,8 @@ export class EditorReducer {
     constructor(ModelName: string) {
         this.modelName = ModelName;
         this.body      = {
-            content: ''
+            content: '',
+            cursor : 0
         };
         this.playload  = {};
         this.Action    = this.Action.bind(this);
@@ -27,8 +29,8 @@ export class EditorReducer {
 
     // 更新临时日志STORE
     public ADD() {
-        const {content} = this.playload;
-        this.body       = {content};
+        const {content, cursor} = this.playload;
+        this.body               = {content, cursor};
         return {...this.state, ...this.body};
     }
 

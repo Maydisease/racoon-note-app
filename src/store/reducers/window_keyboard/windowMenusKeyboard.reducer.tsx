@@ -23,34 +23,27 @@ export class WindowMenusKeyboardReducer {
         this.Action    = this.Action.bind(this);
     }
 
-    // 更新UI框架状态
+    // 保存编辑器内的内容
     public CMD_OR_CTRL_S() {
         return this.state;
     }
 
-    // 更新UI框架状态
+    // 切换预览/编辑状态
     public CMD_OR_CTRL_E() {
         return this.state;
     }
 
+    // 切换布局
     public CMD_OR_CTRL_W() {
         return this.state;
     }
 
+    // 呼出超级搜索窗体
     public CMD_OR_CTRL_SHIFT_F() {
         return this.state;
     }
 
-    // editor -> undo
-    public CMD_OR_CTRL_Z() {
-        return this.state;
-    }
-
-    // editor -> redo
-    public CMD_OR_CTRL_SHIFT_Z() {
-        return this.state;
-    }
-
+    // 聚焦文章/内容搜索框
     public CMD_OR_CTRL_F() {
         return this.state;
     }

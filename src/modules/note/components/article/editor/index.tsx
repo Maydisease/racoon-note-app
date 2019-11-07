@@ -10,8 +10,6 @@ import {ArticleService}                    from "../../../services/article.servi
 import {FontAwesomeIcon}                   from "@fortawesome/react-fontawesome";
 import {$AttachedService, AttachedService} from '../../../services/window_manage/attached.server';
 import {VMessageService}                   from "../../../../component/message";
-// import SuperLinkComponent                  from './tools/super_link';
-import {storeSubscribe}                    from "../../../../../store/middleware/storeActionEvent.middleware";
 import 'prismjs';
 import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-javascript';
@@ -133,10 +131,23 @@ class EditorComponent extends React.Component {
             const state   = this.state;
             state.content = (this.props as any).STORE_NOTE$ARTICLE_TEMP.markdown_content;
             this.setState(state);
+
+            const textAreaSelection = this.editorTools.getTextAreaSelection();
+            let textAreaCursor      = 0;
+            if (textAreaSelection.start === textAreaSelection.end) {
+                textAreaCursor = textAreaSelection.start;
+            } else {
+                textAreaCursor = textAreaSelection.end;
+            }
+
             store.dispatch({
                 type    : 'EDITOR$ADD',
-                playload: {content: (this.props as any).STORE_NOTE$ARTICLE_TEMP.markdown_content}
+                playload: {
+                    content: (this.props as any).STORE_NOTE$ARTICLE_TEMP.markdown_content,
+                    cursor : textAreaCursor
+                }
             });
+
         }
     }
 
@@ -148,16 +159,6 @@ class EditorComponent extends React.Component {
             this.insertContent('image', params.data);
         });
 
-        // 撤销
-        storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_Z', () => {
-            this.contentUndoOrRedo('UNDO');
-        });
-
-        // 重做
-        storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_SHIFT_Z', () => {
-            this.contentUndoOrRedo('REDO');
-        });
-
     }
 
     public contentUndoOrRedo(type: string): void {
@@ -165,6 +166,7 @@ class EditorComponent extends React.Component {
         const timeShuttle = () => {
             store.dispatch({type});
             const history = store.getState().EDITOR$HISTORY;
+            this.editorTools.setCaretPosition(history.present.cursor);
             store.dispatch({
                 type    : 'NOTE$UPDATE_ARTICLE_TEMP',
                 playload: {
@@ -336,6 +338,12 @@ class EditorComponent extends React.Component {
             case 'insertCloneLine':
                 this.insertContent(type);
                 break;
+            case 'undo':
+                this.contentUndoOrRedo('UNDO');
+                break;
+            case 'redo':
+                this.contentUndoOrRedo('REDO');
+                break;
 
 
         }
@@ -352,8 +360,6 @@ class EditorComponent extends React.Component {
     }
 
     public handelEditorKeyDown(event: KeyboardEventInit) {
-
-        console.log(event, event.key, event.metaKey);
 
         // 缩进
         if (event.key === 'Tab' && !event.shiftKey) {
@@ -385,6 +391,18 @@ class EditorComponent extends React.Component {
             (event as any).preventDefault();
         }
 
+        // 撤消
+        if (event.key === 'z' && event.metaKey) {
+            this.handelEditorTools('undo');
+            (event as any).preventDefault();
+        }
+
+        // 重做
+        if (event.key === 'z' && event.shiftKey && event.metaKey) {
+            this.handelEditorTools('redo');
+            (event as any).preventDefault();
+        }
+
     }
 
     // 写入内容到store
@@ -402,9 +420,20 @@ class EditorComponent extends React.Component {
                 }
             });
 
+            const textAreaSelection = this.editorTools.getTextAreaSelection();
+            let textAreaCursor      = 0;
+            if (textAreaSelection.start === textAreaSelection.end) {
+                textAreaCursor = textAreaSelection.start;
+            } else {
+                textAreaCursor = textAreaSelection.end;
+            }
+
             store.dispatch({
                 type    : 'EDITOR$ADD',
-                playload: {content}
+                playload: {
+                    content,
+                    cursor: textAreaCursor
+                }
             });
 
             clearTimeout(this.handelEditorTimer);
