@@ -38,9 +38,11 @@ const markdownItImsize = require('markdown-it-imsize');
 
 declare var Prism: any;
 
+
 interface DefaultProps {
     displayState: boolean
 }
+
 
 interface TextAreaHistory {
     list: string[]
@@ -73,6 +75,7 @@ class EditorComponent extends React.Component {
         this.insertContent       = this.insertContent.bind(this);
         this.handelEditorTools   = this.handelEditorTools.bind(this);
         this.handelEditor        = this.handelEditor.bind(this);
+        this.handelEditorKeyDown = this.handelEditorKeyDown.bind(this);
         this.writeArticleToStore = this.writeArticleToStore.bind(this);
         this.superLinkConfirm    = this.superLinkConfirm.bind(this);
         this.superLinkCancel     = this.superLinkCancel.bind(this);
@@ -105,8 +108,6 @@ class EditorComponent extends React.Component {
                 } catch (e) {
                     html = '';
                 }
-
-                console.log('html:', html);
 
                 return html;
             }
@@ -164,7 +165,6 @@ class EditorComponent extends React.Component {
         const timeShuttle = () => {
             store.dispatch({type});
             const history = store.getState().EDITOR$HISTORY;
-            console.log(666, history);
             store.dispatch({
                 type    : 'NOTE$UPDATE_ARTICLE_TEMP',
                 playload: {
@@ -253,6 +253,30 @@ class EditorComponent extends React.Component {
                     this.setState(state);
                 }
                 break;
+            case  'insertIncreaseIndent':
+                returnContent = this.editorTools.insertIncreaseIndent();
+                if (returnContent) {
+                    state.content = returnContent;
+                    this.setState(state);
+                }
+                break;
+
+            case  'insertDecreaseIndent':
+                returnContent = this.editorTools.insertDecreaseIndent();
+                if (returnContent) {
+                    state.content = returnContent;
+                    this.setState(state);
+                }
+                break;
+
+            case  'insertEnter':
+                returnContent = this.editorTools.insertEnter();
+                if (returnContent) {
+                    state.content = returnContent;
+                    this.setState(state);
+                }
+                break;
+
         }
         if (state.content) {
             (this.textareaElement.current as HTMLTextAreaElement).dispatchEvent(new Event('textarea', {bubbles: true}));
@@ -281,6 +305,16 @@ class EditorComponent extends React.Component {
             case 'insertSuperLink':
                 this.insertContent(type);
                 break;
+            case 'insertIncreaseIndent':
+                this.insertContent(type);
+                break;
+            case 'insertDecreaseIndent':
+                this.insertContent(type);
+                break;
+            case 'insertEnter':
+                this.insertContent(type);
+                break;
+
         }
     }
 
@@ -291,8 +325,28 @@ class EditorComponent extends React.Component {
         const state        = this.state;
         state.content      = contentValue;
         this.setState(state);
-        console.log('contentValue', contentValue);
         this.writeArticleToStore(contentValue);
+    }
+
+    public handelEditorKeyDown(event: KeyboardEventInit) {
+
+        // 缩进
+        if (event.key === 'Tab' && !event.shiftKey) {
+            this.handelEditorTools('insertIncreaseIndent');
+            (event as any).preventDefault();
+        }
+
+        // 伸出
+        if (event.key === 'Tab' && event.shiftKey) {
+            this.handelEditorTools('insertDecreaseIndent');
+            (event as any).preventDefault();
+        }
+
+        // 换行
+        if (event.key === 'Enter') {
+            this.handelEditorTools('insertEnter');
+            (event as any).preventDefault();
+        }
 
     }
 
@@ -342,6 +396,7 @@ class EditorComponent extends React.Component {
                         name="content"
                         placeholder="write your dreams..."
                         value={this.state.content}
+                        onKeyDown={this.handelEditorKeyDown}
                         onChange={this.handelEditor}
                     />
                     <div className="editor-tools-bar">

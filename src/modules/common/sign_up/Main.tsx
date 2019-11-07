@@ -149,8 +149,6 @@ class SignUpMain extends React.Component<Props, State> {
             // 校验用户是否存在
             const response = await request('User', 'asyncVerifyUser', {username});
 
-            console.log(response);
-
             if (response.result === 1) {
                 Service.Dialog.showErrorBox('sign', 'registration failure');
                 return false;

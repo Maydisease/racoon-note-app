@@ -18,7 +18,6 @@ const MermaidPlugin = (md: any) => {
         mdType         = mdType.lastIndexOf(';') === (mdType.length - 1) ? mdType.substr(0, mdType.length - 1) : mdType;
 
         if (language && language.toLocaleUpperCase() === 'UML') {
-            console.log('mermaidChart', mermaidChart(code, mdType));
             return mermaidChart(code, mdType);
         }
 

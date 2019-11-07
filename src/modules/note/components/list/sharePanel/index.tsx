@@ -134,7 +134,7 @@ class SharePanel extends React.Component {
             const response = await request('note', 'updateArticleShareConf', {...params});
 
             if (response.result === 0) {
-                console.log('更新成功', response);
+                //
             }
         }, 200);
 

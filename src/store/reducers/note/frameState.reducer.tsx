@@ -54,7 +54,6 @@ export class FrameStateReducer {
     }
 
     public CHANGE_TRASH_MODE_STATE() {
-        console.log(11111);
         const {trashMode}   = this.playload;
         this.body.trashMode = trashMode;
 

@@ -32,10 +32,9 @@ class FinishList extends React.Component {
 
         const response = await request('attached', 'getAttachedData');
         if (response.result !== 1) {
-            console.log(8891);
             const state              = this.state;
             state.finishAttachedList = response.data;
-            this.setState(state);
+            this.setState(state as any);
             loading.destroy();
         }
 
@@ -55,8 +54,6 @@ class FinishList extends React.Component {
             async (btnIndex: number) => {
                 if (btnIndex === 0) {
                     const response = await request('attached', 'removeAttached', {ids: [id]});
-
-                    console.log(1111111, response);
 
                     if (response.result !== 1) {
                         await this.getAttachedData();
