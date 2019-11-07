@@ -1,4 +1,4 @@
-const mermaidChart = (code: any, mermaidType: string) => {
+const handles = (code: any, mermaidType: string) => {
     return `` +
         `<div class="mermaid" mermaid-type="${mermaidType}">` +
         `<div class="source" style="display: none;">` +
@@ -8,7 +8,7 @@ const mermaidChart = (code: any, mermaidType: string) => {
         `</div>`;
 };
 
-const MermaidPlugin = (md: any) => {
+const plugin = (md: any) => {
     const temp              = md.renderer.rules.fence.bind(md.renderer.rules);
     md.renderer.rules.fence = (tokens: any, idx: any, options: any, env: any, slf: any) => {
         const token    = tokens[idx];
@@ -18,11 +18,11 @@ const MermaidPlugin = (md: any) => {
         mdType         = mdType.lastIndexOf(';') === (mdType.length - 1) ? mdType.substr(0, mdType.length - 1) : mdType;
 
         if (language && language.toLocaleUpperCase() === 'UML') {
-            return mermaidChart(code, mdType);
+            return handles(code, mdType);
         }
 
         return temp(tokens, idx, options, env, slf);
     }
 };
 
-export default MermaidPlugin;
+export default plugin;

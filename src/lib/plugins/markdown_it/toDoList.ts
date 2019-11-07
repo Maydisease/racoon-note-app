@@ -8,15 +8,15 @@ interface GetTodoObjectResult {
 
 type GetTodoObject = (str: string) => GetTodoObjectResult
 
-const ToDoListPlugin = (md: MarkdownIt) => {
+const plugin = (md: MarkdownIt) => {
 
-    const getTodoObject: GetTodoObject = (str) => {
+    const handles: GetTodoObject = (str) => {
         const space = ' ';
 
         const map = {
-            [`[ ]${space}`]: {name: 'undone', icon: '💡'},
-            [`[o]${space}`]: {name: 'done', icon: '✅️'},
-            [`[x]${space}`]: {name: 'cancel', icon: '❌'}
+            [`[ ]${space}`]: {name: 'undone', icon: `💡${space}`},
+            [`[o]${space}`]: {name: 'done', icon: `✅️${space}`},
+            [`[x]${space}`]: {name: 'cancel', icon: `❌${space}`}
         };
 
         let result: GetTodoObjectResult = {
@@ -44,7 +44,7 @@ const ToDoListPlugin = (md: MarkdownIt) => {
 
             for (let i = 0; i < len; i++) {
                 for (let $i = 0; $i < state.tokens.length; $i++) {
-                    const todoObject        = getTodoObject(state.tokens[$i].content);
+                    const todoObject        = handles(state.tokens[$i].content);
                     const isIncludeTodoType = todoObject.state;
                     if (state.tokens[$i].type === 'text' && isIncludeTodoType) {
 
@@ -88,4 +88,4 @@ const ToDoListPlugin = (md: MarkdownIt) => {
     });
 };
 
-export default ToDoListPlugin;
+export default plugin;
