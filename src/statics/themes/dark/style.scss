@@ -963,7 +963,7 @@ body[theme='dark'] {
                                         padding-left: 20px;
                                     }
                                     
-                                    p > code {
+                                    *:not(pre) code {
                                         padding: 0 3px;
                                         margin: 0 2px;
                                         color: RGBA(255, 150, 50, 1);
