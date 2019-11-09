@@ -71,7 +71,7 @@ class EditorMonaco extends React.Component {
             console.log('||||');
             this.isInitEditorValue = true;
             this.currentArticleId  = articleId;
-            // this.monacoEditor.setValue(markdownContent);
+            this.monacoEditor.setValue(markdownContent);
         }
     }
 
