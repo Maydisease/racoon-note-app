@@ -79,13 +79,17 @@ class EditorMonaco extends React.Component {
     public editorInit() {
         const editorContainer = this.monacoEditorContainer.current as HTMLElement;
         if (!this.monacoEditor) {
-            this.monacoEditor = Monaco.editor.create(editorContainer, editorConf);
+            setTimeout(() => {
+                console.log('启用编辑器');
+                this.monacoEditor = Monaco.editor.create(editorContainer, editorConf);
 
-            // 当编辑器内的markdown内容有更新后
-            this.monacoEditor.onDidChangeModelContent((event: any) => {
-                const newValue = this.monacoEditor.getValue();
-                this.updateArticleStore(newValue);
-            })
+                // 当编辑器内的markdown内容有更新后
+                this.monacoEditor.onDidChangeModelContent((event: any) => {
+                    const newValue = this.monacoEditor.getValue();
+                    this.updateArticleStore(newValue);
+                })
+            }, 5000)
+
         }
     }
 
