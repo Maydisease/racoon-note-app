@@ -2,12 +2,11 @@ import * as React                          from 'react';
 import {connect}                           from 'react-redux';
 import {store}                             from "../../../../../store";
 import * as MarkdownIt                     from 'markdown-it';
+import EditorMonaco                        from '../../../../component/editors/monaco';
 import {EditorToolsService}                from '../../../services/editorTools.service';
-import {Service}                           from "../../../../../lib/master.electron.lib";
 import markdownItMermaid                   from "../../../../../lib/plugins/markdown_it/mermaid";
 import markdownItToDoList                  from "../../../../../lib/plugins/markdown_it/toDoList";
 import {ArticleService}                    from "../../../services/article.service";
-import {FontAwesomeIcon}                   from "@fortawesome/react-fontawesome";
 import {$AttachedService, AttachedService} from '../../../services/window_manage/attached.server';
 import {VMessageService}                   from "../../../../component/message";
 import 'prismjs';
@@ -31,7 +30,6 @@ import 'prismjs/components/prism-textile';
 import 'prismjs/components/prism-dart';
 import 'prismjs/components/prism-yaml';
 
-
 const markdownItImsize = require('markdown-it-imsize');
 
 declare var Prism: any;
@@ -51,6 +49,10 @@ class EditorComponent extends React.Component {
 
     public state: any = {
         content       : '',
+        isNativeEditor: false,
+        editorInput   : {
+            content: ''
+        },
         superLinkPanel: {
             status: false,
             title : ''
@@ -132,12 +134,15 @@ class EditorComponent extends React.Component {
             state.content = (this.props as any).STORE_NOTE$ARTICLE_TEMP.markdown_content;
             this.setState(state);
 
-            const textAreaSelection = this.editorTools.getTextAreaSelection();
-            let textAreaCursor      = 0;
-            if (textAreaSelection.start === textAreaSelection.end) {
-                textAreaCursor = textAreaSelection.start;
-            } else {
-                textAreaCursor = textAreaSelection.end;
+            let textAreaCursor = 0;
+            if (this.state.isNativeEditor) {
+                const textAreaSelection = this.editorTools.getTextAreaSelection();
+                if (textAreaSelection.start === textAreaSelection.end) {
+                    textAreaCursor = textAreaSelection.start;
+                } else {
+                    textAreaCursor = textAreaSelection.end;
+                }
+
             }
 
             store.dispatch({
@@ -152,12 +157,8 @@ class EditorComponent extends React.Component {
     }
 
     public componentDidMount() {
-
+        console.log(111111, this.textareaElement);
         this.editorTools = new EditorToolsService(this.textareaElement.current as HTMLTextAreaElement);
-
-        Service.RenderToRender.subject('attached@editorInsertImage', async (event: any, params: any): Promise<boolean | void> => {
-            this.insertContent('image', params.data);
-        });
 
     }
 
@@ -166,7 +167,8 @@ class EditorComponent extends React.Component {
         const timeShuttle = () => {
             store.dispatch({type});
             const history = store.getState().EDITOR$HISTORY;
-            this.editorTools.setCaretPosition(history.present.cursor);
+            // TODO native editor
+            // this.editorTools.setCaretPosition(history.present.cursor);
             store.dispatch({
                 type    : 'NOTE$UPDATE_ARTICLE_TEMP',
                 playload: {
@@ -344,8 +346,6 @@ class EditorComponent extends React.Component {
             case 'redo':
                 this.contentUndoOrRedo('REDO');
                 break;
-
-
         }
     }
 
@@ -420,12 +420,15 @@ class EditorComponent extends React.Component {
                 }
             });
 
-            const textAreaSelection = this.editorTools.getTextAreaSelection();
-            let textAreaCursor      = 0;
-            if (textAreaSelection.start === textAreaSelection.end) {
-                textAreaCursor = textAreaSelection.start;
-            } else {
-                textAreaCursor = textAreaSelection.end;
+            let textAreaCursor = 0;
+            if (this.state.isNativeEditor) {
+                const textAreaSelection = this.editorTools.getTextAreaSelection();
+                if (textAreaSelection.start === textAreaSelection.end) {
+                    textAreaCursor = textAreaSelection.start;
+                } else {
+                    textAreaCursor = textAreaSelection.end;
+                }
+
             }
 
             store.dispatch({
@@ -457,23 +460,16 @@ class EditorComponent extends React.Component {
         return (
             <div className="wrap edit-mod" style={{display: this.props.displayState ? 'block' : 'none'}}>
                 <div className="editor-container">
-                    <textarea
-                        ref={this.textareaElement}
-                        name="content"
-                        placeholder="write your dreams..."
-                        value={this.state.content}
-                        onKeyDown={this.handelEditorKeyDown}
-                        onChange={this.handelEditor}
-                    />
-                    <div className="editor-tools-bar">
-                        {/*<span><FontAwesomeIcon icon="link"/></span>*/}
-                        <span onClick={this.handelEditorTools.bind(this, 'fontItalic')}><FontAwesomeIcon icon="italic"/></span>
-                        <span onClick={this.handelEditorTools.bind(this, 'fontBold')}><FontAwesomeIcon icon="bold"/></span>
-                        <span onClick={this.handelEditorTools.bind(this, 'fontStrikethrough')}><FontAwesomeIcon icon="strikethrough"/></span>
-                        <span onClick={this.handelEditorTools.bind(this, 'fontQuoteLeft')}><FontAwesomeIcon icon="quote-left"/></span>
-                        <span onClick={this.handelEditorTools.bind(this, 'attached')}><FontAwesomeIcon icon="image"/></span>
-                        <span onClick={this.handelEditorTools.bind(this, 'insertSuperLink')}><FontAwesomeIcon icon="link"/></span>
-                    </div>
+                    {this.state.isNativeEditor ?
+                        < textarea
+                            ref={this.textareaElement}
+                            name="content"
+                            placeholder="write your dreams..."
+                            value={this.state.content}
+                            onKeyDown={this.handelEditorKeyDown}
+                            onChange={this.handelEditor}
+                        /> : <EditorMonaco input={this.state.editorInput.content}/>
+                    }
                 </div>
                 <div className="dialog-tools">
                     {/*{*/}

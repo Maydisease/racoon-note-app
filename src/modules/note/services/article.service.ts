@@ -1,6 +1,34 @@
-import {VMessageService} from "../../component/message";
-import {store}           from "../../../store";
-import {request}         from "./requst.service";
+import {VMessageService}  from "../../component/message";
+import {store}            from "../../../store";
+import {request}          from "./requst.service";
+import * as MarkdownIt    from "markdown-it";
+
+const markdownItImsize = require('markdown-it-imsize');
+import markdownItToDoList from "../../../lib/plugins/markdown_it/toDoList";
+import markdownItMermaid  from "../../../lib/plugins/markdown_it/mermaid";
+
+import 'prismjs';
+import 'prismjs/components/prism-css';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-markup';
+import 'prismjs/components/prism-typescript';
+import 'prismjs/components/prism-sql';
+import 'prismjs/components/prism-json';
+import 'prismjs/components/prism-git';
+import 'prismjs/components/prism-jsx';
+import 'prismjs/components/prism-tsx';
+import 'prismjs/components/prism-python';
+import 'prismjs/components/prism-java';
+import 'prismjs/components/prism-go';
+import 'prismjs/components/prism-nginx';
+import 'prismjs/components/prism-bash';
+import 'prismjs/components/prism-sass';
+import 'prismjs/components/prism-scss';
+import 'prismjs/components/prism-textile';
+import 'prismjs/components/prism-dart';
+import 'prismjs/components/prism-yaml';
+
+declare var Prism: any;
 
 export class ArticleService {
 
@@ -69,6 +97,41 @@ export class ArticleService {
             });
 
         }
+    }
+
+    public handlesMarkdownToHtml(markdownContent: string): string {
+        const markdownIt = new MarkdownIt({
+            breaks   : true,
+            highlight: (str: string, lang: string) => {
+
+                let html: string;
+                let htmlStr: string;
+                let language: string;
+
+                try {
+                    language = lang;
+                    htmlStr  = Prism.highlight(str, Prism.languages[language], language);
+                } catch (e) {
+                    language = 'textile';
+                    htmlStr  = Prism.highlight(str, Prism.languages[language], language);
+                }
+
+                try {
+                    html = `<pre class="language-${language}" language="${language}"><code>${htmlStr}</code></pre>`;
+                } catch (e) {
+                    html = '';
+                }
+
+                return html;
+            }
+        });
+
+        markdownIt
+            .use(markdownItImsize)
+            .use(markdownItToDoList)
+            .use(markdownItMermaid);
+
+        return markdownIt.render(markdownContent);
     }
 
 }

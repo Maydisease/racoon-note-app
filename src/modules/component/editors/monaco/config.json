@@ -1,0 +1,12 @@
+{
+	"language": "markdown",
+	"theme": "vs-dark",
+	"automaticLayout": true,
+	"minimap": {
+		"enabled": false
+	},
+	"scrollbar": {
+		"verticalScrollbarSize": 15
+	},
+	"overviewRulerBorder": false
+}

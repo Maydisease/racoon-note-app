@@ -8,13 +8,14 @@ const ExtractTextPlugin          = require('extract-text-webpack-plugin');
 const ManifestPlugin             = require('webpack-manifest-plugin');
 const InterpolateHtmlPlugin      = require('react-dev-utils/InterpolateHtmlPlugin');
 const SWPrecacheWebpackPlugin    = require('sw-precache-webpack-plugin');
+const MonacoWebpackPlugin        = require('monaco-editor-webpack-plugin');
 const ModuleScopePlugin          = require('react-dev-utils/ModuleScopePlugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const paths                      = require('./paths');
 const getClientEnvironment       = require('./env');
 const TsconfigPathsPlugin        = require('tsconfig-paths-webpack-plugin');
 const UglifyJsPlugin             = require('uglifyjs-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin       = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -208,8 +209,7 @@ module.exports = {
 										},
 										{
 											loader: require.resolve('sass-loader'),
-											options: {
-											}
+											options: {}
 										}
 									]
 								},
@@ -358,7 +358,8 @@ module.exports = {
 			tsconfig: paths.appTsProdConfig,
 			tslint: paths.appTsLint
 		}),
-		
+		new MonacoWebpackPlugin()
+
 //		new BundleAnalyzerPlugin()
 	],
 	// Some libraries import Node modules but don't use them in the browser.
