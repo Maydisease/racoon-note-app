@@ -9,7 +9,6 @@ const InterpolateHtmlPlugin         = require('react-dev-utils/InterpolateHtmlPl
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 const ModuleScopePlugin             = require('react-dev-utils/ModuleScopePlugin');
 const ForkTsCheckerWebpackPlugin    = require('fork-ts-checker-webpack-plugin');
-const MonacoWebpackPlugin           = require('monaco-editor-webpack-plugin');
 const getClientEnvironment          = require('./env');
 const paths                         = require('./paths');
 const TsconfigPathsPlugin           = require('tsconfig-paths-webpack-plugin');
@@ -49,7 +48,12 @@ module.exports = {
 		// require.resolve('webpack/hot/dev-server'),
 		require.resolve('react-dev-utils/webpackHotDevClient'),
 		// Finally, this is your app's code:
-		paths.appIndexJs
+		paths.appIndexJs,
+//		'monaco-editor/esm/vs/editor/editor.worker.js',
+//		'monaco-editor/esm/vs/language/json/json.worker',
+//		'monaco-editor/esm/vs/language/css/css.worker',
+//		'monaco-editor/esm/vs/language/html/html.worker',
+//		'monaco-editor/esm/vs/language/typescript/ts.worker'
 		// We include the app code last so that if there is a runtime error during
 		// initialization, it doesn't blow up the WebpackDevServer client, and
 		// changing JS code would still trigger a refresh.
@@ -240,8 +244,7 @@ module.exports = {
 			watch: paths.appSrc,
 			tsconfig: paths.appTsConfig,
 			tslint: paths.appTsLint
-		}),
-		new MonacoWebpackPlugin()
+		})
 	],
 	// Some libraries import Node modules but don't use them in the browser.
 	// Tell Webpack to provide empty mocks for them so importing them works.

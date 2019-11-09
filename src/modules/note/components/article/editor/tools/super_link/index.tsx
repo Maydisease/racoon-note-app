@@ -67,7 +67,7 @@ class SuperLinkComponent extends React.Component {
         const dragZone          = closest(dragObject, '.wrap.edit-mod') as HTMLDivElement;
         let moveStatus: boolean = false;
 
-        controlObject.onmousedown = (e: MouseEvent): void => {
+        controlObject.onmousedown = ($e: MouseEvent): void => {
 
             moveStatus = true;
 
@@ -77,19 +77,19 @@ class SuperLinkComponent extends React.Component {
             const curDragObjectY: number = Number(dragObject.getAttribute('Y'));
             const dragZoneMaxW: number   = dragZone.clientWidth - moveW;
             const dragZoneMaxH: number   = dragZone.clientHeight - moveH;
-            const dragObjectInDragZoneX  = (e as any).layerX;
-            const dragObjectInDragZoneY  = (e as any).layerY;
+            const dragObjectInDragZoneX  = ($e as any).layerX;
+            const dragObjectInDragZoneY  = ($e as any).layerY;
 
             document.body.style.pointerEvents = 'none';
 
-            document.onmousemove = (event: MouseEvent): void => {
+            document.onmousemove = ($$e: MouseEvent): void => {
                 if (moveStatus) {
 
                     let X: number = 0;
                     let Y: number = 0;
 
-                    X = event.offsetX - dragZone.offsetLeft - dragObjectInDragZoneX + curDragObjectX;
-                    Y = event.offsetY - dragZone.offsetTop - dragObjectInDragZoneY + curDragObjectY;
+                    X = $$e.offsetX - dragZone.offsetLeft - dragObjectInDragZoneX + curDragObjectX;
+                    Y = $$e.offsetY - dragZone.offsetTop - dragObjectInDragZoneY + curDragObjectY;
                     X = X > 0 ? X : 0;
                     X = X < dragZoneMaxW ? X : dragZoneMaxW;
                     Y = Y > 0 ? Y : 0;
@@ -113,10 +113,10 @@ class SuperLinkComponent extends React.Component {
             dragObject.style.display = 'block';
             const dragZoneW          = dragZone.clientWidth;
             const dragZoneH          = dragZone.clientHeight;
-            const dragObjectW = dragObject.clientWidth;
-            const dragObjectH = dragObject.clientHeight;
-            const dragObjectX = dragZoneW / 2 - dragObjectW / 2;
-            const dragObjectY = dragZoneH / 2 - dragObjectH / 2;
+            const dragObjectW        = dragObject.clientWidth;
+            const dragObjectH        = dragObject.clientHeight;
+            const dragObjectX        = dragZoneW / 2 - dragObjectW / 2;
+            const dragObjectY        = dragZoneH / 2 - dragObjectH / 2;
 
             dragObject.style.transform = 'translate(' + dragObjectX + 'px, ' + dragObjectY + 'px)';
             dragObject.setAttribute('X', String(dragObjectX));
@@ -136,10 +136,10 @@ class SuperLinkComponent extends React.Component {
 
     }
 
-    public handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-        const state                         = this.state;
-        state.from[event.target.name].value = event.target.value;
-        this.setState(state);
+    public handleChange($e: React.ChangeEvent<HTMLInputElement>) {
+        const state                      = this.state;
+        state.from[$e.target.name].value = $e.target.value;
+        this.setState(state as any);
     }
 
     public confirm() {
