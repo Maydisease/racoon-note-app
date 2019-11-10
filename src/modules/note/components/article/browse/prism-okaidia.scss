@@ -8,7 +8,7 @@ code[class*="language-"],
 pre[class*="language-"] {
     color: #f8f8f2;
     background: none;
-    font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
+    font-family: "SF Mono", Monaco, Menlo, Inconsolata, "Courier New", monospace !important;
     text-align: left;
     white-space: pre;
     word-spacing: normal;
@@ -27,7 +27,7 @@ pre[class*="language-"] {
 }
 
 pre[class*="language-"] code {
-    font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
+    font-family: "SF Mono", Monaco, Menlo, Inconsolata, "Courier New", monospace !important;
 }
 
 /* Code blocks */

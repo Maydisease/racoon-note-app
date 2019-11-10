@@ -25,7 +25,7 @@
             background: RGBA(41, 43, 45, 1);
             border: 1px solid RGBA(56, 59, 61, 1);
             &.focus {
-                border: 1px solid RGBA(39, 106, 179, 1);
+                border: 1px solid #004774;
             }
             .formBox {
                 width: 100%;
@@ -51,7 +51,7 @@
                         transition: color .3s;
                         cursor: pointer;
                         &:hover {
-                            color: RGBA(39, 106, 179, 1);
+                            color: #004774;
                         }
                     }
                 }
@@ -116,7 +116,7 @@
                 top: 0;
                 z-index: 400;
                 transition: transform .3s;
-                background: RGBA(39, 106, 179, 1);
+                background: #004774;
                 &.type_2 {
                     transform: translateX(100%);
                 }

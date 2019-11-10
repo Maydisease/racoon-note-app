@@ -109,7 +109,7 @@ body[theme='dark'] {
                                 
                                 &.active {
                                     .fa-icon {
-                                        color: RGBA(39, 106, 179, 1);
+                                        color: #004774;
                                     }
                                 }
                                 
@@ -175,7 +175,7 @@ body[theme='dark'] {
                                     box-sizing: border-box;
                                     
                                     &[current = 'true'] {
-                                        background: RGBA(39, 106, 179, 1);
+                                        background: #004774;
                                         
                                         .text {
                                             color: RGBA(255, 255, 255, 1);
@@ -301,7 +301,7 @@ body[theme='dark'] {
                             border: 1px solid RGBA(56, 59, 61, 1);
                             
                             &.focus {
-                                border: 1px solid RGBA(39, 106, 179, 1);
+                                border: 1px solid #004774;
                             }
                             
                             .formBox {
@@ -351,7 +351,7 @@ body[theme='dark'] {
                                     right: 0;
                                     
                                     &:hover {
-                                        color: RGBA(39, 106, 179, 1);
+                                        color: #004774;
                                     }
                                 }
                                 
@@ -385,7 +385,7 @@ body[theme='dark'] {
                                 vertical-align: text-top;
                                 
                                 &:hover {
-                                    color: RGBA(39, 106, 179, 1);
+                                    color: #004774;
                                 }
                                 
                                 &.disable {
@@ -432,7 +432,7 @@ body[theme='dark'] {
                                     position: absolute;
                                     left: 0;
                                     top: 0;
-                                    background: RGBA(107, 202, 251, 1);
+                                    background: #004774;
                                 }
                             }
                             
@@ -625,7 +625,7 @@ body[theme='dark'] {
                                 height: 30px;
                                 position: absolute;
                                 left: 0;
-                                background: RGBA(39, 106, 179, 1);
+                                background: #004774;
                             }
                             
                             &.edit:before {
@@ -730,7 +730,7 @@ body[theme='dark'] {
                                             border: 1px solid RGBA(56, 59, 61, 1);
                                             
                                             &.focus {
-                                                border: 1px solid RGBA(39, 106, 179, 1);
+                                                border: 1px solid #004774;
                                             }
                                             
                                             .formBox {
@@ -764,7 +764,7 @@ body[theme='dark'] {
                                                     right: 0;
                                                     
                                                     &:hover {
-                                                        color: RGBA(39, 106, 179, 1);
+                                                        color: #004774;
                                                     }
                                                 }
                                                 
@@ -798,7 +798,7 @@ body[theme='dark'] {
                                                 vertical-align: text-top;
                                                 
                                                 &:hover {
-                                                    color: RGBA(39, 106, 179, 1);
+                                                    color: #004774;
                                                 }
                                                 
                                                 &.disable {
@@ -1002,7 +1002,7 @@ body[theme='dark'] {
                                         
                                         &:before {
                                             content: counter(field) '.';
-                                            color: RGBA(74, 168, 251, 1);
+                                            color: #004774;
                                             width: 10px;
                                             height: 100%;
                                             position: absolute;
@@ -1034,7 +1034,7 @@ body[theme='dark'] {
                                             position: absolute;
                                             left: 1px;
                                             top: 7px;
-                                            background: RGBA(74, 168, 251, 1);
+                                            background: #004774;
                                         }
                                     }
                                     
@@ -1052,12 +1052,12 @@ body[theme='dark'] {
                                             position: absolute;
                                             left: 2px;
                                             top: 0;
-                                            background: RGBA(74, 168, 251, 1);
+                                            background: #004774;
                                         }
                                     }
                                     
                                     a {
-                                        color: RGBA(74, 168, 251, 1);
+                                        color: #004774;
                                         text-decoration: none;
                                         
                                         &:before {
@@ -1209,7 +1209,7 @@ body[theme='dark'] {
                         cursor: pointer;
                         font-style: normal;
                         text-decoration: none;
-                        color: RGBA(39, 106, 179, 1);
+                        color: #004774;
                         
                         &:hover {
                             color: RGBA(46, 132, 226, 1);
@@ -1323,7 +1323,7 @@ body[theme='dark'] {
                             border-radius: 3px;
                             transition: background .3s;
                             color: RGBA(255, 255, 255, 1);
-                            background: RGBA(39, 106, 179, 1);
+                            background: #004774;
                             box-shadow: 1px 1px 5px RGBA(0, 0, 0, 1);
                             
                             &:hover {

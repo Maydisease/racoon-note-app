@@ -45,7 +45,7 @@
             padding: 5px;
             
             &.current, &:hover {
-                background: RGBA(39, 106, 179, 1);
+                background: #004774;
             }
         }
         
@@ -63,11 +63,11 @@
             border-bottom: 1px solid RGBA(255, 255, 255, .05);
             
             &:hover {
-                background: RGBA(39, 106, 179, 1);
+                background: #004774;
             }
             
             &.current {
-                background: RGBA(39, 106, 179, 1);
+                background: #004774;
             }
             
             .svgIconsComponents {
