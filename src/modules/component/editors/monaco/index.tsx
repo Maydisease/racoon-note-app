@@ -1,5 +1,6 @@
 import * as React       from 'react';
 import './monaco.scss';
+import "monaco-editor/min/vs/editor/editor.main.css";
 import * as Monaco      from "monaco-editor/esm/vs/editor/editor.api";
 import {editor}         from "monaco-editor";
 import {connect}        from "react-redux";
