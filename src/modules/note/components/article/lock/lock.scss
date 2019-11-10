@@ -12,7 +12,7 @@
     background: RGBA(41, 43, 45, 1);
     border: 1px solid RGBA(56, 59, 61, 1);
     &.focus {
-        border: 1px solid #004774;
+        border: 1px solid #569cd6;;
     }
     .formBox {
         width: 100%;
@@ -40,7 +40,7 @@
             border-radius: 50%;
             right: 0;
             &:hover {
-                color: #004774;
+                color: #569cd6;;
             }
         }
         input {
@@ -71,7 +71,7 @@
         color: RGBA(255, 255, 255, .3);
         vertical-align: text-top;
         &:hover {
-            color: #004774;
+            color: #569cd6;;
         }
         &.disable {
             color: RGBA(255, 255, 255, .1);
