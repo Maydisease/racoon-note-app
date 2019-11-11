@@ -1,0 +1,28 @@
+:root {
+    #tesExamplePage {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        justify-items: center;
+        align-content: center;
+        align-items: center;
+        position: relative;
+        
+        div.bg {
+            font-size: 8rem;
+            color: RGBA(255, 255, 255, .1);
+            display: inline-block;
+            text-shadow: 1px 1px 1px RGBA(0, 0, 0, .3);
+        }
+        
+        .container {
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            position: absolute;
+        }
+    }
+}
