@@ -67,9 +67,13 @@ class App extends React.Component {
                 <Route path="/sign_up" component={SignUpMain}/>
                 <Route path="/forget_password" component={ForgetPasswordMain}/>
                 <Route path="/attached" component={Attached}/>
-                <div id="app-route-bottom" onClick={this.routeJump}>
-                    <FontAwesomeIcon className="fa-icon" icon="bug"/>
-                </div>
+                {
+                    env.isDev ?
+                        <div id="app-route-bottom" onClick={this.routeJump}>
+                            <FontAwesomeIcon className="fa-icon" icon="bug"/>
+                        </div>
+                        : null
+                }
                 {
                     (env.isDev && this.state.route.path && window.location.pathname !== this.state.route.path) ?
                         <Redirect
