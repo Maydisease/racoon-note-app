@@ -1,19 +1,19 @@
 :root {
     .toolbox {
-        width: 30px;
+        width: 40px;
         height: calc(100% - 10px);
         position: absolute;
         top: 0;
         right: 0;
         display: flex;
-        padding: 5px;
+        padding: 5px 0;
         flex-direction: column-reverse;
         background: RGBA(0, 0, 0, .1);
         
         span {
-            width: 30px;
-            height: 30px;
-            line-height: 30px;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
             text-align: center;
             font-size: 14px;
             cursor: pointer;
@@ -23,6 +23,10 @@
             &:hover {
                 color: RGBA(255, 255, 255, .7);
                 background: RGBA(0, 0, 0, .2);
+            }
+            
+            &.icon.fan {
+                font-size: 16px;
             }
         }
     }

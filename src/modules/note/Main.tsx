@@ -40,7 +40,7 @@ class NoteMain extends React.Component {
                     this.state.isTrashMode &&
 					<TrashArticleComponent/>
                 }
-
+                <div id="dynamic-container"/>
             </div>
         );
     }

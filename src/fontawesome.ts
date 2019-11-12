@@ -32,7 +32,8 @@ import {
     faCopy,
     faExternalLinkAlt,
     faShareAlt,
-    faBug
+    faBug,
+    faFan
 } from '@fortawesome/free-solid-svg-icons'
 
 const icons: any = [
@@ -69,7 +70,8 @@ const icons: any = [
     faCopy,
     faExternalLinkAlt,
     faShareAlt,
-    faBug
+    faBug,
+    faFan
 ];
 
 library.add(...icons);

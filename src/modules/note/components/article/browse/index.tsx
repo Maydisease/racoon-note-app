@@ -130,7 +130,12 @@ class BrowseComponent extends React.Component {
     // 渲染 mermaid
     public renderMermaid() {
 
-        const $contentViewElement             = this.$contentViewElement.current as HTMLDivElement;
+        const $contentViewElement = this.$contentViewElement.current as HTMLDivElement;
+
+        if (!$contentViewElement) {
+            return;
+        }
+
         const elementAll: NodeListOf<Element> = $contentViewElement.querySelectorAll(".mermaid");
         elementAll.forEach((item: HTMLElement, index: number) => {
 

@@ -7,15 +7,17 @@ export default class CommandController extends ObserverService {
 
     public mountElement: HTMLDivElement;
     public dynamicComponentRoot: HTMLDivElement;
+    public dynamicContainerId: string;
 
     constructor() {
         super();
-        this.destroy = this.destroy.bind(this);
+        this.dynamicContainerId = '#dynamic-container';
+        this.destroy            = this.destroy.bind(this);
     }
 
-    public init(tpl: Promise<React.ReactHTML>, comData: any) {
+    public init(tpl: Promise<any>, comData?: any) {
         const MountContainer      = React.lazy(() => import('./mount_container'));
-        this.dynamicComponentRoot = document.body.querySelector('#asyncCom') as HTMLDivElement;
+        this.dynamicComponentRoot = document.body.querySelector(this.dynamicContainerId) as HTMLDivElement;
         this.mountElement         = document.createElement('div');
         this.mountElement.id      = 'mount_' + new Date().getTime().toString();
         this.mountElement.classList.add('mount-container');

@@ -1,0 +1,29 @@
+.progress-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-items: center;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    
+    .mark {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+    }
+    
+    .panel {
+        width: 220px;
+        height: 360px;
+        pointer-events: auto;
+        border-radius: 5px;
+        border: 1px solid RGBA(56, 56, 56, 1);
+        background: RGBA(34, 34, 34, 1);
+        box-sizing: border-box;
+        box-shadow: 0 1px 10px RGBA(0, 0, 0, 1);
+    }
+}

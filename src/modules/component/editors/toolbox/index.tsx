@@ -69,6 +69,7 @@ class Toolbox extends React.Component {
                 <span onClick={this.handelEditorTools.bind(this, 'fontQuoteLeft')}><FontAwesomeIcon icon="quote-left"/></span>
                 <span onClick={this.openAttachedWindow}><FontAwesomeIcon icon="image"/></span>
                 <span onClick={this.handelEditorTools.bind(this, 'superLink')}><FontAwesomeIcon icon="link"/></span>
+                <span className="icon fan" onClick={this.handelEditorTools.bind(this, 'fan')}><FontAwesomeIcon icon="fan"/></span>
             </div>
         )
     }
