@@ -18,6 +18,9 @@ const Service = {
     ServerProxyUpload: masterModules.electron.remote.getGlobal('service').ServerProxyUpload,
     ClientCache      : masterModules.electron.remote.getGlobal('service').ClientCache,
 
+    // 网络检测
+    GetUrlHeader: masterModules.electron.remote.getGlobal('service').GetUrlHeader,
+
     // Process
     Process: masterModules.electron.remote.getGlobal('service').Process,
 

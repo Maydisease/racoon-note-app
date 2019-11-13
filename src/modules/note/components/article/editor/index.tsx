@@ -471,17 +471,6 @@ class EditorComponent extends React.Component {
                         /> : <EditorMonaco input={this.state.editorInput.content}/>
                     }
                 </div>
-                <div className="dialog-tools">
-                    {/*{*/}
-                    {/*    this.state.superLinkPanel.status &&*/}
-                    {/*	<SuperLinkComponent*/}
-                    {/*		selectedTitle={this.state.superLinkPanel.title}*/}
-                    {/*		mod={this.props.displayState}*/}
-                    {/*		handleConfirm={this.superLinkConfirm}*/}
-                    {/*		handelCancel={this.superLinkCancel}*/}
-                    {/*	/>*/}
-                    {/*}*/}
-                </div>
             </div>
         )
     }
