@@ -112,13 +112,12 @@ class SignUpMain extends React.Component<Props, State> {
                     buttons: ['Go to sign in'],
                 },
                 // btn 按钮被点击，跳转至登录界面
-                () => {
-                    const state       = this.state;
-                    state.redirect    = true;
-                    state.jumpAddress = '/sign_in';
-                    this.setState(state);
-                }
-            );
+            ).then(async (result: any) => {
+                const state       = this.state;
+                state.redirect    = true;
+                state.jumpAddress = '/sign_in';
+                this.setState(state);
+            });
         }
 
         // 如果注册失败
@@ -206,8 +205,8 @@ class SignUpMain extends React.Component<Props, State> {
     // 校验重复密码是否一致
     public verifyUserRepassword() {
 
-        const password   = this.state.from.password.value;
-        const repassword = this.state.from.repassword.value;
+        const password           = this.state.from.password.value;
+        const repassword: string = this.state.from.repassword.value;
 
         const state = this.state;
 

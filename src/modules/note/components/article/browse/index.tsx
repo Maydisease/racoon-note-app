@@ -199,14 +199,13 @@ class BrowseComponent extends React.Component {
                                 defaultId: 0,
                                 cancelId : 1,
                                 buttons  : ['Yes', 'Cancel']
-                            },
-                            // btn 按钮被点击，删除被选中的Note
-                            async (btnIndex: number) => {
-                                if (btnIndex === 0) {
-                                    Service.Shell.openExternal(aLink);
-                                }
                             }
-                        );
+                        ).then(async (result: any) => {
+                            const btnIndex: number = result.response;
+                            if (btnIndex === 0) {
+                                Service.Shell.openExternal(aLink);
+                            }
+                        });
                         return false;
                     }
                 });

@@ -150,11 +150,9 @@ class ForgetPasswordMain extends React.Component<Props, State> {
                     message: 'forget password',
                     buttons: ['ok'],
                 },
-                // btn 按钮被点击，跳转至登录界面
-                () => {
-                    this.props.history.push('/sign_in');
-                }
-            );
+            ).then(async (result: any) => {
+                this.props.history.push('/sign_in');
+            });
 
         }
 

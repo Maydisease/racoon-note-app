@@ -49,22 +49,17 @@ class FinishList extends React.Component {
                 defaultId: 0,
                 cancelId : 1,
                 buttons  : ['Yes', 'Cancel']
-            },
+            }
+        ).then(async (result: any) => {
+            const btnIndex: number = result.response;
             // btn 按钮被点击，删除被选中的Note
-            async (btnIndex: number) => {
-                if (btnIndex === 0) {
-                    const response = await request('attached', 'removeAttached', {ids: [id]});
-
-                    if (response.result !== 1) {
-                        await this.getAttachedData();
-                        // const state = this.state;
-                        // const index = state.finishAttachedList.findIndex((sourceItem: any) => sourceItem.id === id);
-                        // state.finishAttachedList.splice(index, index + 1);
-                        // this.setState(state);
-                    }
+            if (btnIndex === 0) {
+                const response = await request('attached', 'removeAttached', {ids: [id]});
+                if (response.result !== 1) {
+                    await this.getAttachedData();
                 }
             }
-        );
+        });
     }
 
     public handleClickImage(name: string, path: string) {

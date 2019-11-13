@@ -440,35 +440,33 @@ class CategoryContainer extends React.Component {
                     cancelId : 1,
                     buttons  : ['Yes', 'Cancel']
                 },
-                // btn 按钮被点击，提交删除分类操作
-                async (btnIndex: number): Promise<void | boolean> => {
-                    if (btnIndex === 0) {
-                        const id       = this.state.categoryObj.id;
-                        const response = await request('note', 'removeCategory', {id});
+            ).then(async (result: any) => {
+                const btnIndex: number = result.response;
+                if (btnIndex === 0) {
+                    const id       = this.state.categoryObj.id;
+                    const response = await request('note', 'removeCategory', {id});
 
-                        // 当前父级分类下只允许一个同名子分类
-                        if (response.messageCode === 1013) {
-                            const msg = 'Current category has subcategories!';
-                            new VMessageService(msg, 'error', 3000).init();
-                            this.closeRenamePanel();
-                            return false;
-                        }
-
-                        // 当前分类下有文章
-                        if (response.messageCode === 1014) {
-                            const msg = 'Current category has articles!';
-                            new VMessageService(msg, 'error', 3000).init();
-                            this.closeRenamePanel();
-                            return false;
-                        }
-
-                        if (response.result !== 1) {
-                            await this.updateCategoryDom();
-                        }
+                    // 当前父级分类下只允许一个同名子分类
+                    if (response.messageCode === 1013) {
+                        const msg = 'Current category has subcategories!';
+                        new VMessageService(msg, 'error', 3000).init();
+                        this.closeRenamePanel();
+                        return;
                     }
 
+                    // 当前分类下有文章
+                    if (response.messageCode === 1014) {
+                        const msg = 'Current category has articles!';
+                        new VMessageService(msg, 'error', 3000).init();
+                        this.closeRenamePanel();
+                        return;
+                    }
+
+                    if (response.result !== 1) {
+                        await this.updateCategoryDom();
+                    }
                 }
-            );
+            })
 
         }
     }

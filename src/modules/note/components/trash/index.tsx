@@ -145,6 +145,7 @@ class TrashArticle extends React.Component {
         arrayMaps.some((key: string, index: number) => {
             if (this.state.trashArticleSelectedMaps[key]) {
                 state.trashArticleSelectedMaps[key] = false;
+                return;
             }
         });
         state.trashArticleSelectedMaps[id] = true;
@@ -185,13 +186,12 @@ class TrashArticle extends React.Component {
                         cancelId : 1,
                         buttons  : ['Yes', 'Cancel']
                     },
-                    // btn 按钮被点击，提交删除分类操作
-                    async (btnIndex: number): Promise<void | boolean> => {
-                        if (btnIndex === 0) {
-                            this.resetTrashArticleToTmpCategory(this.state.trashArticleDetail.id);
-                        }
+                ).then(async (result: any) => {
+                    const btnIndex: number = result.response;
+                    if (btnIndex === 0) {
+                        this.resetTrashArticleToTmpCategory(this.state.trashArticleDetail.id);
                     }
-                );
+                });
 
                 break;
         }
@@ -220,13 +220,13 @@ class TrashArticle extends React.Component {
                     cancelId : 1,
                     buttons  : ['Yes', 'Cancel']
                 },
-                // btn 按钮被点击，提交删除分类操作
-                async (btnIndex: number): Promise<void | boolean> => {
-                    if (btnIndex === 0) {
-                        this.removeTrashArticle(this.state.trashArticleDetail.id);
-                    }
+            ).then(async (result: any) => {
+                const btnIndex: number = result.response;
+                // btn 按钮被点击，删除被选中的Note
+                if (btnIndex === 0) {
+                    this.removeTrashArticle(this.state.trashArticleDetail.id);
                 }
-            )
+            })
         }
     }
 
@@ -243,13 +243,12 @@ class TrashArticle extends React.Component {
                     cancelId : 1,
                     buttons  : ['Yes', 'Cancel']
                 },
-                // btn 按钮被点击，提交删除分类操作
-                async (btnIndex: number): Promise<void | boolean> => {
-                    if (btnIndex === 0) {
-                        this.resetTrashArticleToTmpCategory(this.state.trashArticleDetail.id);
-                    }
+            ).then(async (result: any) => {
+                const btnIndex: number = result.response;
+                if (btnIndex === 0) {
+                    this.resetTrashArticleToTmpCategory(this.state.trashArticleDetail.id);
                 }
-            );
+            });
 
         } else {
 
@@ -267,14 +266,13 @@ class TrashArticle extends React.Component {
                     defaultId: 0,
                     cancelId : 1,
                     buttons  : ['Yes', 'Cancel']
-                },
-                // btn 按钮被点击，提交删除分类操作
-                async (btnIndex: number): Promise<void | boolean> => {
-                    if (btnIndex === 0) {
-                        this.resetTrashArticle(this.state.trashArticleDetail.id, this.state.trashArticleDetail.cid);
-                    }
                 }
-            );
+            ).then(async (result: any) => {
+                const btnIndex: number = result.response;
+                if (btnIndex === 0) {
+                    this.resetTrashArticle(this.state.trashArticleDetail.id, this.state.trashArticleDetail.cid);
+                }
+            });
 
         }
     }

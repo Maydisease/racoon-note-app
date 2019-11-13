@@ -166,36 +166,35 @@ class ListComponent extends React.Component {
                 defaultId: 0,
                 cancelId : 1,
                 buttons  : ['Yes', 'Cancel']
-            },
-            // btn 按钮被点击，删除被选中的Note
-            async (btnIndex: number) => {
-                if (btnIndex === 0) {
-                    const articleId = this.state.articleObj.id;
-                    const response  = await request('note', 'setArticleDisableState', {id: articleId, disable: 1});
+            }
+        ).then(async (result: any) => {
+            const btnIndex: number = result.response;
+            if (btnIndex === 0) {
+                const articleId = this.state.articleObj.id;
+                const response  = await request('note', 'setArticleDisableState', {id: articleId, disable: 1});
 
-                    if (response.result !== 1) {
+                if (response.result !== 1) {
 
-                        store.dispatch({
-                            type: 'NOTE$SELECTED_ARTICLE'
-                        });
+                    store.dispatch({
+                        type: 'NOTE$SELECTED_ARTICLE'
+                    });
 
-                        store.dispatch({
-                            type: 'NOTE$CLEAR_ARTICLE'
-                        });
+                    store.dispatch({
+                        type: 'NOTE$CLEAR_ARTICLE'
+                    });
 
-                        store.dispatch({
-                            type: 'NOTE$CLEAR_ARTICLE_TEMP'
-                        });
+                    store.dispatch({
+                        type: 'NOTE$CLEAR_ARTICLE_TEMP'
+                    });
 
-                        const state = this.state;
-                        const index = state.articleList.findIndex((sourceItem: any) => this.state.articleObj.id === sourceItem.id);
-                        state.articleList.splice(index, 1);
-                        this.setState(state);
+                    const state = this.state;
+                    const index = state.articleList.findIndex((sourceItem: any) => this.state.articleObj.id === sourceItem.id);
+                    state.articleList.splice(index, 1);
+                    this.setState(state);
 
-                    }
                 }
             }
-        );
+        });
     }
 
     // 锁定文章
@@ -275,8 +274,8 @@ class ListComponent extends React.Component {
     // 表单修改时的数据同步
     public handleSearchValueChange(event: React.ChangeEvent<HTMLInputElement>) {
 
-        const state              = this.state;
-        state.clearInputBtnState = event.target.value.length > 0;
+        const state                         = this.state;
+        state.clearInputBtnState            = event.target.value.length > 0;
         state.from[event.target.name].value = event.target.value;
         this.setState(state);
 

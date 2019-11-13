@@ -11,14 +11,13 @@ export class AppCommandService {
                 defaultId: 0,
                 cancelId : 1,
                 buttons  : ['Yes', 'Cancel']
-            },
-            // btn 按钮被点击，提交删除分类操作
-            async (btnIndex: number): Promise<void | boolean> => {
-                if (btnIndex === 0) {
-                    Service.SignOut();
-                }
             }
-        );
+        ).then((result: any) => {
+            const btnIndex: number = result.response;
+            if (btnIndex === 0) {
+                Service.SignOut();
+            }
+        })
     }
 
 }
