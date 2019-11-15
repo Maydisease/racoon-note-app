@@ -14,7 +14,6 @@ import SignInMain                                from './modules/common/sign_in/
 import SignUpMain                                from './modules/common/sign_up/Main';
 import ForgetPasswordMain                        from './modules/common/forget_password/Main';
 import DefaultMain                               from './modules/Main';
-import NetworkMonitorMain                        from './modules/monitor/network/Main';
 import {Route, Redirect}                         from "react-router-dom";
 import {Service}                                 from "./lib/master.electron.lib";
 import {store}                                   from "./store";
@@ -68,7 +67,6 @@ class App extends React.Component {
                 <Route path="/sign_up" component={SignUpMain}/>
                 <Route path="/forget_password" component={ForgetPasswordMain}/>
                 <Route path="/attached" component={Attached}/>
-                <Route path="/monitor/network" component={NetworkMonitorMain}/>
                 {
                     env.isDev ?
                         <div id="app-route-bottom" onClick={this.routeJump}>
