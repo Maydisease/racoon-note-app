@@ -170,8 +170,6 @@ export default class NewEditorToolsService {
 
     // 插入图片
     public image(data: any) {
-        console.log(data);
-
         // `\n![${imageTitle}](${imageUrl})\n`
         this.insertConf = {left: '![', right: `](${data.imageUrl})`, defaultContent: data.imageTitle};
         this.setEditorValue(this.insertConf);

@@ -69,11 +69,9 @@ class EditorMonaco extends React.Component {
         if (this.currentArticleId !== articleId) {
             this.currentArticleId  = articleId;
             this.isInitEditorValue = false;
-            console.log(markdownContent);
         }
 
         if (this.monacoEditor && this.monacoEditor.setValue && !this.isInitEditorValue) {
-            console.log('||||');
             this.isInitEditorValue = true;
             this.currentArticleId  = articleId;
             this.monacoEditor.setValue(markdownContent);
@@ -96,7 +94,7 @@ class EditorMonaco extends React.Component {
     }
 
     public handelDropFiles(files: any) {
-        console.log('files', files);
+        //
     }
 
     public componentDidMount() {

@@ -157,7 +157,6 @@ class EditorComponent extends React.Component {
     }
 
     public componentDidMount() {
-        console.log(111111, this.textareaElement);
         this.editorTools = new EditorToolsService(this.textareaElement.current as HTMLTextAreaElement);
 
     }
