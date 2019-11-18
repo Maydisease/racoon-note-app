@@ -35,6 +35,10 @@ export class TaskReducer {
         return {...this.state, ...this.body};
     }
 
+    public MOVE_LIST_ARTICLE_TASK() {
+        return this.state;
+    }
+
     public Action(state: DefaultState = this.body, action: Action) {
         if (action.type && action.type.indexOf(this.modelName) === 0) {
             const typeName = action.type.substring(this.modelName.length, action.type.length);

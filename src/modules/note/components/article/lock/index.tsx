@@ -5,6 +5,7 @@ import {request}         from "../../../services/requst.service";
 import {store}           from "../../../../../store";
 import {VMessageService} from "../../../../component/message";
 import {VLoadingService} from "../../../../component/loading";
+import './lock.scss';
 
 class LockComponent extends React.Component {
 
@@ -48,7 +49,7 @@ class LockComponent extends React.Component {
         }
     }
 
-    public componentWillMount() {
+    public componentDidMount() {
         document.body.onkeydown = (async (event: KeyboardEvent) => {
             if (event.code === 'Enter' && this.state.inputFocusState) {
                 await this.submitUnlock();
@@ -72,6 +73,17 @@ class LockComponent extends React.Component {
         loading.destroy();
 
         if (response.result === 0) {
+
+            store.dispatch({
+                type    : 'NOTE$UPDATE_ARTICLE',
+                playload: {
+                    id   : ARTICLE.id,
+                    cid  : ARTICLE.cid,
+                    title: ARTICLE.title,
+                    lock : 0
+                }
+            });
+
             store.dispatch({
                 type: 'NOTE$UNLOCK_ARTICLE'
             });

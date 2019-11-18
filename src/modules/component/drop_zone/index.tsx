@@ -23,9 +23,7 @@ class DropZone extends React.Component {
     };
 
     public onFileDrop = (event: React.DragEvent<HTMLLabelElement>) => {
-        console.log(event);
         event.stopPropagation();
-
         const newFiles: FileList[] = [];
         if (!event.dataTransfer) {
             return;

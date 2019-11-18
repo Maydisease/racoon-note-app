@@ -98,14 +98,6 @@ class CategoryContainer extends React.Component {
         this.changeCategoryIconEvent      = this.changeCategoryIconEvent.bind(this);
     }
 
-    public async componentWillMount() {
-        storeSubscribe('NOTE$CHANGE_FRAME_STATE', (action: any) => {
-            const state: any         = this.state;
-            state.componentShowState = action.playload.layout;
-            this.setState(state);
-        });
-    }
-
     // 获取分类数据
     public async getCategoryData(): Promise<void> {
         const state: any = this.state;
@@ -125,14 +117,18 @@ class CategoryContainer extends React.Component {
     }
 
     public componentDidMount() {
+        const state: any = this.state;
+        storeSubscribe('NOTE$CHANGE_FRAME_STATE', (action: any) => {
+            state.componentShowState = action.playload.layout;
+            this.setState(state);
+        });
 
         storeSubscribe('NOTE$CHANGE_TRASH_MODE_STATE', (action: any) => {
-            if (!action.playload.trashMode && store.getState().STORE_NOTE$Task.isTrashCrush) {
+            if (!action.playload.trashMode && store.getState().STORE_NOTE$TASK.isTrashCrush) {
                 EventEmitter.emit('selectedCategory', this.state.categoryObj.id);
             }
         });
 
-        const state: any = this.state;
         state.isDidMount = true;
         this.setState(state);
         this.updateCategoryDom();
@@ -214,6 +210,51 @@ class CategoryContainer extends React.Component {
 
     }
 
+    // 文章拖拽分类
+    public moveArticleToCategory(itemElement: HTMLElement) {
+        const labelElement = itemElement.querySelector('label') as HTMLLabelElement;
+
+        // 当被拖拽的文章在接收的分类内停下来时
+        labelElement.ondrop = (event: DragEvent) => {
+            event.preventDefault();
+            if (event.dataTransfer) {
+                const selfElement = event.target as HTMLElement;
+                const menuId      = Number(itemElement.dataset.menuId);
+                if (menuId !== 0) {
+                    const data = event.dataTransfer.getData('params') ? JSON.parse(event.dataTransfer.getData('params')) : 0;
+                    selfElement.classList.remove('drop-in');
+                    const {source, currentCid, currentAid} = data;
+                    const body                             = {
+                        source,
+                        targetCid : menuId,
+                        currentCid: Number(currentCid),
+                        currentAid: Number(currentAid)
+                    };
+                    this.articleService.moveArticleToNewCategory(body);
+                }
+            }
+        };
+
+        // 当被拖拽的文章在当前接收范围内移动时
+        labelElement.ondragover = (event: DragEvent) => {
+            event.preventDefault();
+        };
+
+        // 当被拖拽的文章进入当前分类接收范围内时
+        labelElement.ondragenter = (event: DragEvent) => {
+            const selfElement = event.target as HTMLLabelElement;
+            if (Number(itemElement.dataset.menuId) !== 0) {
+                selfElement.classList.add('drop-in');
+            }
+        };
+
+        // 当被拖拽的文章离开当前分类接收范围时
+        labelElement.ondragleave = (event: DragEvent) => {
+            const selfElement = event.target as HTMLLabelElement;
+            selfElement.classList.remove('drop-in')
+        }
+    }
+
     // 给所有分类菜单绑定事件
     public categoryMenusEventBind() {
         setTimeout(() => {
@@ -254,7 +295,7 @@ class CategoryContainer extends React.Component {
                 }
 
                 const menuId       = Number(itemElement.getAttribute('data-menu-id'));
-                const isTrashCrush = store.getState().STORE_NOTE$Task.isTrashCrush;
+                const isTrashCrush = store.getState().STORE_NOTE$TASK.isTrashCrush;
 
                 if (isTrashCrush) {
                     store.dispatch({type: 'CLEAN_UPDATE_CATEGORY_TASK'})
@@ -348,7 +389,9 @@ class CategoryContainer extends React.Component {
                             this.contextMenu.popup({window: Service.getWindow('master')});
                             categoryMenusEventBind(event, itemElement, true);
                         }
-                    }
+                    };
+                    // 文章拖拽分类
+                    this.moveArticleToCategory(itemElement);
                 });
             }
 

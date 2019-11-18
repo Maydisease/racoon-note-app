@@ -1,12 +1,9 @@
 import './toolbox.scss';
 import * as React            from 'react';
-import {editor}              from 'monaco-editor';
 import NewEditorToolsService from '../../../note/services/newEditorTools.service';
 import {AttachedService}     from '../../../note/services/window_manage/attached.server';
 import {FontAwesomeIcon}     from "@fortawesome/react-fontawesome";
 import {Service}             from "../../../../lib/master.electron.lib";
-
-console.log(editor);
 
 interface Props {
     editorVm: any

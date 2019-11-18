@@ -2,11 +2,8 @@ import {VMessageService}  from "../../component/message";
 import {store}            from "../../../store";
 import {request}          from "./requst.service";
 import * as MarkdownIt    from "markdown-it";
-
-const markdownItImsize = require('markdown-it-imsize');
 import markdownItToDoList from "../../../lib/plugins/markdown_it/toDoList";
 import markdownItMermaid  from "../../../lib/plugins/markdown_it/mermaid";
-
 import 'prismjs';
 import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-javascript';
@@ -27,8 +24,20 @@ import 'prismjs/components/prism-scss';
 import 'prismjs/components/prism-textile';
 import 'prismjs/components/prism-dart';
 import 'prismjs/components/prism-yaml';
+import {Service}          from "../../../lib/master.electron.lib";
+import {VLoadingService}  from "../../component/loading";
+
+const markdownItImsize = require('markdown-it-imsize');
+
 
 declare var Prism: any;
+
+interface MoveArticleParams {
+    source: string
+    targetCid: number
+    currentCid: number
+    currentAid: number
+}
 
 export class ArticleService {
 
@@ -132,6 +141,69 @@ export class ArticleService {
             .use(markdownItMermaid);
 
         return markdownIt.render(markdownContent);
+    }
+
+    // source    : source,
+    // targetCid : menuId,
+    // currentCid: Number(currentCid),
+    // currentAid: Number(currentAid)
+
+    public moveArticleToNewCategory(params: MoveArticleParams) {
+        const {source, targetCid, currentCid, currentAid} = params;
+        if (targetCid === currentCid) {
+            new VMessageService('The current note is under this category.', 'warning', 5000).init();
+        } else {
+            Service.Dialog.showMessageBox({
+                    title    : 'warning',
+                    type     : 'question',
+                    message  : 'Move note',
+                    detail   : 'Are you sure you want to move the note to this category?',
+                    defaultId: 0,
+                    cancelId : 1,
+                    buttons  : ['Yes', 'Cancel']
+                }
+            ).then(async (result: any) => {
+                const btnIndex: number = result.response;
+                if (btnIndex === 0) {
+
+                    let type: number = 0;
+
+                    switch (source) {
+                        case 'articleList':
+                            type = 0;
+                        case 'trashList':
+                            type = 1;
+                            break;
+                    }
+
+
+                    const loading = new VLoadingService({});
+                    loading.init();
+                    const response = await request('note', 'moveArticleToCategory',
+                        {
+                            type,
+                            cid: targetCid,
+                            aid: currentAid
+                        }
+                    );
+
+                    loading.destroy();
+
+                    if (response.result === 0) {
+                        new VMessageService('move note successful.', 'success').init();
+                        store.dispatch({type: 'NOTE$MOVE_LIST_ARTICLE_TASK'});
+                        const body = {
+                            cid       : targetCid,
+                            updateTime: new Date().getTime()
+                        };
+                        await Service.ClientCache('/note/article').updateArticle(currentAid, body);
+                    } else {
+                        new VMessageService('move note fail.', 'warning').init();
+                    }
+
+                }
+            })
+        }
     }
 
 }

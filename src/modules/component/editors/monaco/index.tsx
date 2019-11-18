@@ -1,13 +1,13 @@
-import * as React        from 'react';
+import * as React       from 'react';
 import './monaco.scss';
-import * as Monaco       from "monaco-editor/esm/vs/editor/editor.api";
-import {editor}          from "monaco-editor";
-import {connect}         from "react-redux";
-import {store}           from "../../../../store";
-import * as editorConf   from './config.json';
-import Toolbox           from '../toolbox';
-import {ArticleService}  from '../../../note/services/article.service';
-import DropZone          from "../../drop_zone";
+import * as Monaco      from "monaco-editor/esm/vs/editor/editor.api";
+import {editor}         from "monaco-editor";
+import {connect}        from "react-redux";
+import {store}          from "../../../../store";
+import * as editorConf  from './config.json';
+import Toolbox          from '../toolbox';
+import {ArticleService} from '../../../note/services/article.service';
+import DropZone         from "../../drop_zone";
 
 interface Props {
     input: {
@@ -74,7 +74,11 @@ class EditorMonaco extends React.Component {
         if (this.monacoEditor && this.monacoEditor.setValue && !this.isInitEditorValue) {
             this.isInitEditorValue = true;
             this.currentArticleId  = articleId;
-            this.monacoEditor.setValue(markdownContent);
+            try {
+                this.monacoEditor.setValue(markdownContent);
+            } catch (e) {
+                //
+            }
         }
     }
 
@@ -99,6 +103,10 @@ class EditorMonaco extends React.Component {
 
     public componentDidMount() {
         this.editorInit();
+    }
+
+    public componentWillUnmount(): void {
+        this.monacoEditor.dispose();
     }
 
     public render() {

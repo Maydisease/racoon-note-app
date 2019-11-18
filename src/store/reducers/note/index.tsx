@@ -8,6 +8,6 @@ export const note = (modelName: string) => {
         'STORE_NOTE$FRAME'       : new FrameStateReducer(modelName).Action,
         'STORE_NOTE$ARTICLE'     : new ArticleReducer(modelName).Action,
         'STORE_NOTE$ARTICLE_TEMP': new ArticleTempReducer(modelName).Action,
-        'STORE_NOTE$Task'        : new TaskReducer(modelName).Action,
+        'STORE_NOTE$TASK'        : new TaskReducer(modelName).Action,
     };
 };

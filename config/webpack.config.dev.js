@@ -6,6 +6,7 @@ const webpack                       = require('webpack');
 const HtmlWebpackPlugin             = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin      = require('case-sensitive-paths-webpack-plugin');
 const InterpolateHtmlPlugin         = require('react-dev-utils/InterpolateHtmlPlugin');
+const MonacoWebpackPlugin           = require('monaco-editor-webpack-plugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 const ModuleScopePlugin             = require('react-dev-utils/ModuleScopePlugin');
 const ForkTsCheckerWebpackPlugin    = require('fork-ts-checker-webpack-plugin');
@@ -48,7 +49,7 @@ module.exports = {
 		// require.resolve('webpack/hot/dev-server'),
 		require.resolve('react-dev-utils/webpackHotDevClient'),
 		// Finally, this is your app's code:
-		paths.appIndexJs,
+		paths.appIndexJs
 //		'monaco-editor/esm/vs/editor/editor.worker.js',
 //		'monaco-editor/esm/vs/language/json/json.worker',
 //		'monaco-editor/esm/vs/language/css/css.worker',
@@ -244,6 +245,9 @@ module.exports = {
 			watch: paths.appSrc,
 			tsconfig: paths.appTsConfig,
 			tslint: paths.appTsLint
+		}),
+		new MonacoWebpackPlugin({
+			languages: ['typescript', 'javascript', 'css']
 		})
 	],
 	// Some libraries import Node modules but don't use them in the browser.

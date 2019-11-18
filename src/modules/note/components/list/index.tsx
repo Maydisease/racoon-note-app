@@ -58,6 +58,8 @@ class ListComponent extends React.Component {
         this.quickSearchContextMenuInit   = this.quickSearchContextMenuInit.bind(this);
         this.closeSharePanel              = this.closeSharePanel.bind(this);
         this.updateShareInfo              = this.updateShareInfo.bind(this);
+        this.dragStartHandle              = this.dragStartHandle.bind(this);
+        this.dragEndHandle                = this.dragEndHandle.bind(this);
         this.listContextMenu              = new Service.Menu();
         this.quickSearchContextMenu       = new Service.Menu();
         this.searchElement                = React.createRef();
@@ -121,7 +123,6 @@ class ListComponent extends React.Component {
             state.sharePanelPos.x = listElement.offsetLeft;
             this.setState(state);
         }, 0);
-
     }
 
 
@@ -202,48 +203,15 @@ class ListComponent extends React.Component {
         const articleId = this.state.articleObj.id;
         const response  = await request('note', 'setArticleLockState', {id: articleId, lock: 1});
         if (response.result === 0) {
-            const state                       = this.state;
-            const key                         = state.articleList.findIndex((sourceItem: any) => articleId === sourceItem.id);
-            state.articleList[key].lock       = 1;
-            state.articleList[key].updateTime = new Date().toTimeString();
-            this.setState(state);
-            this.handleItemClick(this.state.articleList[key], true);
+            await this.UpdateArticleListDom(this.state.currentCid);
+            this.handleItemClick(this.state.articleObj, true);
         }
     }
 
     // 解锁文章
-    public unLockNote() {
-        const articleId = this.state.articleObj.id;
-        // 如果list是被选中的文章
-        if (this.state.articleObj.cid === this.state.currentCid) {
-
-            const state                       = this.state;
-            const key                         = state.articleList.findIndex((sourceItem: any) => articleId === sourceItem.id);
-            state.articleList[key].lock       = 0;
-            state.articleList[key].updateTime = new Date().toTimeString();
-            this.setState(state);
-
-            this.handleItemClick(this.state.articleObj, true);
-
-        }
-        // 如果list中不存在被选中的文章
-        else {
-
-            // 更新store中NOTE内的文章字段组
-            store.dispatch({
-                type    : 'NOTE$UPDATE_ARTICLE',
-                playload: {
-                    id   : this.state.articleObj.id,
-                    cid  : this.state.articleObj.cid,
-                    title: this.state.articleObj.title,
-                    lock : 0
-                }
-            });
-
-            // 发送列表文章选中事件
-            store.dispatch({type: 'NOTE$SELECTED_ARTICLE'});
-        }
-
+    public async unLockNote() {
+        await this.UpdateArticleListDom(this.state.currentCid);
+        this.handleItemClick(this.state.articleObj, true);
     }
 
     // 清空搜索关键词
@@ -363,9 +331,8 @@ class ListComponent extends React.Component {
 
     // 更新文章列表
     public async UpdateArticleListDom(cid: number) {
-        const state      = this.state;
-        state.currentCid = cid;
-        console.log('UpdateArticleListDom');
+        const state       = this.state;
+        state.currentCid  = cid;
         state.articleList = await this.getArticleList(cid);
         if (state.articleList) {
             state.articleList.map((item: any, index: number) => {
@@ -417,6 +384,11 @@ class ListComponent extends React.Component {
             this.unLockNote();
         });
 
+        // 监听移动文章至指定分类的事件
+        storeSubscribe('NOTE$MOVE_LIST_ARTICLE_TASK', async (action: any) => {
+            const cid = this.state.currentCid;
+            await this.UpdateArticleListDom(cid);
+        });
 
         storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_F', async (action: any) => {
             const element = (this.searchElement.current as HTMLInputElement);
@@ -489,7 +461,7 @@ class ListComponent extends React.Component {
     public async handleItemClick(item: any, forceUpdate: boolean = false, e?: any): Promise<boolean | void> {
 
         const state = this.state;
-        const key   = state.articleList.findIndex((sourceItem: any) => item === sourceItem);
+        const key   = state.articleList.findIndex((sourceItem: any) => item.id === sourceItem.id);
 
         if (!forceUpdate && this.state.articleObj && item.id === this.state.articleObj.id && state.articleList[key].selected) {
             return false;
@@ -564,17 +536,20 @@ class ListComponent extends React.Component {
              *
              * list context menu index
              *
-             * items[0] -> Move To Trash
-             * items[1] -> Lock
+             * items[0] -> Share Note
+             * items[1] -> Lock Note
+             * items[2] -> Move To Trash
              *
              */
 
             switch (item.lock) {
                 case 0:
                     items[0].enabled = true;
+                    items[1].enabled = true;
                     break;
                 case 1:
                     items[0].enabled = false;
+                    items[1].enabled = false;
                     break;
             }
 
@@ -585,6 +560,44 @@ class ListComponent extends React.Component {
     // 被响应的搜索分类选择上下文菜单事件
     public handleQuickSearchContextMenu() {
         this.quickSearchContextMenu.popup({window: Service.getWindow('master')});
+    }
+
+    // 当文章列表被拖拽时（应用于拖拽移动分类功能）
+    public dragStartHandle(event: React.DragEvent): void | boolean {
+        const selfElement     = event.target as HTMLElement;
+        const {id, cid, lock} = selfElement.dataset;
+
+        if (Number(lock) === 1) {
+            selfElement.setAttribute('draggable', 'false');
+            event.stopPropagation();
+            event.preventDefault();
+            return false;
+        }
+
+        const categoryListElement = document.querySelector('.category-list') as HTMLElement;
+        const topElement          = selfElement.closest('.item') as HTMLElement;
+        categoryListElement.classList.add('drop');
+        topElement.classList.add('draging');
+        const params = JSON.stringify(
+            {
+                source     : 'articleList',
+                currentCid : cid,
+                currentAid : id,
+                currentLock: lock
+            }
+        );
+        event.dataTransfer.setData("params", params);
+    }
+
+    // 当文章列表被拖拽结束时（应用于拖拽移动分类功能）
+    public dragEndHandle(event: React.DragEvent) {
+        const selfElement         = event.target as HTMLElement;
+        const topElement          = selfElement.closest('.item') as HTMLElement;
+        const categoryListElement = document.querySelector('.category-list');
+        topElement.classList.remove('draging');
+        if (categoryListElement) {
+            categoryListElement.classList.remove('drop');
+        }
     }
 
     public render() {
@@ -611,7 +624,15 @@ class ListComponent extends React.Component {
                                     }
                                 </div>
                                 <div className="context">
-                                    <h2 dangerouslySetInnerHTML={{__html: item.title}}/>
+                                    <h2
+                                        data-cid={item.cid}
+                                        data-id={item.id}
+                                        data-lock={item.lock}
+                                        dangerouslySetInnerHTML={{__html: item.title}}
+                                        onDragStart={this.dragStartHandle}
+                                        onDragEnd={this.dragEndHandle}
+                                        draggable={true}
+                                    />
                                     <div className="description">
                                         {item.lock === 0 &&
 										<dl>{item.description}</dl>
