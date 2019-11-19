@@ -60,6 +60,11 @@ class CategoryIconPanel extends React.Component {
             isReverse = true;
         }
 
+        if (show) {
+            const categoryListElement = document.querySelector('.category-list') as HTMLElement;
+            categoryListElement.classList.add('disable-event')
+        }
+
         ReactDOM.render(
             <div id="v-changeCategoryIconPanel" className={`${show ? 'show' : ''} ${isReverse ? 'reverse' : ''}`} style={{top: y + 38, left: x - 20}}>
                 <div className="wrap">
@@ -105,6 +110,8 @@ class CategoryIconPanel extends React.Component {
 
                 if (!isSelf) {
                     this.closeIconPanel();
+                    const categoryListElement = document.querySelector('.category-list') as HTMLElement;
+                    categoryListElement.classList.remove('disable-event')
                 }
             }
         });

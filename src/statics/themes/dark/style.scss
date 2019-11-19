@@ -73,17 +73,17 @@ body[theme='dark'] {
                             overflow: hidden;
                             background: RGBA(26, 26, 26, 1);
                             border-top: 1px solid RGBA(0, 0, 0, .1);
-    
+                            
                             .line {
                                 width: 1px;
                                 height: 16px;
                                 margin-top: 6px;
                                 border-right: 1px solid RGBA(255, 255, 255, .07);
-        
+                                
                                 &.left {
                                     float: left;
                                 }
-        
+                                
                                 &.right {
                                     float: right;
                                 }
@@ -148,6 +148,7 @@ body[theme='dark'] {
                             overflow-x: hidden;
                             overflow-y: auto;
                             
+                            &.disable-event,
                             &.drop label * {
                                 pointer-events: none;
                             }

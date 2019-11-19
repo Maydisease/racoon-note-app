@@ -173,7 +173,6 @@ class CategoryContainer extends React.Component {
 
         this.setState(state);
         this.categoryMenusEventBind();
-
     }
 
     // 更换category名确认面板事件
@@ -327,6 +326,7 @@ class CategoryContainer extends React.Component {
                 // 分类图标组件
                 if (this.state.categoryIconPanelState) {
                     this.closeChangeCategoryIconPanel();
+                    return;
                 } else {
                     this.setIconPanelPos();
                 }
