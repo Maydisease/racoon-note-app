@@ -3,6 +3,7 @@ import {Service}         from '../../../lib/master.electron.lib';
 import {Link, Redirect}  from "react-router-dom";
 import {request}         from "../../note/services/requst.service";
 import {VMessageService} from '../../component/message';
+import {VLoadingService} from "../../component/loading";
 
 interface Props {
     verifyState: number,
@@ -98,8 +99,12 @@ class SignUpMain extends React.Component<Props, State> {
             'repassword': this.state.from.repassword.value
         };
 
+        const loading = new VLoadingService({});
+        loading.init();
+
         // 向服务端发送注册用户请求
         const response = await request('User', 'addUserData', postBody);
+        loading.destroy();
 
         // 如果注册成功
         if (response.result === 0) {

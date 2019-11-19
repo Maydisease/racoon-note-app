@@ -4,6 +4,7 @@ import {Link}            from "react-router-dom";
 import {request}         from "../../note/services/requst.service";
 import {VMessageService} from '../../component/message';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {VLoadingService} from "../../component/loading";
 
 interface Props {
     verifyState: number,
@@ -89,8 +90,12 @@ class SignInMain extends React.Component<Props, State> {
             return false;
         }
 
+        const loading = new VLoadingService({});
+        loading.init();
+
         // 用户登录请求
         const signInResponse = await request('User', 'signIn', {username, password});
+        loading.destroy();
 
         // 网络出错
         if (signInResponse.result === 1 && signInResponse.err) {
