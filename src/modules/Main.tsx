@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Login      from './component/Logo/Logo';
+import Login      from './component/logo';
 import {Service}  from '../lib/master.electron.lib';
 import {Redirect} from "react-router";
 

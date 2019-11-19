@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './logo.scss';
 
-class Logo extends React.Component {
+class Index extends React.Component {
 
     public componentDidMount() {
         const leftHemisphere: any  = document.querySelector('.left-hemisphere');
@@ -74,4 +74,4 @@ class Logo extends React.Component {
     }
 }
 
-export default Logo;
+export default Index;

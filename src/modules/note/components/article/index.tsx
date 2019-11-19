@@ -1,14 +1,14 @@
-import * as React        from 'react';
-import EditorComponent   from './editor';
-import BrowseComponent   from "./browse";
-import LockComponent     from "./lock";
-import {connect}         from 'react-redux';
-import DesktopComponent  from './desktop';
-import {store}           from "../../../../store";
-import {storeSubscribe}  from "../../../../store/middleware/storeActionEvent.middleware";
-import {ArticleService}  from "../../services/article.service";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Service}         from "../../../../lib/master.electron.lib";
+import * as React          from 'react';
+import EditorComponent     from './editor';
+import BrowseComponent     from "./browse";
+import LockScreenComponent from "./lock_screen";
+import {connect}           from 'react-redux';
+import DesktopComponent    from './desktop';
+import {store}             from "../../../../store";
+import {storeSubscribe}    from "../../../../store/middleware/storeActionEvent.middleware";
+import {ArticleService}    from "../../services/article.service";
+import {FontAwesomeIcon}   from "@fortawesome/react-fontawesome";
+import {Service}           from "../../../../lib/master.electron.lib";
 
 class ArticleComponent extends React.Component {
 
@@ -229,7 +229,7 @@ class ArticleComponent extends React.Component {
 					</React.Fragment>
                     }
                     {ARTICLE.lock === 1 &&
-					<LockComponent/>
+					<LockScreenComponent/>
                     }
 				</div>
                 }

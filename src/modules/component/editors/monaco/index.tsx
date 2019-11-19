@@ -32,13 +32,16 @@ class EditorMonaco extends React.Component {
     public isInitEditorValue: boolean;
     public currentArticleId: number;
     public articleService: ArticleService;
+    public changeContentTimer: number;
+    public changeContentIntervalTime: number;
 
     constructor(props: any) {
         super(props);
-        this.articleService        = new ArticleService();
-        this.monacoEditorContainer = React.createRef();
-        this.setEditorValue        = this.setEditorValue.bind(this);
-        this.editorInit            = this.editorInit.bind(this);
+        this.changeContentIntervalTime = 400;
+        this.articleService            = new ArticleService();
+        this.monacoEditorContainer     = React.createRef();
+        this.setEditorValue            = this.setEditorValue.bind(this);
+        this.editorInit                = this.editorInit.bind(this);
     }
 
     public shouldComponentUpdate(nextProps: Readonly<object>): boolean {
@@ -90,8 +93,11 @@ class EditorMonaco extends React.Component {
 
             // 当编辑器内的markdown内容有更新后
             this.monacoEditor.onDidChangeModelContent((event: any) => {
-                const newValue = this.monacoEditor.getValue();
-                this.updateArticleStore(newValue);
+                clearTimeout(this.changeContentTimer);
+                this.changeContentTimer = window.setTimeout(() => {
+                    const newValue = this.monacoEditor.getValue();
+                    this.updateArticleStore(newValue);
+                }, this.changeContentIntervalTime);
             })
 
         }
