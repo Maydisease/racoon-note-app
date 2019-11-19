@@ -24,7 +24,19 @@ class NoteMain extends React.Component {
         localArticleIds               = await Service.ClientCache('/note/article').getUserAllArticleIds();
         const response                = await request('note', 'getUserAllArticle', {ids: localArticleIds});
         if (response.result === 0 && response.data && response.data.length > 0) {
-            await Service.ClientCache('/note/article').addUserAllArticle(response.data);
+            // 分页存储（解决sqlite3因批量插入太多数据导致无法正常写入的问题）
+            const pagNumber            = 5;
+            const loopPutCount: number = Math.ceil(response.data.length / pagNumber);
+            for (let i = 0; i < loopPutCount; i++) {
+                let newList        = [];
+                const currentIndex = i * pagNumber;
+                if (i === loopPutCount) {
+                    newList = response.data.slice(currentIndex, response.data.length)
+                } else {
+                    newList = response.data.slice(currentIndex, currentIndex + pagNumber);
+                }
+                Service.ClientCache('/note/article').addUserAllArticle(newList);
+            }
         }
     }
 
