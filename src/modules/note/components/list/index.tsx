@@ -6,9 +6,9 @@ import {request}         from "../../services/requst.service";
 import {store}           from "../../../../store";
 import {storeSubscribe}  from "../../../../store/middleware/storeActionEvent.middleware";
 import {connect}         from "react-redux";
-import {friendlyDate}    from '../../../../utils/friendlyDate.utils';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import SharePanel        from "./sharePanel";
+import ArticleItems      from "./articleItems";
 
 class ListComponent extends React.Component {
 
@@ -40,6 +40,7 @@ class ListComponent extends React.Component {
     public quickSearchTimer: number;
     public articleService: ArticleService;
     public searchElement: React.RefObject<HTMLInputElement>;
+    public articleListElementRef: React.RefObject<HTMLDivElement>;
 
     constructor(props: any) {
         super(props);
@@ -63,6 +64,7 @@ class ListComponent extends React.Component {
         this.listContextMenu              = new Service.Menu();
         this.quickSearchContextMenu       = new Service.Menu();
         this.searchElement                = React.createRef();
+        this.articleListElementRef        = React.createRef();
         this.listContextMenuInit();
         this.quickSearchContextMenuInit();
     }
@@ -188,11 +190,7 @@ class ListComponent extends React.Component {
                         type: 'NOTE$CLEAR_ARTICLE_TEMP'
                     });
 
-                    const state = this.state;
-                    const index = state.articleList.findIndex((sourceItem: any) => this.state.articleObj.id === sourceItem.id);
-                    state.articleList.splice(index, 1);
-                    this.setState(state);
-
+                    await this.UpdateArticleListDom(this.state.currentCid);
                 }
             }
         });
@@ -286,6 +284,19 @@ class ListComponent extends React.Component {
                 state.articleList[index].selected = false;
             });
             state.isUseQuickSearch = true;
+            state.articleObj       = {};
+
+            store.dispatch({
+                type: 'NOTE$SELECTED_ARTICLE'
+            });
+
+            store.dispatch({
+                type: 'NOTE$CLEAR_ARTICLE'
+            });
+
+            store.dispatch({
+                type: 'NOTE$CLEAR_ARTICLE_TEMP'
+            });
         }
 
         this.setState(state);
@@ -409,6 +420,9 @@ class ListComponent extends React.Component {
             await this.UpdateArticleListDom(cid);
             const key = await this.state.articleList.findIndex((sourceItem: any) => sourceItem.id === id);
             await this.handleItemClick(this.state.articleList[key]);
+            const articleListElement     = this.articleListElementRef.current as HTMLDivElement;
+            const selectedItemElement    = articleListElement.querySelector('.item.current') as HTMLDivElement;
+            articleListElement.scrollTop = selectedItemElement.offsetTop - (selectedItemElement.clientHeight / 2);
         });
 
     }
@@ -601,55 +615,6 @@ class ListComponent extends React.Component {
     }
 
     public render() {
-        const ArticleItem = (props: any): any => {
-            const articleList = props.data;
-            if (articleList.length > 0) {
-                return (
-                    articleList.map((item: any, index: number) => {
-                        return (
-                            <div
-                                className={`item ${item.selected === true && 'current'}`}
-                                key={item.id}
-                                id={`list_element_${item.id}`}
-                                onClick={this.handleItemClick.bind(this, item, false)}
-                                onContextMenu={this.handleItemContextMenu.bind(this, item)}
-                            >
-                                <div className="subscript">
-                                    <span>{friendlyDate(item.updateTime)}</span>
-                                    {
-                                        item.on_share &&
-										<span className='share-icon'>
-                                            <FontAwesomeIcon className="fa-icon" icon="share-alt"/>
-                                        </span> || null
-                                    }
-                                </div>
-                                <div className="context">
-                                    <h2
-                                        data-cid={item.cid}
-                                        data-id={item.id}
-                                        data-lock={item.lock}
-                                        dangerouslySetInnerHTML={{__html: item.title}}
-                                        onDragStart={this.dragStartHandle}
-                                        onDragEnd={this.dragEndHandle}
-                                        draggable={true}
-                                    />
-                                    <div className="description">
-                                        {item.lock === 0 &&
-										<dl>{item.description}</dl>
-                                        }
-                                        {item.lock === 1 &&
-										<dl><p/><p/><p/></dl>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        )
-                    })
-                );
-            } else {
-                return ('');
-            }
-        };
 
         const STORE_NOTE$FRAME = (this.props as any).STORE_NOTE$FRAME;
 
@@ -684,8 +649,15 @@ class ListComponent extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div className="article-list">
-                    {this.state.articleList && this.state.articleList.length > 0 ? <ArticleItem data={this.state.articleList}/> : <div className="not-data">No notes ...</div>}
+                <div className="article-list" ref={this.articleListElementRef}>
+                    <ArticleItems
+                        articleObj={this.state.articleObj ? this.state.articleObj : {}}
+                        articleList={this.state.articleList}
+                        handleItemContextMenu={this.handleItemContextMenu}
+                        handleItemClick={this.handleItemClick}
+                        dragStartHandle={this.dragStartHandle}
+                        dragEndHandle={this.dragEndHandle}
+                    />
                 </div>
 
                 {/*分类ICON选择面板组件*/}
