@@ -617,9 +617,10 @@ class ListComponent extends React.Component {
     public render() {
 
         const STORE_NOTE$FRAME = (this.props as any).STORE_NOTE$FRAME;
+        console.log('STORE_NOTE$FRAME.editMode', STORE_NOTE$FRAME.editMode);
 
         return (
-            <div className={`listContainer ${STORE_NOTE$FRAME.layout === 1 ? 'show' : ''} ${STORE_NOTE$FRAME.trashMode || STORE_NOTE$FRAME.editMode ? 'hide' : ''}`}>
+            <div className={`listContainer ${STORE_NOTE$FRAME.layout === 1 ? 'show' : ''} ${STORE_NOTE$FRAME.trashMode ? 'hide' : ''}`}>
 
                 {/* 快速搜索组件 */}
                 <div className="searchContainer">
