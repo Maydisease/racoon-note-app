@@ -85,17 +85,104 @@ class DesktopComponent extends React.Component {
     public render() {
         return (
             <div id="desktop">
-                {/*<p>memory external: {this.state.memory.external}</p>*/}
-                {/*<p>memory heapTotal: {this.state.memory.heapTotal}</p>*/}
-                {/*<p>memory heapUsed: {this.state.memory.heapUsed}</p>*/}
-                {/*<p>memory rss: {this.state.memory.rss}</p>*/}
-                {/*<p>cpu system: {this.state.cpu.system}</p>*/}
-                {/*<p>cpu user: {this.state.cpu.user}</p>*/}
-                {/*<p>versions electron: {this.state.versions.electron}</p>*/}
-                {/*<p>versions node: {this.state.versions.node}</p>*/}
-                {/*<p>versions chrome: {this.state.versions.chrome}</p>*/}
-                {/*<p>versions openssl: {this.state.versions.openssl}</p>*/}
-                {/*<p>versions v8: {this.state.versions.v8}</p>*/}
+                <div className="center">
+                    <div className="keyboard">
+                        <div className="col left">
+                            <h4>Global</h4>
+                            <p>
+                                <span className="key">Focus Quick Search</span>
+                                <span className="value">
+                                    <em>⌘</em>
+                                    <em>F</em>
+                                </span>
+                            </p>
+                            <p>
+                                <span className="key">Open Search Panel</span>
+                                <span className="value">
+                                    <em>⇧</em>
+                                    <em>⌘</em>
+                                    <em>F</em>
+                                </span>
+                            </p>
+                            <p>
+                                <span className="key">Open Trash Box</span>
+                                <span className="value">
+                                    <em>⌘</em>
+                                    <em>T</em>
+                                </span>
+                            </p>
+                            <p>
+                                <span className="key">Switch Editor Mode</span>
+                                <span className="value">
+                                    <em>⌘</em>
+                                    <em>E</em>
+                                </span>
+                            </p>
+                            <p>
+                                <span className="key">Full Size Edit/Preview</span>
+                                <span className="value">
+                                    <em>⌘</em>
+                                    <em>W</em>
+                                </span>
+                            </p>
+                            <p>
+                                <span className="key">Open Network Monitor</span>
+                                <span className="value">
+                                    <em>⇧</em>
+                                    <em>⌘</em>
+                                    <em>N</em>
+                                </span>
+                            </p>
+                            <p>
+                                <span className="key">Open Boot Monitor</span>
+                                <span className="value">
+                                    <em>⇧</em>
+                                    <em>⌘</em>
+                                    <em>B</em>
+                                </span>
+                            </p>
+                        </div>
+                        <div className="col right">
+                            <h4>Editor</h4>
+                            <p>
+                                <span className="value">
+                                    <em>⌘</em>
+                                    <em>F</em>
+                                </span>
+                                <span className="key">Editor Search</span>
+
+                            </p>
+                            <p>
+                                <span className="value">
+                                    <em>⌘</em>
+                                    <em>S</em>
+                                </span>
+                                <span className="key">Save Note</span>
+                            </p>
+                            <p>
+                                <span className="value">
+                                    <em>⌘</em>
+                                    <em>C</em>
+                                </span>
+                                <span className="key">Copy</span>
+                            </p>
+                            <p>
+                                <span className="value">
+                                    <em>⌘</em>
+                                    <em>V</em>
+                                </span>
+                                <span className="key">Paste</span>
+                            </p>
+                            <p>
+                                <span className="value">
+                                    <em>⌘</em>
+                                    <em>X</em>
+                                </span>
+                                <span className="key">Cut</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }

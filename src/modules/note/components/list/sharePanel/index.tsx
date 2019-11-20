@@ -91,6 +91,7 @@ class SharePanel extends React.Component {
 
     }
 
+    // 使用浏览器打开分享的链接
     public toBrowserOpenShareLink(link: string): void {
         clearTimeout(this.toBrowserOpenShareLinkTimer);
         this.toBrowserOpenShareLinkTimer = window.setTimeout(() => {
@@ -98,6 +99,7 @@ class SharePanel extends React.Component {
         }, 250);
     }
 
+    // 将文本拷贝至剪切板
     public copyClipboard(text: string): void {
 
         clearTimeout(this.copyClipboardTimer);

@@ -619,7 +619,9 @@ class ListComponent extends React.Component {
         const STORE_NOTE$FRAME = (this.props as any).STORE_NOTE$FRAME;
 
         return (
-            <div className={`listContainer ${STORE_NOTE$FRAME.layout === 1 ? 'show' : ''} ${STORE_NOTE$FRAME.trashMode ? 'hide' : ''}`}>
+            <div className={`listContainer ${STORE_NOTE$FRAME.layout === 1 ? 'show' : ''} ${STORE_NOTE$FRAME.trashMode || STORE_NOTE$FRAME.editMode ? 'hide' : ''}`}>
+
+                {/* 快速搜索组件 */}
                 <div className="searchContainer">
                     <div className={`wrap ${this.state.inputFocusState && 'focus'}`}>
                         <div className={`formBox ${this.state.inputFocusState && 'focus'}`}>
@@ -649,6 +651,8 @@ class ListComponent extends React.Component {
                         </div>
                     </div>
                 </div>
+
+                {/* 文章列表组件 */}
                 <div className="article-list" ref={this.articleListElementRef}>
                     <ArticleItems
                         articleObj={this.state.articleObj ? this.state.articleObj : {}}

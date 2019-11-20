@@ -310,6 +310,17 @@ class CategoryContainer extends React.Component {
 
                 if (menuId === 0) {
                     state.selectedIcon = 'folder';
+                    store.dispatch({
+                        type: 'NOTE$SELECTED_ARTICLE'
+                    });
+
+                    store.dispatch({
+                        type: 'NOTE$CLEAR_ARTICLE'
+                    });
+
+                    store.dispatch({
+                        type: 'NOTE$CLEAR_ARTICLE_TEMP'
+                    });
                 } else {
                     state.selectedIcon = (itemElement.querySelector('img') as HTMLElement).title;
                 }
