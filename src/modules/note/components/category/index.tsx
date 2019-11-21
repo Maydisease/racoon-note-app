@@ -123,6 +123,11 @@ class CategoryContainer extends React.Component {
             this.setState(state);
         });
 
+        storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_T', (action: any) => {
+            const trashMode = !store.getState().STORE_NOTE$FRAME.trashMode;
+            store.dispatch({'type': `NOTE$CHANGE_TRASH_MODE_STATE`, playload: {trashMode}});
+        });
+
         storeSubscribe('NOTE$CHANGE_TRASH_MODE_STATE', (action: any) => {
             if (!action.playload.trashMode && store.getState().STORE_NOTE$TASK.isTrashCrush) {
                 EventEmitter.emit('selectedCategory', this.state.categoryObj.id);
@@ -601,9 +606,6 @@ class CategoryContainer extends React.Component {
     }
 
     public render() {
-
-        const isTrashMode = store.getState().STORE_NOTE$FRAME.trashMode;
-
         return (
             <div className={`categoryContainer ${this.state.componentShowState ? 'show' : ''}`}>
                 <div className="wrap">
@@ -640,7 +642,7 @@ class CategoryContainer extends React.Component {
                             <FontAwesomeIcon className="fa-icon" icon="paperclip"/>
                         </label>
                         <span className="line left"/>
-                        <label className={`left ${isTrashMode ? 'active' : ''}`} onClick={this.handleActionBar.bind(null, 'trash')}>
+                        <label className={`left`} onClick={this.handleActionBar.bind(null, 'trash')}>
                             <FontAwesomeIcon className="fa-icon" icon="trash"/>
                         </label>
                         <label className={`right`} onClick={this.handleActionBar.bind(null, 'signOut')}>

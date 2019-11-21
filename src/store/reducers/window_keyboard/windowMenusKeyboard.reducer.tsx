@@ -48,6 +48,11 @@ export class WindowMenusKeyboardReducer {
         return this.state;
     }
 
+    // 切换Trash模式
+    public CMD_OR_CTRL_T() {
+        return this.state;
+    }
+
     public ESCAPE() {
         return this.state;
     }

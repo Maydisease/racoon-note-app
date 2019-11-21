@@ -2,25 +2,45 @@ import * as React        from 'react';
 import {friendlyDate}    from "../../../../../utils/friendlyDate.utils";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
+interface ArticleObj {
+    cid: number
+    description: string
+    id: number
+    lock: number
+    on_share: number
+    selected: boolean
+    share_address: string
+    share_code: string
+    title: string
+    updateTime: number
+    use_share_code: number
+}
+
+interface Props {
+    articleObj: ArticleObj;
+    articleList: ArticleObj[];
+    handleItemClick: (item: ArticleObj) => void
+    handleItemContextMenu: (item: ArticleObj) => void
+    dragStartHandle: (event: React.DragEvent) => void
+    dragEndHandle: (event: React.DragEvent) => void
+}
+
 class ArticleItems extends React.Component {
 
-    public props: any;
+    public props: Props;
 
 
-    constructor(props: any) {
+    constructor(props: Props) {
         super(props);
         this.handleItemClick       = this.handleItemClick.bind(this);
         this.handleItemContextMenu = this.handleItemContextMenu.bind(this);
     }
 
-    public shouldComponentUpdate(nextProps: Readonly<any>): boolean {
-
-        console.log(this.props.articleObj === nextProps.articleObj);
+    public shouldComponentUpdate(nextProps: Readonly<Props>): boolean {
 
         if (this.props.articleList !== nextProps.articleList) {
             return true;
         }
-
         if (this.props.articleObj.id === 0 && nextProps.articleObj.id === 0) {
             return true;
         } else if (this.props.articleObj.id === nextProps.articleObj.id) {
@@ -29,11 +49,11 @@ class ArticleItems extends React.Component {
         return true;
     }
 
-    public handleItemClick(item: any) {
+    public handleItemClick(item: ArticleObj) {
         this.props.handleItemClick(item);
     }
 
-    public handleItemContextMenu(item: any) {
+    public handleItemContextMenu(item: ArticleObj) {
         this.props.handleItemContextMenu(item);
     }
 
@@ -44,10 +64,10 @@ class ArticleItems extends React.Component {
     public render() {
         return (
             this.props.articleList && this.props.articleList.length > 0 ?
-                this.props.articleList.map((item: any, index: number) => {
+                this.props.articleList.map((item: ArticleObj) => {
                     return (
                         <div
-                            className={`item ${item.selected === true && 'current'}`}
+                            className={`item ${item.selected && 'current'}`}
                             key={item.id}
                             id={`list_element_${item.id}`}
                             onClick={this.handleItemClick.bind(this, item, false)}

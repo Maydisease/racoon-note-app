@@ -4,6 +4,7 @@ import {store}           from "../../../../store";
 import {request}         from "../../services/requst.service";
 import {Service}         from "../../../../lib/master.electron.lib";
 import {VMessageService} from "../../../component/message";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 interface KeyboardState {
     leftShift: boolean;
@@ -43,6 +44,8 @@ class TrashArticle extends React.Component {
                 $this.actionCrush()
             }
         }));
+
+        this.contextMenu.append(new Service.MenuItem({type: 'separator'}));
 
         // item[1];
         this.contextMenu.append(new Service.MenuItem({
@@ -284,61 +287,68 @@ class TrashArticle extends React.Component {
     public render() {
         return (
             <div className="trashArticleContainer">
-                <div className="wrap">
-                    <div className="list">
-                        {
-                            this.state.trashArticleList.map((item: any) => {
-                                return (
-                                    <div
-                                        className={`item ${this.state.trashArticleSelectedMaps[item.id] ? 'active' : ''}`}
-                                        key={item.id}
-                                        onClick={this.itemSelectedHandel.bind(this, item.id)}
-                                        onContextMenu={this.handleItemContextMenu.bind(this, item.id)}
-                                    >
-                                        <div className="text">{item.title}</div>
-                                    </div>
-                                )
-                            })
-                        }
-
-                    </div>
-                </div>
-                <div className="preview">
-                    <div className="params">
-                        <div className="image"/>
-                        <div className="item category-path">
-                            <label>Category:</label>
-                            <div className="text" key={this.state.trashArticleDetail.id}>
+                {this.state.trashArticleList && this.state.trashArticleList.length > 0 ?
+                    <React.Fragment>
+                        <div className="wrap">
+                            <div className="list">
                                 {
-                                    (this.state.trashArticleDetail.categoryPath &&
-                                        this.state.trashArticleDetail.categoryPath.length > 0) ?
-                                        this.state.trashArticleDetail.categoryPath.map((c: string, index: number) => {
-                                            return (<React.Fragment key={index}><em>.</em>{c}</React.Fragment>)
-                                        }) : 'none'
+                                    this.state.trashArticleList.map((item: any) => {
+                                        return (
+                                            <div
+                                                className={`item ${this.state.trashArticleSelectedMaps[item.id] ? 'active' : ''}`}
+                                                key={item.id}
+                                                onClick={this.itemSelectedHandel.bind(this, item.id)}
+                                                onContextMenu={this.handleItemContextMenu.bind(this, item.id)}
+                                            >
+                                                <div className="text">{item.title}</div>
+                                            </div>
+                                        )
+                                    })
                                 }
+
                             </div>
                         </div>
-                        <div className="item">
-                            <label>Title:</label>
-                            <div className="text">{this.state.trashArticleDetail.title}</div>
-                        </div>
-                        <div className="item">
-                            <label>Date:</label>
-                            <div className="text">{this.state.trashArticleDetail.date}</div>
-                        </div>
-                        <div className="item">
-                            <label>Summary:</label>
-                            <div className="text">{this.state.trashArticleDetail.description}</div>
-                        </div>
-                    </div>
-                    {
-                        this.state.trashArticleDetail.id ?
-                            <div className="action">
-                                <button className="btn waring" onClick={this.actionCrush}>Crush</button>
-                                <button className="btn" onClick={this.actionRestore}>Restore</button>
-                            </div> : null
-                    }
-                </div>
+
+                        {this.state.trashArticleDetail.id ?
+                            <div className="preview">
+                                <div className="params">
+                                    <div className="image"/>
+                                    <div className="item category-path">
+                                        <label>Category:</label>
+                                        <div className="text" key={this.state.trashArticleDetail.id}>
+                                            {
+                                                (this.state.trashArticleDetail.categoryPath &&
+                                                    this.state.trashArticleDetail.categoryPath.length > 0) ?
+                                                    this.state.trashArticleDetail.categoryPath.map((c: string, index: number) => {
+                                                        return (<React.Fragment key={index}><em>.</em>{c}</React.Fragment>)
+                                                    }) : 'none'
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className="item">
+                                        <label>Title:</label>
+                                        <div className="text">{this.state.trashArticleDetail.title}</div>
+                                    </div>
+                                    <div className="item">
+                                        <label>Date:</label>
+                                        <div className="text">{this.state.trashArticleDetail.date}</div>
+                                    </div>
+                                    <div className="item">
+                                        <label>Summary:</label>
+                                        <div className="text">{this.state.trashArticleDetail.description}</div>
+                                    </div>
+                                </div>
+                                <div className="action">
+                                    <button className="btn waring" onClick={this.actionCrush}>Crush</button>
+                                    <button className="btn" onClick={this.actionRestore}>Restore</button>
+                                </div>
+                            </div>
+                            : null}
+                    </React.Fragment>
+                    : <div className="empty-data">
+                        <p className="icon"><FontAwesomeIcon className="fa-icon" icon="trash"/></p>
+                        <p>No note in the trash</p>
+                    </div>}
             </div>
         );
     }

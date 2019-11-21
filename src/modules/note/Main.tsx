@@ -46,6 +46,7 @@ class NoteMain extends React.Component {
 
     public componentDidMount(): void {
         this.noteInit();
+
         storeSubscribe('NOTE$CHANGE_TRASH_MODE_STATE', (action: any) => {
             try {
                 const state       = this.state;
