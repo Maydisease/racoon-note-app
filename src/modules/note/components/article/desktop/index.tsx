@@ -78,7 +78,7 @@ class DesktopComponent extends React.Component {
     public componentDidMount(): void {
         // this.getMemoryUsage();
         // this.getCpuUsage();
-        // this.getSystemVersions();
+        this.getSystemVersions();
     }
 
 
@@ -141,44 +141,64 @@ class DesktopComponent extends React.Component {
                                     <em>B</em>
                                 </span>
                             </p>
-                        </div>
-                        <div className="col right">
                             <h4>Editor</h4>
                             <p>
+                                <span className="key">Editor Search</span>
                                 <span className="value">
                                     <em>⌘</em>
                                     <em>F</em>
                                 </span>
-                                <span className="key">Editor Search</span>
-
                             </p>
                             <p>
+                                <span className="key">Save Note</span>
                                 <span className="value">
                                     <em>⌘</em>
                                     <em>S</em>
                                 </span>
-                                <span className="key">Save Note</span>
                             </p>
                             <p>
+                                <span className="key">Copy</span>
                                 <span className="value">
                                     <em>⌘</em>
                                     <em>C</em>
                                 </span>
-                                <span className="key">Copy</span>
                             </p>
                             <p>
+                                <span className="key">Paste</span>
                                 <span className="value">
                                     <em>⌘</em>
                                     <em>V</em>
                                 </span>
-                                <span className="key">Paste</span>
                             </p>
                             <p>
+                                <span className="key">Cut</span>
                                 <span className="value">
                                     <em>⌘</em>
                                     <em>X</em>
                                 </span>
-                                <span className="key">Cut</span>
+                            </p>
+                        </div>
+                        <div className="col right">
+                            <h4>Version</h4>
+                            <p>
+                                <span className="key">v8</span>
+                                <span className="value">{this.state.versions.v8}</span>
+                            </p>
+                            <p>
+                                <span className="key">nodejs</span>
+                                <span className="value">{this.state.versions.node}</span>
+                            </p>
+                            <p>
+                                <span className="key">chrome</span>
+                                <span className="value">{this.state.versions.chrome}</span>
+                            </p>
+                            <p>
+                                <span className="key">openssl</span>
+                                <span className="value">{this.state.versions.openssl}</span>
+                            </p>
+                            <p>
+                                <span className="key">electron</span>
+                                <span className="value">{this.state.versions.electron}</span>
                             </p>
                         </div>
                     </div>
