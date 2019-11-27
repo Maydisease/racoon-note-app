@@ -892,6 +892,16 @@ body[theme='dark'] {
                                         max-width: 100%;
                                         display: block;
                                         margin: 10px 0;
+                                        animation: img-animation-in 1s forwards;
+                                    }
+                                    
+                                    @keyframes img-animation-in {
+                                        from {
+                                            opacity: 0;
+                                        }
+                                        to {
+                                            opacity: 1;
+                                        }
                                     }
                                     
                                     * {
