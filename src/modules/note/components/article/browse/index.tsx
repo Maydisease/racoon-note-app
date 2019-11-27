@@ -33,6 +33,7 @@ class BrowseComponent extends React.Component {
     public browseContextMenu: any;
     public tempTimer: number;
     public umlRenderMaps: any;
+    public currentArticleId: number;
 
     constructor(props: any) {
         super(props);
@@ -45,8 +46,30 @@ class BrowseComponent extends React.Component {
         this.setTagMark           = this.setTagMark.bind(this);
         this.browseContextMenu    = new Service.Menu();
         this.selectedText         = '';
+        this.currentArticleId     = 0;
         this.umlRenderMaps        = {};
         this.browseContextMenuInit();
+    }
+
+    public shouldComponentUpdate(nextProps: Readonly<any>, nextState: Readonly<any>): boolean {
+
+        const nextMarkdown     = nextProps.STORE_NOTE$ARTICLE_TEMP.markdown_content;
+        const currentMarkDown  = (this.props as any).STORE_NOTE$ARTICLE_TEMP.markdown_content;
+        const currentArticleId = (this.props as any).STORE_NOTE$ARTICLE.id;
+
+        // 当前组件展示状态变更时，更新视图
+        if ((this.props.displayState !== nextProps.displayState)) {
+            return true;
+        }
+
+        // 当前articleId和markdown内容未做变更时，阻止更新视图
+        if (this.currentArticleId === currentArticleId && nextMarkdown === currentMarkDown) {
+            return false;
+        }
+
+        this.currentArticleId = currentArticleId;
+
+        return true;
     }
 
     public browseContextMenuInit() {
@@ -137,6 +160,11 @@ class BrowseComponent extends React.Component {
         }
 
         const elementAll: NodeListOf<Element> = $contentViewElement.querySelectorAll(".mermaid");
+
+        if (!elementAll) {
+            return;
+        }
+
         elementAll.forEach((item: HTMLElement, index: number) => {
 
             if (item.getAttribute('mermaid-render-state') === 'true') {
