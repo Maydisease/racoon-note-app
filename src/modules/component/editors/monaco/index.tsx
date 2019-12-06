@@ -120,7 +120,6 @@ class EditorMonaco extends React.Component {
         storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_S', async () => {
             const editMode = store.getState().STORE_NOTE$FRAME.editMode;
             if (editMode) {
-                this.updateArticleStore(true);
                 await new ArticleService().saveNote();
             }
         });
