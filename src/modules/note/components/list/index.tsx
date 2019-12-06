@@ -225,7 +225,7 @@ class ListComponent extends React.Component {
         }
     }
 
-    // 表单输入时的按下监听
+    // 搜索表单输入时的按下监听
     public handleInputKeyDown(event: KeyboardEventInit) {
         const keys = this.state.from.searchKeys.value;
 
@@ -251,7 +251,6 @@ class ListComponent extends React.Component {
 
         this.quickSearchTimer = window.setTimeout(async () => {
             this.quickSearchEvent();
-            clearTimeout(this.quickSearchTimer);
         }, 200)
     }
 

@@ -1,5 +1,9 @@
 import {Action, Dispatch, Middleware} from "redux";
 
+interface NewAction extends Action {
+    playload: any
+}
+
 class StoreEvent {
 
     public eventMaps: any;
@@ -10,8 +14,7 @@ class StoreEvent {
     }
 
     // 触发事件
-    public triggerEvent(action: Action) {
-
+    public triggerEvent(action: NewAction) {
         if (this.eventMaps[action.type]) {
             this.eventMaps[action.type].map((item: any, index: number) => {
                 this.eventMaps[action.type][index](action);
@@ -40,7 +43,7 @@ const storeSubscribe = storeEvent.subscribe;
 // 中间件
 const storeActionEventMiddleware: Middleware = () => (
     next: Dispatch
-) => (action: Action) => {
+) => (action: NewAction) => {
     // 触发事件
     storeEvent.triggerEvent(action);
     return next(action);

@@ -87,12 +87,9 @@ class BrowseComponent extends React.Component {
 
     public componentDidMount() {
 
-        this.setSearchTagInit();
-
         // 订阅快速搜索
         storeSubscribe('NOTE$QUICK_SEARCH', (action: any) => {
-            const ARTICLE = (this.props as any).STORE_NOTE$ARTICLE;
-            this.setTagMark(ARTICLE.quickSearchKey);
+            this.setTagMark(action.playload.quickSearchKey);
         });
 
         // 订阅搜索高亮标签销毁
@@ -108,22 +105,6 @@ class BrowseComponent extends React.Component {
             }
         }
 
-    }
-
-    public componentDidUpdate(prevProps: any, prevState: any) {
-        const ARTICLE = (this.props as any).STORE_NOTE$ARTICLE;
-        this.setTagMark(ARTICLE.quickSearchKey);
-    }
-
-    public setSearchTagInit() {
-        const ARTICLE = (this.props as any).STORE_NOTE$ARTICLE;
-        if (ARTICLE.quickSearchKey) {
-            setTimeout(() => {
-                this.setTagMark(ARTICLE.quickSearchKey);
-            }, 100);
-        } else {
-            this.unTagMark();
-        }
     }
 
     // mermaid 可视区观察器
@@ -272,10 +253,8 @@ class BrowseComponent extends React.Component {
 
     // 设置标签高亮展示
     public setTagMark(searchKey: string) {
-        const ARTICLE = (this.props as any).STORE_NOTE$ARTICLE;
-
         this.unTagMark();
-        if (ARTICLE.quickSearchKey) {
+        if (searchKey) {
             try {
                 const instance = new Mark(this.$element.current as HTMLDivElement);
                 instance.mark(searchKey, {

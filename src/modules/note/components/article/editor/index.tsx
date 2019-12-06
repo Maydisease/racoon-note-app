@@ -8,7 +8,6 @@ import markdownItMermaid                   from "../../../../../lib/plugins/mark
 import markdownItToDoList                  from "../../../../../lib/plugins/markdown_it/toDoList";
 import {ArticleService}                    from "../../../services/article.service";
 import {$AttachedService, AttachedService} from '../../../services/window_manage/attached.server';
-import {VMessageService}                   from "../../../../component/message";
 import 'prismjs';
 import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-javascript';
@@ -72,13 +71,8 @@ class EditorComponent extends React.Component {
     constructor(props: any) {
         super(props);
         this.saveContent         = this.saveContent.bind(this);
-        this.insertContent       = this.insertContent.bind(this);
-        this.handelEditorTools   = this.handelEditorTools.bind(this);
         this.handelEditor        = this.handelEditor.bind(this);
-        this.handelEditorKeyDown = this.handelEditorKeyDown.bind(this);
         this.writeArticleToStore = this.writeArticleToStore.bind(this);
-        this.superLinkConfirm    = this.superLinkConfirm.bind(this);
-        this.superLinkCancel     = this.superLinkCancel.bind(this);
         this.attachedService     = $AttachedService;
 
         this.textAreaHistory = {
@@ -161,193 +155,6 @@ class EditorComponent extends React.Component {
 
     }
 
-    public contentUndoOrRedo(type: string): void {
-
-        const timeShuttle = () => {
-            store.dispatch({type});
-            const history = store.getState().EDITOR$HISTORY;
-            // TODO native editor
-            // this.editorTools.setCaretPosition(history.present.cursor);
-            store.dispatch({
-                type    : 'NOTE$UPDATE_ARTICLE_TEMP',
-                playload: {
-                    title           : (this.props as any).STORE_NOTE$ARTICLE_TEMP.title,
-                    markdown_content: history.present.content,
-                    html_content    : (this.markdownIt.render(history.present.content) as string)
-                }
-            });
-            const state   = this.state;
-            state.content = history.present.content;
-            this.setState(state);
-        };
-
-        switch (type) {
-            case 'UNDO':
-                if (store.getState().EDITOR$HISTORY.past.length > 1) {
-                    timeShuttle();
-                }
-                break;
-            case 'REDO':
-                if (store.getState().EDITOR$HISTORY.future.length > 0) {
-                    timeShuttle();
-                }
-                break;
-        }
-
-    }
-
-    public insertSuperLink() {
-        const state                 = this.state;
-        state.superLinkPanel.status = !this.state.superLinkPanel.status;
-        this.setState(state);
-    }
-
-    public insertContent(type: string, obj: any = {}): boolean {
-
-        // 如果插入内容时，不是编辑模式的话，就提示警告
-        if (!this.props.displayState) {
-            new VMessageService('please switch to edit mode', 'warning').init();
-            return false;
-        }
-
-        const state       = this.state;
-        let returnContent = '';
-        switch (type) {
-            // 向编辑器插入图片
-            case 'image':
-                returnContent = this.editorTools.insertImage(obj.imageTitle, obj.imageUrl);
-                if (returnContent) {
-                    state.content = returnContent;
-                    this.setState(state);
-                }
-                break;
-            case 'fontBold':
-                returnContent = this.editorTools.insertFontBold();
-                if (returnContent) {
-                    state.content = returnContent;
-                    this.setState(state);
-                }
-                break;
-            case 'fontItalic':
-                returnContent = this.editorTools.insertFontItalic();
-                if (returnContent) {
-                    state.content = returnContent;
-                    this.setState(state);
-                }
-                break;
-            case 'fontStrikethrough':
-                returnContent = this.editorTools.insertFontStrikethrough();
-                if (returnContent) {
-                    state.content = returnContent;
-                    this.setState(state);
-                }
-                break;
-            case 'fontQuoteLeft':
-                returnContent = this.editorTools.insertFontQuoteLeft();
-                if (returnContent) {
-                    state.content = returnContent;
-                    this.setState(state);
-                }
-                break;
-            case  'insertSuperLink':
-                returnContent = this.editorTools.insertSuperLink();
-                if (returnContent) {
-                    state.content = returnContent;
-                    this.setState(state);
-                }
-                break;
-            case  'insertIncreaseIndent':
-                returnContent = this.editorTools.insertIncreaseIndent();
-                if (returnContent) {
-                    state.content = returnContent;
-                    this.setState(state);
-                }
-                break;
-
-            case  'insertDecreaseIndent':
-                returnContent = this.editorTools.insertDecreaseIndent();
-                if (returnContent) {
-                    state.content = returnContent;
-                    this.setState(state);
-                }
-                break;
-
-            case  'insertEnter':
-                returnContent = this.editorTools.insertEnter();
-                if (returnContent) {
-                    state.content = returnContent;
-                    this.setState(state);
-                }
-                break;
-
-            case  'insertSelectedLine':
-                returnContent = this.editorTools.insertSelectedLine();
-                if (returnContent) {
-                    state.content = returnContent;
-                    this.setState(state);
-                }
-                break;
-
-            case  'insertCloneLine':
-                returnContent = this.editorTools.insertCloneLine();
-                if (returnContent) {
-                    state.content = returnContent;
-                    this.setState(state);
-                }
-                break;
-
-        }
-        if (state.content) {
-            (this.textareaElement.current as HTMLTextAreaElement).dispatchEvent(new Event('textarea', {bubbles: true}));
-            this.writeArticleToStore(this.state.content);
-        }
-        return true;
-    }
-
-    public handelEditorTools(type: string) {
-        switch (type) {
-            case 'attached':
-                this.attachedService.open();
-                break;
-            case 'fontBold':
-                this.insertContent(type);
-                break;
-            case 'fontItalic':
-                this.insertContent(type);
-                break;
-            case 'fontStrikethrough':
-                this.insertContent(type);
-                break;
-            case 'fontQuoteLeft':
-                this.insertContent(type);
-                break;
-            case 'insertSuperLink':
-                this.insertContent(type);
-                break;
-            case 'insertIncreaseIndent':
-                this.insertContent(type);
-                break;
-            case 'insertDecreaseIndent':
-                this.insertContent(type);
-                break;
-            case 'insertEnter':
-                this.insertContent(type);
-                break;
-            case 'insertSelectedLine':
-                this.insertContent(type);
-                break;
-            case 'insertCloneLine':
-                this.insertContent(type);
-                break;
-            case 'undo':
-                this.contentUndoOrRedo('UNDO');
-                break;
-            case 'redo':
-                this.contentUndoOrRedo('REDO');
-                break;
-        }
-    }
-
     // 表单修改时的数据同步
     public handelEditor(event: React.ChangeEvent<HTMLTextAreaElement>) {
 
@@ -356,52 +163,6 @@ class EditorComponent extends React.Component {
         state.content      = contentValue;
         this.setState(state);
         this.writeArticleToStore(contentValue);
-    }
-
-    public handelEditorKeyDown(event: KeyboardEventInit) {
-
-        // 缩进
-        if (event.key === 'Tab' && !event.shiftKey) {
-            this.handelEditorTools('insertIncreaseIndent');
-            (event as any).preventDefault();
-        }
-
-        // 伸出
-        if (event.key === 'Tab' && event.shiftKey) {
-            this.handelEditorTools('insertDecreaseIndent');
-            (event as any).preventDefault();
-        }
-
-        // 换行
-        if (event.key === 'Enter') {
-            this.handelEditorTools('insertEnter');
-            (event as any).preventDefault();
-        }
-
-        // 选中整行
-        if (event.key === 'Home' && event.shiftKey) {
-            this.handelEditorTools('insertSelectedLine');
-            (event as any).preventDefault();
-        }
-
-        // 克隆当前行
-        if (event.key === 'd' && event.metaKey) {
-            this.handelEditorTools('insertCloneLine');
-            (event as any).preventDefault();
-        }
-
-        // 撤消
-        if (event.key === 'z' && event.metaKey) {
-            this.handelEditorTools('undo');
-            (event as any).preventDefault();
-        }
-
-        // 重做
-        if (event.key === 'z' && event.shiftKey && event.metaKey) {
-            this.handelEditorTools('redo');
-            (event as any).preventDefault();
-        }
-
     }
 
     // 写入内容到store
@@ -442,33 +203,12 @@ class EditorComponent extends React.Component {
         }, 200);
     }
 
-    public superLinkConfirm(title: string, link: string) {
-        const state                 = this.state;
-        state.superLinkPanel.status = false;
-        this.setState(state);
-    }
-
-    public superLinkCancel() {
-        const state                 = this.state;
-        state.superLinkPanel.status = false;
-        this.setState(state);
-    }
-
     public render() {
 
         return (
             <div className="wrap edit-mod" style={{display: this.props.displayState ? 'block' : 'none'}}>
                 <div className="editor-container">
-                    {this.state.isNativeEditor ?
-                        < textarea
-                            ref={this.textareaElement}
-                            name="content"
-                            placeholder="write your dreams..."
-                            value={this.state.content}
-                            onKeyDown={this.handelEditorKeyDown}
-                            onChange={this.handelEditor}
-                        /> : <EditorMonaco input={this.state.editorInput.content}/>
-                    }
+                    <EditorMonaco input={this.state.editorInput.content}/>
                 </div>
             </div>
         )

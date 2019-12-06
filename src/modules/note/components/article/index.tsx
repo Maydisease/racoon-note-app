@@ -6,7 +6,6 @@ import {connect}           from 'react-redux';
 import DesktopComponent    from './desktop';
 import {store}             from "../../../../store";
 import {storeSubscribe}    from "../../../../store/middleware/storeActionEvent.middleware";
-import {ArticleService}    from "../../services/article.service";
 import {FontAwesomeIcon}   from "@fortawesome/react-fontawesome";
 import {Service}           from "../../../../lib/master.electron.lib";
 
@@ -90,12 +89,6 @@ class ArticleComponent extends React.Component {
             state.editState        = false;
             state.form.title.value = ARTICLE_TEMP.title;
             this.setState(state);
-        });
-
-        storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_S', async () => {
-            if (this.state.editState) {
-                await new ArticleService().saveNote();
-            }
         });
 
         storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_E', async () => {

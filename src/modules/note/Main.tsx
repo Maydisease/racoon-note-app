@@ -65,7 +65,6 @@ class NoteMain extends React.Component {
                 <CategoryComponent/>
                 <ListComponent/>
                 <ArticleComponent/>
-
                 {
                     this.state.isTrashMode &&
 					<TrashArticleComponent/>
