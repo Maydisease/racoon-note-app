@@ -6,7 +6,6 @@ import EditorMonaco                        from '../../../../component/editors/m
 import {EditorToolsService}                from '../../../services/editorTools.service';
 import markdownItMermaid                   from "../../../../../lib/plugins/markdown_it/mermaid";
 import markdownItToDoList                  from "../../../../../lib/plugins/markdown_it/toDoList";
-import {ArticleService}                    from "../../../services/article.service";
 import {$AttachedService, AttachedService} from '../../../services/window_manage/attached.server';
 import 'prismjs';
 import 'prismjs/components/prism-css';
@@ -70,7 +69,6 @@ class EditorComponent extends React.Component {
 
     constructor(props: any) {
         super(props);
-        this.saveContent         = this.saveContent.bind(this);
         this.handelEditor        = this.handelEditor.bind(this);
         this.writeArticleToStore = this.writeArticleToStore.bind(this);
         this.attachedService     = $AttachedService;
@@ -110,11 +108,6 @@ class EditorComponent extends React.Component {
             .use(markdownItToDoList)
             .use(markdownItMermaid);
 
-    }
-
-    // 保存内容
-    public async saveContent(): Promise<boolean | void> {
-        await new ArticleService().saveNote();
     }
 
     public componentDidUpdate(newProps: any, newState: any) {

@@ -511,6 +511,8 @@ class ListComponent extends React.Component {
             console.log('cache');
         }
 
+        console.log('response', response);
+
         // 更新store中NOTE内的文章字段组
         store.dispatch({
             type    : 'NOTE$UPDATE_ARTICLE',
