@@ -68,14 +68,10 @@ class EditorMonaco extends React.Component {
         });
     }
 
-    public updateArticleStore(immediatelyUpdate: boolean = false): boolean | void {
+    public updateArticleStore(): boolean | void {
         // 清除已有的定时器
         if (this.changeContentTimer) {
             clearTimeout(this.changeContentTimer);
-        }
-
-        if (immediatelyUpdate) {
-            this.writeTempArticleStore();
         }
 
         // 正常逻辑的更新
@@ -120,10 +116,7 @@ class EditorMonaco extends React.Component {
         storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_S', () => {
             const editMode = store.getState().STORE_NOTE$FRAME.editMode;
             if (editMode) {
-                this.updateArticleStore(true);
-                setTimeout(() => {
-                    new ArticleService().saveNote();
-                })
+                new ArticleService().saveNote();
             }
         });
     }
