@@ -23,6 +23,7 @@ class SuperSearch extends React.Component {
     public timer: any;
     public doubleCount: number;
     public selectedObj: any;
+    public categoryList: any[] = [];
 
     constructor(props: any) {
         super(props);
@@ -36,9 +37,16 @@ class SuperSearch extends React.Component {
         this.doubleCount            = 1;
     }
 
-    public componentDidMount() {
+    public async componentDidMount() {
+
+        const getCategoryResponse = await request('note', 'getCategoryData');
+        if (getCategoryResponse.result === 0) {
+            this.categoryList = getCategoryResponse.data;
+        }
+
         document.onkeydown = (ev: any): any => {
             const e = ev || event;
+            // 38 up keyboard || 40 down keyboard
             if (e.keyCode === 38 || e.keyCode === 40) {
                 this.keysInput.current.blur();
                 switch (e.keyCode) {
@@ -97,7 +105,22 @@ class SuperSearch extends React.Component {
         this.setState(state);
     }
 
-    public getSearchData(): boolean | void {
+    public buildCategoryCrumbs(data: any[], cid: number) {
+        const crumbs: any[] = [];
+        const findLoop      = (cid1: number) => {
+            data.filter((item: any) => {
+                if (item.id === cid1) {
+                    crumbs.unshift(item.name);
+                    findLoop(item.parent);
+                }
+            });
+        };
+        findLoop(cid);
+        return crumbs;
+    };
+
+
+    public async getSearchData(): Promise<boolean | void> {
 
         const state = this.state;
 
@@ -108,28 +131,22 @@ class SuperSearch extends React.Component {
             return false;
         }
 
-        if (this.timer) {
-            clearTimeout(this.timer)
-        }
-
-        this.timer = setTimeout(async () => {
-            const type = this.state.filterType;
-            const keys = this.state.from.searchKeys.value;
-            if (keys) {
-                const response = await request('note', 'search', {type, keys});
-                if (response.result !== 1) {
-                    response.data.forEach((item: any, index: number) => {
-                        response.data[index].selected = index === 0;
-                    });
-                    state.searchData = response.data;
-                } else {
-                    state.searchData = [];
-                }
-                state.selectedObj = undefined;
-                this.setState(state);
+        const type = this.state.filterType;
+        const keys = this.state.from.searchKeys.value;
+        if (keys) {
+            const response = await Service.ClientCache('/note/article').searchArticle({type, keys});
+            if (response.result !== 1) {
+                response.forEach((item: any, index: number) => {
+                    response[index].crumbs   = this.buildCategoryCrumbs(this.categoryList, item.cid);
+                    response[index].selected = index === 0;
+                });
+                state.searchData = response;
+            } else {
+                state.searchData = [];
             }
-            clearTimeout(this.timer);
-        }, 200)
+            state.selectedObj = undefined;
+            this.setState(state);
+        }
     }
 
     // 表单修改时的数据同步
