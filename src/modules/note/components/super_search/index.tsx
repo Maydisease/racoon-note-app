@@ -6,7 +6,7 @@ import {Service}  from "../../../../lib/master.electron.lib";
 class SuperSearch extends React.Component {
 
     public state: any = {
-        searchTime        : '',
+        searchTime        : 0 + 'ms',
         inputFocusState   : false,
         clearInputBtnState: false,
 
