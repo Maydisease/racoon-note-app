@@ -6,6 +6,7 @@ import {Service}  from "../../../../lib/master.electron.lib";
 class SuperSearch extends React.Component {
 
     public state: any = {
+        searchTime        : '',
         inputFocusState   : false,
         clearInputBtnState: false,
 
@@ -134,17 +135,31 @@ class SuperSearch extends React.Component {
         const type = this.state.filterType;
         const keys = this.state.from.searchKeys.value;
         if (keys) {
+
+            const searchStartTime = new Date().getTime();
+
             const response = await Service.ClientCache('/note/article').searchArticle({type, keys});
+
             if (response.result !== 1) {
+
+                const categoryList: any = [];
+                this.categoryList.forEach((item: any) => {
+                    const {id, name, parent} = item;
+                    categoryList.push({id, name, parent})
+                });
+
                 response.forEach((item: any, index: number) => {
-                    response[index].crumbs   = this.buildCategoryCrumbs(this.categoryList, item.cid);
+                    response[index].crumbs   = this.buildCategoryCrumbs(categoryList, item.cid);
                     response[index].selected = index === 0;
                 });
                 state.searchData = response;
+
             } else {
                 state.searchData = [];
             }
-            state.selectedObj = undefined;
+            const searchEndTime = new Date().getTime() - searchStartTime + 'ms';
+            state.searchTime    = searchEndTime;
+            state.selectedObj   = undefined;
             this.setState(state);
         }
     }
@@ -270,7 +285,13 @@ class SuperSearch extends React.Component {
                     </ul>
                 </div>
                 <div className="find-state-bar">
-                    {this.state.searchData && <span>count: <em>{this.state.searchData.length}</em></span>}
+                    {
+                        this.state.searchData &&
+						<span>
+                            count: <em>{this.state.searchData.length}</em>
+                            time: <em>{this.state.searchTime}</em>
+                        </span>
+                    }
                 </div>
             </div>
         );
