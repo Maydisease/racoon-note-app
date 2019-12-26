@@ -103,10 +103,12 @@ class ArticleComponent extends React.Component {
         Service.RenderToRender.subject('search@superSearchSelectedList', async (event: any, params: any): Promise<boolean | void> => {
             if (params.data.searchType === 1) {
                 this.handleFrameToggle(true);
-                store.dispatch({
-                    type    : 'NOTE$QUICK_SEARCH',
-                    playload: {quickSearchKey: params.data.searchKey}
-                });
+                setTimeout(() => {
+                    store.dispatch({
+                        type    : 'NOTE$QUICK_SEARCH',
+                        playload: {quickSearchKey: params.data.searchKey}
+                    });
+                }, 200);
             }
         });
 

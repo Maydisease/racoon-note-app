@@ -261,7 +261,8 @@ class BrowseComponent extends React.Component {
                     'element'         : 'span',
                     'className'       : 'sch-highlight',
                     'exclude'         : ['.hljs-line-numbers'],
-                    separateWordSearch: false
+                    separateWordSearch: false,
+                    acrossElements    : true
                 });
             } catch (e) {
                 console.log(e);
