@@ -1,4 +1,5 @@
-import {library} from '@fortawesome/fontawesome-svg-core'
+import {library}        from '@fortawesome/fontawesome-svg-core'
+import {IconDefinition} from '@fortawesome/fontawesome-common-types'
 
 import {
     faAngleRight,
@@ -33,10 +34,14 @@ import {
     faExternalLinkAlt,
     faShareAlt,
     faBug,
-    faFan
+    faFan,
+    faSearchPlus,
+    faSearchMinus,
+    faWindowClose,
+    faWindowRestore
 } from '@fortawesome/free-solid-svg-icons'
 
-const icons: any = [
+const icons: IconDefinition[] = [
     faImage,
     faIgloo,
     faSlidersH,
@@ -71,7 +76,11 @@ const icons: any = [
     faExternalLinkAlt,
     faShareAlt,
     faBug,
-    faFan
+    faFan,
+    faSearchPlus,
+    faSearchMinus,
+    faWindowClose,
+    faWindowRestore
 ];
 
 library.add(...icons);

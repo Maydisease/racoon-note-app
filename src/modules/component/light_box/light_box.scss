@@ -26,7 +26,7 @@
                 background: RGBA(0, 0, 0, 0);
             }
             100% {
-                background: RGBA(0, 0, 0, .8);
+                background: RGBA(0, 0, 0, .9);
             }
         }
     }
@@ -44,6 +44,8 @@
         z-index: 3;
         vertical-align: top;
         transform: translate(-50%, 0);
+        background: #111;
+        box-shadow: 0 1px 2px RGBA(0, 0, 0, 0.8);
         
         span {
             width: 40px;
@@ -53,15 +55,10 @@
             vertical-align: top;
             text-align: center;
             display: inline-block;
-            margin-right: 1px;
             background: #222;
             
             &:hover {
-                background: #333;
-            }
-            
-            &:last-child {
-                border-right: none;
+                background: #111;
             }
         }
     }
