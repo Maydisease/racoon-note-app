@@ -863,6 +863,7 @@ body[theme='dark'] {
                                     font-size: 14px;
                                     overflow-x: hidden;
                                     overflow-y: auto;
+                                    transition: padding, 1s;
                                     padding: 25px 15px 15px 15px;
                                     box-sizing: border-box;
                                     position: relative;
@@ -927,6 +928,7 @@ body[theme='dark'] {
                                             font-size: 12px;
                                             font-weight: normal;
                                             display: inline-block;
+                                            top: 5px;
                                             color: RGBA(255, 255, 255, .3);
                                         }
                                     }
@@ -940,6 +942,7 @@ body[theme='dark'] {
                                             font-size: 12px;
                                             font-weight: normal;
                                             display: inline-block;
+                                            top: 5px;
                                             color: RGBA(255, 255, 255, .3);
                                         }
                                     }
@@ -953,6 +956,7 @@ body[theme='dark'] {
                                             font-size: 12px;
                                             font-weight: normal;
                                             display: inline-block;
+                                            top: 5px;
                                             color: RGBA(255, 255, 255, .3);
                                         }
                                     }
@@ -966,6 +970,7 @@ body[theme='dark'] {
                                             font-size: 12px;
                                             font-weight: normal;
                                             display: inline-block;
+                                            top: 5px;
                                             color: RGBA(255, 255, 255, .3);
                                         }
                                     }
@@ -979,6 +984,7 @@ body[theme='dark'] {
                                             font-size: 12px;
                                             font-weight: normal;
                                             display: inline-block;
+                                            top: 2px;
                                             color: RGBA(255, 255, 255, .3);
                                         }
                                     }
@@ -992,14 +998,22 @@ body[theme='dark'] {
                                             font-size: 12px;
                                             font-weight: normal;
                                             display: inline-block;
+                                            top: 2px;
                                             color: RGBA(255, 255, 255, .3);
                                         }
                                     }
                                     
                                     h1, h2, h3, h4, h5, h6 {
-                                        padding-left: 0;
+                                        padding-left: 20px;
+                                        line-height: 1.5;
                                         margin: 35px 0 15px;
+                                        position: relative;
                                         color: RGBA(255, 255, 255, .8);
+                                        
+                                        &:before {
+                                            position: absolute;
+                                            left: 0;
+                                        }
                                     }
                                     
                                     h1, h2, h3, h4, h5, h6, hr, p {
@@ -1019,6 +1033,7 @@ body[theme='dark'] {
                                         margin: 0 2px;
                                         color: RGBA(255, 150, 50, 1);
                                         border-radius: 3px;
+                                        box-sizing: border-box;
                                         display: inline-block;
                                         background: RGBA(0, 0, 0, 0.1);
                                         border: 1px solid RGBA(0, 0, 0, .4);
@@ -1042,6 +1057,7 @@ body[theme='dark'] {
                                     
                                     & ol {
                                         counter-reset: field 0;
+                                        padding-bottom: 15px;
                                     }
                                     
                                     & ol > li {

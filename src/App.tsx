@@ -20,6 +20,7 @@ import {store}                                   from "./store";
 import {storeSubscribe}                          from "./store/middleware/storeActionEvent.middleware";
 import {$SuperSearchService, SuperSearchService} from "./modules/note/services/window_manage/superSearch.server";
 import {FontAwesomeIcon}                         from "@fortawesome/react-fontawesome";
+import UserOptions                               from "./modules/common/user_options/main";
 
 
 class App extends React.Component {
@@ -46,6 +47,12 @@ class App extends React.Component {
 
     public componentDidMount() {
 
+        Service.RenderToRender.subject('userOptions@userOptionsViewContentWidthChange', (event: any, params: any) => {
+            const viewContentWidth = params.moveTo;
+            store.dispatch({'type': `NOTE$UPDATE_VIEW_CONTENT_WIDTH`, playload: {viewContentWidth}});
+            console.log(store.getState().STORE_NOTE$USER_OPTIONS.viewContentWidth);
+        });
+
         Service.IPCRenderer.on('windowKeyboard', (event: any, arg: any) => {
             store.dispatch({'type': `WINDOW_KEYBOARD$${arg}`});
         });
@@ -67,6 +74,7 @@ class App extends React.Component {
                 <Route path="/sign_up" component={SignUpMain}/>
                 <Route path="/forget_password" component={ForgetPasswordMain}/>
                 <Route path="/attached" component={Attached}/>
+                <Route path="/user_options" component={UserOptions}/>
                 {
                     env.isDev ?
                         <div id="app-route-bottom" onClick={this.routeJump}>

@@ -24,7 +24,8 @@ class BrowseComponent extends React.Component {
     };
 
     public state = {
-        isSearchModel: false
+        isSearchModel               : false,
+        viewContentWidthPaddingStyle: '25px 15px 15px 15px'
     };
 
     public $element: React.RefObject<HTMLDivElement>;
@@ -95,6 +96,24 @@ class BrowseComponent extends React.Component {
         // 订阅搜索高亮标签销毁
         storeSubscribe('NOTE$UN_SEARCH_TAG', () => {
             this.unTagMark();
+        });
+
+        let timer: number = 0;
+
+        // 订阅搜索高亮标签销毁
+        storeSubscribe('NOTE$UPDATE_VIEW_CONTENT_WIDTH', (action: any) => {
+
+            const contentViewElement = (this.$contentViewElement.current as HTMLDivElement);
+            if (contentViewElement) {
+                const contentViewElementWidth = contentViewElement.clientWidth;
+                let paddingValue              = (contentViewElementWidth - contentViewElementWidth * action.playload.viewContentWidth / 100) / 2;
+                paddingValue                  = paddingValue <= 15 ? 15 : paddingValue;
+                clearTimeout(timer);
+                timer = window.setTimeout(() => {
+                    contentViewElement.style.padding = `25px ${Math.floor(paddingValue)}px 15px ${Math.floor(paddingValue)}px`;
+                }, 100)
+            }
+
         });
 
         (this.$element.current as HTMLDivElement).oncontextmenu = () => {
@@ -293,8 +312,11 @@ class BrowseComponent extends React.Component {
                     this.$contentViewElement && this.$contentViewElement.current &&
 					<OverviewRuler key={`${ARTICLE.id}_${FRAME.editMode}`} listenRef={this.$contentViewElement}/>
                 }
-
-                <div ref={this.$contentViewElement} className="content-view" dangerouslySetInnerHTML={{__html: ARTICLE_TEMP.html_content}}/>
+                <div
+                    ref={this.$contentViewElement}
+                    style={{padding: this.state.viewContentWidthPaddingStyle}}
+                    className="content-view" dangerouslySetInnerHTML={{__html: ARTICLE_TEMP.html_content}}
+                />
             </div>
         );
     }

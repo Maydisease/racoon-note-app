@@ -12,6 +12,7 @@ import {store}                             from "../../../../store";
 import {request}                           from '../../services/requst.service';
 import {AppCommandService}                 from "../../services/appCommand.service";
 import {AttachedService, $AttachedService} from '../../services/window_manage/attached.server';
+import {SettingService}                    from '../../services/window_manage/setting.server';
 
 interface CategoryItemEdit {
     state: boolean,
@@ -80,6 +81,7 @@ class CategoryContainer extends React.Component {
     public articleService: ArticleService;
     public appCommandService: AppCommandService;
     public attachedService: AttachedService;
+    public settingService: SettingService;
 
     constructor(readonly props: any) {
         super(props);
@@ -88,6 +90,7 @@ class CategoryContainer extends React.Component {
         this.categoryMenusElement         = undefined;
         this.articleService               = new ArticleService();
         this.attachedService              = $AttachedService;
+        this.settingService               = new SettingService();
         this.appCommandService            = new AppCommandService();
         this.closeRenamePanel             = this.closeRenamePanel.bind(this);
         this.closeChangeCategoryIconPanel = this.closeChangeCategoryIconPanel.bind(this);
@@ -96,6 +99,7 @@ class CategoryContainer extends React.Component {
         this.setIconPanelPos              = this.setIconPanelPos.bind(this);
         this.handleActionBar              = this.handleActionBar.bind(this);
         this.changeCategoryIconEvent      = this.changeCategoryIconEvent.bind(this);
+        this.openSetting                  = this.openSetting.bind(this);
     }
 
     // 获取分类数据
@@ -576,10 +580,16 @@ class CategoryContainer extends React.Component {
         this.attachedService.open();
     }
 
+    // 打开用户设定window
+    public openSetting(): void {
+        this.settingService.open();
+    }
+
     // 分类边栏下方的动作栏事件
     public handleActionBar(actionType: string): void {
         switch (actionType) {
             case 'setting':
+                this.openSetting();
                 break;
             case 'search':
                 store.dispatch({'type': `WINDOW_KEYBOARD$CMD_OR_CTRL_SHIFT_F`});
