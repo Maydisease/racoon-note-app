@@ -5,25 +5,29 @@ import {Service}  from "../../../lib/master.electron.lib";
 
 class UserOptions extends React.Component {
 
-    public fileWhiteList: string[];
-
-    public state: any = {
-        isReadyTabStatus : false,
-        readyUploadList  : [],
-        globalUploadState: 0 // <-- 0=初始状态，1=上传中, 2=全部上传完毕
+    public userOptionsForm = {
+        view: {
+            viewContentWidth: 0
+        }
     };
 
     constructor(props: any) {
         super(props);
-        this.markChangeEvent = this.markChangeEvent.bind(this);
+        this.markChangeEvent   = this.markChangeEvent.bind(this);
+        this.updateUserOptions = this.updateUserOptions.bind(this);
     }
 
-    public markChangeEvent(params: object) {
+    public markChangeEvent(params: { moveTo: number, value: number }) {
+        this.userOptionsForm.view.viewContentWidth = params.moveTo;
         Service.RenderToRender.emit('master@userOptionsViewContentWidthChange', {emitAuthor: 'userOptions', ...params});
     }
 
     public componentDidMount(): void {
         // Service.RenderToRender.emit('master@userOptionsViewContentWidthChange', {emitAuthor: 'userOptions'});
+    }
+
+    public async updateUserOptions() {
+        console.log('---');
     }
 
     public render() {
@@ -37,7 +41,7 @@ class UserOptions extends React.Component {
                 </div>
                 <div className={'main'}>
                     <div className={'action-bar'}>
-                        <button>Update</button>
+                        <button onClick={this.updateUserOptions}>Update</button>
                     </div>
                     <div className={'form-container'}>
                         <div className={'group'}>
@@ -45,11 +49,11 @@ class UserOptions extends React.Component {
                             <div className={'field-value'}>
                                 <Slider
                                     countMark={0}
-                                    currentMark={50}
+                                    currentMark={100}
                                     outValueType={`rate`}
                                     onDebug={false}
                                     displayValue={true}
-                                    rangeMark={{min: 50, max: 100}}
+                                    rangeMark={{min: 70, max: 100}}
                                     markChangeEvent={this.markChangeEvent}
                                 />
                             </div>

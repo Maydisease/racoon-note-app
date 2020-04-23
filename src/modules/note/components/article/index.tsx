@@ -212,14 +212,14 @@ class ArticleComponent extends React.Component {
                         {
                             this.state.editAndBrowse && this.state.editState && FRAME.layout === 0 &&
 							<React.Fragment>
-								<BrowseComponent/>
+								<BrowseComponent frameState={FRAME.layout}/>
 								<div className="columns-line"/>
 							</React.Fragment>
                         }
 						<EditorComponent displayState={this.state.editState}/>
                         {
                             !(this.state.editAndBrowse && this.state.editState && FRAME.layout === 0) &&
-							<BrowseComponent displayState={this.state.editState}/>
+							<BrowseComponent displayState={this.state.editState} frameState={FRAME.layout}/>
                         }
 					</React.Fragment>
                     }

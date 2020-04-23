@@ -8,10 +8,12 @@ import {Service}          from '../../../../../lib/master.electron.lib';
 import {VLightBoxService} from "../../../../component/light_box";
 import {storeSubscribe}   from "../../../../../store/middleware/storeActionEvent.middleware";
 import mermaid            from 'mermaid';
+import {store}            from '../../../../../store';
 
 interface DefaultProps {
     onRef?: any,
-    displayState?: boolean
+    displayState?: boolean,
+    frameState?: number
 }
 
 class BrowseComponent extends React.Component {
@@ -20,7 +22,8 @@ class BrowseComponent extends React.Component {
 
     public props: DefaultProps = {
         onRef       : '',
-        displayState: false
+        displayState: false,
+        frameState  : 0
     };
 
     public state = {
@@ -35,20 +38,22 @@ class BrowseComponent extends React.Component {
     public tempTimer: number;
     public umlRenderMaps: any;
     public currentArticleId: number;
+    public updateViewContentDisplayWidthTimer: number;
 
     constructor(props: any) {
         super(props);
-        this.props                = props;
-        this.$element             = React.createRef();
-        this.$contentViewElement  = React.createRef();
-        this.mermaidObserve       = this.mermaidObserve.bind(this);
-        this.intersectionObserver = new IntersectionObserver(this.mermaidObserve);
-        this.unTagMark            = this.unTagMark.bind(this);
-        this.setTagMark           = this.setTagMark.bind(this);
-        this.browseContextMenu    = new Service.Menu();
-        this.selectedText         = '';
-        this.currentArticleId     = 0;
-        this.umlRenderMaps        = {};
+        this.props                         = props;
+        this.$element                      = React.createRef();
+        this.$contentViewElement           = React.createRef();
+        this.mermaidObserve                = this.mermaidObserve.bind(this);
+        this.intersectionObserver          = new IntersectionObserver(this.mermaidObserve);
+        this.unTagMark                     = this.unTagMark.bind(this);
+        this.setTagMark                    = this.setTagMark.bind(this);
+        this.updateViewContentDisplayWidth = this.updateViewContentDisplayWidth.bind(this);
+        this.browseContextMenu             = new Service.Menu();
+        this.selectedText                  = '';
+        this.currentArticleId              = 0;
+        this.umlRenderMaps                 = {};
         this.browseContextMenuInit();
     }
 
@@ -59,7 +64,9 @@ class BrowseComponent extends React.Component {
         const currentArticleId = (this.props as any).STORE_NOTE$ARTICLE.id;
 
         // 当前组件展示状态变更时，更新视图
-        if ((this.props.displayState !== nextProps.displayState)) {
+        if ((this.props.displayState !== nextProps.displayState) || (this.props.frameState !== nextProps.frameState)) {
+            console.log('props:', this.props.frameState, 'nextProps:', nextProps.frameState);
+            this.updateViewContentDisplayWidth();
             return true;
         }
 
@@ -86,6 +93,23 @@ class BrowseComponent extends React.Component {
 
     }
 
+    public updateViewContentDisplayWidth(viewContentWidth: number = 0) {
+        if (!viewContentWidth) {
+            viewContentWidth = store.getState().STORE_NOTE$USER_OPTIONS.viewContentWidth || 100
+        }
+        const contentViewElement = (this.$contentViewElement.current as HTMLDivElement);
+        if (contentViewElement) {
+            clearTimeout(this.updateViewContentDisplayWidthTimer);
+            this.updateViewContentDisplayWidthTimer = window.setTimeout(() => {
+                const contentViewElementWidth = (contentViewElement.parentElement as HTMLDivElement).clientWidth;
+                let paddingValue              = (contentViewElementWidth - contentViewElementWidth * viewContentWidth / 100) / 2;
+                console.log(contentViewElementWidth, paddingValue, viewContentWidth);
+                paddingValue                     = paddingValue <= 15 ? 15 : paddingValue;
+                contentViewElement.style.padding = `25px ${Math.floor(paddingValue)}px 15px ${Math.floor(paddingValue)}px`;
+            }, 100)
+        }
+    }
+
     public componentDidMount() {
 
         // 订阅快速搜索
@@ -98,22 +122,9 @@ class BrowseComponent extends React.Component {
             this.unTagMark();
         });
 
-        let timer: number = 0;
-
         // 订阅搜索高亮标签销毁
         storeSubscribe('NOTE$UPDATE_VIEW_CONTENT_WIDTH', (action: any) => {
-
-            const contentViewElement = (this.$contentViewElement.current as HTMLDivElement);
-            if (contentViewElement) {
-                const contentViewElementWidth = contentViewElement.clientWidth;
-                let paddingValue              = (contentViewElementWidth - contentViewElementWidth * action.playload.viewContentWidth / 100) / 2;
-                paddingValue                  = paddingValue <= 15 ? 15 : paddingValue;
-                clearTimeout(timer);
-                timer = window.setTimeout(() => {
-                    contentViewElement.style.padding = `25px ${Math.floor(paddingValue)}px 15px ${Math.floor(paddingValue)}px`;
-                }, 100)
-            }
-
+            this.updateViewContentDisplayWidth(action.playload.viewContentWidth);
         });
 
         (this.$element.current as HTMLDivElement).oncontextmenu = () => {
