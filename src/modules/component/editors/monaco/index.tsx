@@ -113,12 +113,16 @@ class EditorMonaco extends React.Component {
 
         }
 
-        storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_S', () => {
+        const saveFnTarget = () => {
             const editMode = store.getState().STORE_NOTE$FRAME.editMode;
             if (editMode) {
                 new ArticleService().saveNote();
             }
-        });
+        };
+
+        storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_S', saveFnTarget, true);
+
+
     }
 
     public handelDropFiles(files: any) {
