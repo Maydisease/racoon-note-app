@@ -1,27 +1,36 @@
 import * as React from 'react';
+import {ObserverEvent} from '../../observer.service'
+import {ComponentClass, ComponentType} from 'react'
 
-class MountContainer extends React.Component {
+interface IProps {
+	comData: any;
+	destroySelf: () => void;
+	comEvent: (event: ObserverEvent) => void;
+	dynamicTpl: Promise<ComponentType | ComponentClass>
+}
 
-    public props: any;
+class MountContainer extends React.Component<IProps> {
 
-    constructor(props: any) {
-        super(props);
-        this.publish     = this.publish.bind(this);
-        this.destroySelf = this.destroySelf.bind(this);
-    }
+	public props: any;
 
-    public destroySelf() {
-        this.props['destroy-self']();
-    }
+	constructor(props: any) {
+		super(props);
+		this.publish = this.publish.bind(this);
+		this.destroySelf = this.destroySelf.bind(this);
+	}
 
-    public publish(event: any) {
-        this.props['com-event'](event);
-    }
+	public destroySelf() {
+		this.props.destroySelf();
+	}
 
-    public render() {
-        const Component = React.lazy(() => this.props['dynamic-tpl']);
-        return (<Component destroySelf={this.destroySelf} comEvent={this.publish}/>);
-    }
+	public publish(event: any) {
+		this.props.comEvent(event);
+	}
+
+	public render() {
+		const Component = React.lazy(() => this.props.dynamicTpl);
+		return (<Component {...this.props.comData} destroySelf={this.destroySelf} comEvent={this.publish}/>);
+	}
 }
 
 export default MountContainer;

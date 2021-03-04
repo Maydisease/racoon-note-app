@@ -3,6 +3,7 @@ interface DefaultState {
     editLayout?: boolean,
     editMode?: boolean,
     trashMode?: boolean,
+    linkMode?: boolean,
 }
 
 declare type Playload = DefaultState;
@@ -56,6 +57,13 @@ export class FrameStateReducer {
     public CHANGE_TRASH_MODE_STATE() {
         const {trashMode}   = this.playload;
         this.body.trashMode = trashMode;
+
+        return {...this.state, ...this.body};
+    }
+
+    public CHANGE_LINK_MODE_STATE() {
+        const {linkMode}   = this.playload;
+        this.body.linkMode = linkMode;
 
         return {...this.state, ...this.body};
     }

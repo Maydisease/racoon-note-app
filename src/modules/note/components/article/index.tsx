@@ -1,236 +1,236 @@
-import * as React          from 'react';
-import EditorComponent     from './editor';
-import BrowseComponent     from "./browse";
-import LockScreenComponent from "./lock_screen";
-import {connect}           from 'react-redux';
-import DesktopComponent    from './desktop';
-import {store}             from "../../../../store";
-import {storeSubscribe}    from "../../../../store/middleware/storeActionEvent.middleware";
-import {FontAwesomeIcon}   from "@fortawesome/react-fontawesome";
-import {Service}           from "../../../../lib/master.electron.lib";
+import * as React from 'react';
+import EditorComponent from './editor';
+import BrowseComponent from './browse';
+import LockScreenComponent from './lock_screen';
+import {connect} from 'react-redux';
+import DesktopComponent from './desktop';
+import {store} from '../../../../store';
+import {storeSubscribe} from '../../../../store/middleware/storeActionEvent.middleware';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {Service} from '../../../../lib/master.electron.lib';
 
 class ArticleComponent extends React.Component {
 
-    public state: any = {
-        id              : null,
-        title           : '',
-        html_content    : '',
-        markdown_content: '',
-        editState       : false,
-        editAndBrowse   : false,
-        form            : {
-            title: {
-                value: ''
-            }
-        }
-    };
+	public state: any = {
+		id: null,
+		title: '',
+		html_content: '',
+		markdown_content: '',
+		editState: false,
+		editAndBrowse: false,
+		form: {
+			title: {
+				value: ''
+			}
+		}
+	};
 
-    public timer: any;
-    public props: any;
-    public browseComponentChild: any;
+	public timer: any;
+	public props: any;
+	public browseComponentChild: any;
 
-    constructor(props: any) {
-        super(props);
-        this.props                  = props;
-        this.switchEditState        = this.switchEditState.bind(this);
-        this.handleTitleInputChange = this.handleTitleInputChange.bind(this);
-        this.handleFrameToggle      = this.handleFrameToggle.bind(this);
-        this.handleEditAndBrowse    = this.handleEditAndBrowse.bind(this);
-        this.browseComponentRef     = this.browseComponentRef.bind(this);
-        this.timer                  = null;
-    }
+	constructor(props: any) {
+		super(props);
+		this.props = props;
+		this.switchEditState = this.switchEditState.bind(this);
+		this.handleTitleInputChange = this.handleTitleInputChange.bind(this);
+		this.handleFrameToggle = this.handleFrameToggle.bind(this);
+		this.handleEditAndBrowse = this.handleEditAndBrowse.bind(this);
+		this.browseComponentRef = this.browseComponentRef.bind(this);
+		this.timer = null;
+	}
 
-    // 切换编辑状态 [预览/编辑]
-    public switchEditState() {
-        const ARTICLE_TEMP     = (this.props as any).STORE_NOTE$ARTICLE_TEMP;
-        const state            = this.state;
-        state.editState        = !this.state.editState;
-        state.form.title.value = ARTICLE_TEMP.title;
-        this.setState(state);
+	// 切换编辑状态 [预览/编辑]
+	public switchEditState() {
+		const ARTICLE_TEMP = (this.props as any).STORE_NOTE$ARTICLE_TEMP;
+		const state = this.state;
+		state.editState = !this.state.editState;
+		state.form.title.value = ARTICLE_TEMP.title;
+		this.setState(state);
 
-        store.dispatch({
-            type    : 'NOTE$CHANGE_EDITOR_MODE',
-            playload: {
-                editMode: state.editState
-            }
-        });
+		store.dispatch({
+			type: 'NOTE$CHANGE_EDITOR_MODE',
+			playload: {
+				editMode: state.editState
+			}
+		});
 
-    }
+	}
 
-    // 表单修改时的数据同步
-    public handleTitleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
-        const state                         = this.state;
-        state.form[event.target.name].value = event.target.value;
-        this.setState(state);
+	// 表单修改时的数据同步
+	public handleTitleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+		const state = this.state;
+		state.form[event.target.name].value = event.target.value;
+		this.setState(state);
 
-        if (this.timer) {
-            clearTimeout(this.timer);
-        }
-        this.timer = setTimeout(() => {
-            store.dispatch({
-                type    : 'NOTE$UPDATE_ARTICLE_TEMP',
-                playload: {
-                    title           : this.state.form.title.value,
-                    markdown_content: (this.props as any).STORE_NOTE$ARTICLE_TEMP.markdown_content,
-                    html_content    : (this.props as any).STORE_NOTE$ARTICLE_TEMP.html_content
-                }
-            });
-            clearTimeout(this.timer);
-        }, 300)
+		if (this.timer) {
+			clearTimeout(this.timer);
+		}
+		this.timer = setTimeout(() => {
+			store.dispatch({
+				type: 'NOTE$UPDATE_ARTICLE_TEMP',
+				playload: {
+					title: this.state.form.title.value,
+					markdown_content: (this.props as any).STORE_NOTE$ARTICLE_TEMP.markdown_content,
+					html_content: (this.props as any).STORE_NOTE$ARTICLE_TEMP.html_content
+				}
+			});
+			clearTimeout(this.timer);
+		}, 300)
 
-    }
+	}
 
-    public componentDidMount() {
+	public componentDidMount() {
 
-        // 订阅选中文章事件
-        storeSubscribe('NOTE$SELECTED_ARTICLE', () => {
-            const ARTICLE_TEMP     = (this.props as any).STORE_NOTE$ARTICLE_TEMP;
-            const state            = this.state;
-            state.editState        = false;
-            state.form.title.value = ARTICLE_TEMP.title;
-            this.setState(state);
-        });
+		// 订阅选中文章事件
+		storeSubscribe('NOTE$SELECTED_ARTICLE', () => {
+			const ARTICLE_TEMP = (this.props as any).STORE_NOTE$ARTICLE_TEMP;
+			const state = this.state;
+			state.editState = false;
+			state.form.title.value = ARTICLE_TEMP.title;
+			this.setState(state);
+		});
 
-        storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_E', async () => {
-            this.switchEditState();
-        });
+		storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_E', async () => {
+			this.switchEditState();
+		});
 
-        storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_W', async () => {
-            this.handleFrameToggle();
-        });
+		storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_W', async () => {
+			this.handleFrameToggle();
+		});
 
-        // 订阅搜索页面发送过来的选择搜索结果双击事件
-        Service.RenderToRender.subject('search@superSearchSelectedList', async (event: any, params: any): Promise<boolean | void> => {
-            if (params.data.searchType === 1) {
-                this.handleFrameToggle(true);
-                setTimeout(() => {
-                    store.dispatch({
-                        type    : 'NOTE$QUICK_SEARCH',
-                        playload: {quickSearchKey: params.data.searchKey}
-                    });
-                }, 200);
-            }
-        });
+		// 订阅搜索页面发送过来的选择搜索结果双击事件
+		Service.RenderToRender.subject('search@superSearchSelectedList', async (event: any, params: any): Promise<boolean | void> => {
+			if (params.data.searchType === 1) {
+				this.handleFrameToggle(true);
+				setTimeout(() => {
+					store.dispatch({
+						type: 'NOTE$QUICK_SEARCH',
+						playload: {quickSearchKey: params.data.searchKey}
+					});
+				}, 200);
+			}
+		});
 
-        Service.RenderToRender.subject('search@superSearchChangeFilterType', async (event: any, params: any): Promise<boolean | void> => {
-            if (params.data.searchType === 1) {
-                store.dispatch({
-                    type    : 'NOTE$QUICK_SEARCH',
-                    playload: {quickSearchKey: params.data.searchKey}
-                });
-            } else {
-                store.dispatch({type: 'NOTE$UN_SEARCH_TAG'})
-            }
-        });
+		Service.RenderToRender.subject('search@superSearchChangeFilterType', async (event: any, params: any): Promise<boolean | void> => {
+			if (params.data.searchType === 1) {
+				store.dispatch({
+					type: 'NOTE$QUICK_SEARCH',
+					playload: {quickSearchKey: params.data.searchKey}
+				});
+			} else {
+				store.dispatch({type: 'NOTE$UN_SEARCH_TAG'})
+			}
+		});
 
-        Service.RenderToRender.subject('search@superSearchClearKeys', async (): Promise<boolean | void> => {
-            store.dispatch({type: 'NOTE$UN_SEARCH_TAG'});
-        });
+		Service.RenderToRender.subject('search@superSearchClearKeys', async (): Promise<boolean | void> => {
+			store.dispatch({type: 'NOTE$UN_SEARCH_TAG'});
+		});
 
-    }
+	}
 
-    // 切换article区域全屏化状态[显示category，list/不显示]
-    public handleFrameToggle(forceLayout: boolean | undefined = false): void {
-        let layout = (this.props as any).STORE_NOTE$FRAME.layout === 1 ? 0 : 1;
-        if (forceLayout) {
-            layout = 1;
-        }
+	// 切换article区域全屏化状态[显示category，list/不显示]
+	public handleFrameToggle(forceLayout: boolean | undefined = false): void {
+		let layout = (this.props as any).STORE_NOTE$FRAME.layout === 1 ? 0 : 1;
+		if (forceLayout) {
+			layout = 1;
+		}
 
-        store.dispatch({
-            type    : 'NOTE$CHANGE_FRAME_STATE',
-            playload: {layout}
-        });
-    }
+		store.dispatch({
+			type: 'NOTE$CHANGE_FRAME_STATE',
+			playload: {layout}
+		});
+	}
 
-    public handleEditAndBrowse() {
-        const state         = this.state;
-        state.editAndBrowse = !this.state.editAndBrowse;
-        this.setState(state);
+	public handleEditAndBrowse() {
+		const state = this.state;
+		state.editAndBrowse = !this.state.editAndBrowse;
+		this.setState(state);
 
-        store.dispatch({
-            type    : 'NOTE$CHANGE_EDITOR_COLUMN',
-            playload: {editLayout: state.editAndBrowse}
-        });
+		store.dispatch({
+			type: 'NOTE$CHANGE_EDITOR_COLUMN',
+			playload: {editLayout: state.editAndBrowse}
+		});
 
-    }
+	}
 
-    public browseComponentRef(refs: React.ComponentClass) {
-        this.browseComponentChild = refs;
-    }
+	public browseComponentRef(refs: React.ComponentClass) {
+		this.browseComponentChild = refs;
+	}
 
-    public render() {
+	public render() {
 
-        const FRAME            = (this.props as any).STORE_NOTE$FRAME;
-        const ARTICLE          = (this.props as any).STORE_NOTE$ARTICLE;
-        const ARTICLE_TEMP     = (this.props as any).STORE_NOTE$ARTICLE_TEMP;
-        const STORE_NOTE$FRAME = (this.props as any).STORE_NOTE$FRAME;
+		const FRAME = (this.props as any).STORE_NOTE$FRAME;
+		const ARTICLE = (this.props as any).STORE_NOTE$ARTICLE;
+		const ARTICLE_TEMP = (this.props as any).STORE_NOTE$ARTICLE_TEMP;
+		const STORE_NOTE$FRAME = (this.props as any).STORE_NOTE$FRAME;
 
-        return (
-            <div className={`articleContainer ${STORE_NOTE$FRAME.trashMode ? 'hide' : ''}`}>
+		return (
+			<div className={`articleContainer ${(STORE_NOTE$FRAME.trashMode || STORE_NOTE$FRAME.linkMode) ? 'hide' : ''}`}>
 
-                {
-                    !ARTICLE.id &&
+				{
+					!ARTICLE.id &&
 					<DesktopComponent/>
-                }
+				}
 
-                {ARTICLE.id &&
+				{ARTICLE.id &&
 				<div className="content-bar">
 					<div className="title">
-                        {
-                            this.state.editState ?
-                                <input name="title" value={this.state.form.title.value} onChange={this.handleTitleInputChange} placeholder="note title..."/> :
-                                <span>{ARTICLE_TEMP.title}</span>
-                        }
+						{
+							this.state.editState ?
+								<input name="title" value={this.state.form.title.value} onChange={this.handleTitleInputChange} placeholder="note title..."/> :
+								<span>{ARTICLE_TEMP.title}</span>
+						}
 					</div>
-                    {ARTICLE.lock === 0 &&
+					{ARTICLE.lock === 0 &&
 					<React.Fragment>
-                        {this.state.editState && FRAME.layout === 0 &&
+						{this.state.editState && FRAME.layout === 0 &&
 						<div className={`menu ${this.state.editAndBrowse ? 'current' : ''}`}>
 							<i className='icon' onClick={this.handleEditAndBrowse}>
 								<FontAwesomeIcon className={`${this.state.editAndBrowse ? 'light' : ''}`} icon="columns"/>
 							</i>
 						</div>
-                        }
+						}
 						<div className={`menu frameToggle ${FRAME.layout === 0 ? 'current' : ''}`}>
 							<i className='icon' onClick={this.handleFrameToggle.bind(this, false)}>
 								<FontAwesomeIcon className={`${!this.state.editState ? 'light' : ''}`} icon="expand-arrows-alt"/>
 							</i>
 						</div>
 						<div className={`menus icon-browse ${this.state.editState ? 'edit' : 'browse'}`} onClick={this.switchEditState}>
-                            {/*<i className={`icon iconfont icon-browse ${!this.state.editState ? 'light' : ''} `}/>*/}
+							{/*<i className={`icon iconfont icon-browse ${!this.state.editState ? 'light' : ''} `}/>*/}
 							<FontAwesomeIcon className={`icon ${!this.state.editState ? 'light' : ''}`} icon="eye"/>
 							<FontAwesomeIcon className={`icon ${this.state.editState ? 'light' : ''}`} icon="edit"/>
 						</div>
 					</React.Fragment>
-                    }
+					}
 				</div>
-                }
-                {ARTICLE.id &&
+				}
+				{ARTICLE.id &&
 				<div className="content">
-                    {ARTICLE.lock === 0 &&
+					{ARTICLE.lock === 0 &&
 					<React.Fragment>
-                        {
-                            this.state.editAndBrowse && this.state.editState && FRAME.layout === 0 &&
+						{
+							this.state.editAndBrowse && this.state.editState && FRAME.layout === 0 &&
 							<React.Fragment>
 								<BrowseComponent frameState={FRAME.layout}/>
 								<div className="columns-line"/>
 							</React.Fragment>
-                        }
+						}
 						<EditorComponent displayState={this.state.editState}/>
-                        {
-                            !(this.state.editAndBrowse && this.state.editState && FRAME.layout === 0) &&
+						{
+							!(this.state.editAndBrowse && this.state.editState && FRAME.layout === 0) &&
 							<BrowseComponent displayState={this.state.editState} frameState={FRAME.layout}/>
-                        }
+						}
 					</React.Fragment>
-                    }
-                    {ARTICLE.lock === 1 &&
+					}
+					{ARTICLE.lock === 1 &&
 					<LockScreenComponent/>
-                    }
+					}
 				</div>
-                }
-            </div>
-        );
-    }
+				}
+			</div>
+		);
+	}
 }
 
 export default connect<any>((state: any): any => state)(ArticleComponent);

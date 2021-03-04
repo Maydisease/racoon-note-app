@@ -618,7 +618,7 @@ class ListComponent extends React.Component {
         const STORE_NOTE$FRAME = (this.props as any).STORE_NOTE$FRAME;
 
         return (
-            <div className={`listContainer ${STORE_NOTE$FRAME.layout === 1 ? 'show' : ''} ${STORE_NOTE$FRAME.trashMode ? 'hide' : ''}`}>
+            <div className={`listContainer ${STORE_NOTE$FRAME.layout === 1 ? 'show' : ''} ${(STORE_NOTE$FRAME.trashMode || STORE_NOTE$FRAME.linkMode) ? 'hide' : ''}`}>
 
                 {/* 快速搜索组件 */}
                 <div className="searchContainer">

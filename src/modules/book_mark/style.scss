@@ -1,0 +1,179 @@
+#book-mark-container {
+    width: 100%;
+    height: 100%;
+    color: #FFF;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    font-family: Arial, Helvetica, sans-serif;
+    
+    .back-action {
+        text-align: center;
+        position: absolute;
+        top: 30px;
+        left: 0;
+        cursor: pointer;
+        padding: 5px 10px;
+        font-weight: normal;
+        font-size: 14px;
+        color: RGBA(86, 156, 214, 1);
+        box-sizing: border-box;
+        border: 1px solid RGBA(86, 156, 214, 1);
+        background: RGBA(86, 156, 214, 1);
+        border-left: none;
+        transform: translateX(calc(-100% + 10px));
+        transition: all, .3s;
+        
+        &:hover {
+            transform: translateX(0);
+            background: RGBA(86, 156, 214, 0);
+        }
+        
+    }
+    
+    .main {
+        flex: 1;
+        text-align: left;
+        padding: 50px 200px;
+        box-sizing: border-box;
+        overflow-y: auto;
+        
+        .category-group {
+            width: 100%;
+            
+            .category {
+                width: 100%;
+                padding: 20px;
+                margin-bottom: 30px;
+                font-weight: bold;
+                border-radius: 8px;
+                box-sizing: border-box;
+                background: RGBA(255, 255, 255, .05);
+                border: 2px solid RGBA(0, 0, 0, 0);
+                transition: border, .3s;
+                
+                &.selected {
+                    border: 2px solid RGBA(86, 156, 214, .5);
+                }
+                
+                &.add-icon {
+                    height: 65px;
+                    
+                    .icon-wrap {
+                        width: 100%;
+                        height: 100%;
+                        display: flex;
+                        justify-items: center;
+                        align-content: center;
+                        align-items: center;
+                        text-align: center;
+                        font-size: 14px;
+                        font-weight: 200;
+                        color: RGBA(255, 255, 255, .8);
+                        
+                        label {
+                            height: 45px;
+                            line-height: 45px;
+                            cursor: pointer;
+                            display: inline-block;
+                            
+                            span {
+                                margin-left: 10px;
+                            }
+                            
+                            input {
+                                width: 600px;
+                                height: 100%;
+                                border: none;
+                                color: RGBA(255, 255, 255, .8);
+                                font-size: 14px;
+                                display: inline-block;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            .link-group {
+                width: 100%;
+                margin-bottom: 30px;
+                
+                .item {
+                    min-height: 65px;
+                    width: 220px;
+                    padding: 8px 50px 8px 8px;
+                    border: 1px solid RGBA(255, 255, 255, 0);
+                    box-sizing: border-box;
+                    display: inline-block;
+                    vertical-align: top;
+                    border-radius: 5px;
+                    
+                    &.add-icon {
+                        height: 65px;
+                        padding: 8px;
+                        cursor: pointer;
+                        
+                        .icon-wrap {
+                            width: 100%;
+                            height: 100%;
+                            display: flex;
+                            justify-items: center;
+                            align-content: center;
+                            align-items: center;
+                            text-align: center;
+                            font-size: 14px;
+                            font-weight: 200;
+                            color: RGBA(255, 255, 255, .8);
+                            
+                            span {
+                                margin-left: 10px;
+                            }
+                        }
+                    }
+                    
+                    &:hover {
+                        background: RGBA(255, 255, 255, .1);
+                    }
+                    
+                    .link {
+                        height: 30px;
+                        max-width: 160px;
+                        width: 100%;
+                        font-size: 14px;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        
+                        span {
+                            cursor: pointer;
+                            color: #569cd6;
+                            text-decoration: none;
+                            
+                            &:hover {
+                                text-decoration: underline;
+                            }
+                        }
+                    }
+                    
+                    .tag {
+                        font-size: 12px;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        color: RGBA(255, 255, 255, .5);
+                    }
+                }
+            }
+        }
+    }
+    
+    .control-panel {
+        width: 240px;
+        height: 100%;
+        box-sizing: border-box;
+        border-left: 1px solid RGBA(0, 0, 0, 1);
+        display: inline-block;
+        background: RGBA(44, 45, 47, 1);
+        text-align: center;
+    }
+}
