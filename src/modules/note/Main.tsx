@@ -78,7 +78,6 @@ class NoteMain extends React.Component {
 				<ArticleComponent/>
 				{this.state.isTrashMode && !this.state.isLinkMode && <TrashArticleComponent/>}
 				{this.state.isLinkMode && <LinkModuleComponent/>}
-				<div id="dynamic-container"/>
 			</div>
 		);
 	}
