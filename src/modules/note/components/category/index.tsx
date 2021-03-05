@@ -14,7 +14,7 @@ import {AppCommandService} from '../../services/appCommand.service';
 import {AttachedService, $AttachedService} from '../../services/window_manage/attached.server';
 import {SettingService} from '../../services/window_manage/setting.server';
 import history from '../../../../services/route_history.service';
-import {connect} from 'react-redux'
+// import {connect} from 'react-redux';
 
 interface CategoryItemEdit {
 	state: boolean,
@@ -628,7 +628,7 @@ class CategoryContainer extends React.Component {
 
 	public render() {
 
-		const STORE_NOTE$FRAME = (this.props as any).STORE_NOTE$FRAME;
+		const STORE_NOTE$FRAME = store.getState().STORE_NOTE$FRAME;
 
 		return (
 			<div className={`categoryContainer ${(this.state.componentShowState && !STORE_NOTE$FRAME.linkMode) ? 'show' : ''}`}>
@@ -702,4 +702,4 @@ class CategoryContainer extends React.Component {
 	}
 }
 
-export default connect<any>((state: any): any => state)(CategoryContainer);
+export default CategoryContainer;
