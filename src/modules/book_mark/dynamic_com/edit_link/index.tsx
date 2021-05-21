@@ -162,8 +162,18 @@ class EditLink extends React.Component<IProps, IState> {
 			return;
 		}
 
+
 		// url url格式不对.
-		if (!/^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/|www\.)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/.test(this.state.form.url)) {
+		let isUrlFormat;
+
+		try {
+			new URL(this.state.form.url);
+			isUrlFormat = true;
+		} catch (err) {
+			isUrlFormat = false;
+		}
+
+		if (!isUrlFormat) {
 			new VMessageService('url format is incorrect.', 'warning', 3000).init();
 			const element = this.urlInputElementRef.current as HTMLTextAreaElement;
 			element.focus();
