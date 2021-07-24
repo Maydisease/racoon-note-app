@@ -60,6 +60,15 @@ class App extends React.Component {
 		storeSubscribe('WINDOW_KEYBOARD$CMD_OR_CTRL_SHIFT_F', () => {
 			this.superSearchService.open();
 		});
+
+		Service.IPCRenderer.on('window-blur', () => {
+			document.querySelector('html')!.setAttribute('is-window-blur', 'true');
+		});
+
+		Service.IPCRenderer.on('window-focus', () => {
+			document.querySelector('html')!.removeAttribute('is-window-blur')
+		});
+
 	}
 
 	public render() {

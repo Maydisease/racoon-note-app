@@ -6,7 +6,8 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {Service} from '../../lib/master.electron.lib';
 import {request} from '../note/services/requst.service';
 import {VMessageService} from '../component/message';
-import {store} from '../../store'
+import {store} from '../../store';
+import {BookMarkCacheService} from './service';
 
 // import history from '../../services/route_history.service';
 
@@ -85,6 +86,8 @@ class BookMain extends React.Component<any, IState> {
 
 	public selectedLinkItemId: number | null = null;
 	public selectedCategoryItemId: number | null = null;
+	public categoryInputElementRef = React.createRef<HTMLInputElement>();
+	public bookMarkCacheService: BookMarkCacheService = new BookMarkCacheService();
 
 	constructor(props: any) {
 		super(props);
@@ -98,7 +101,8 @@ class BookMain extends React.Component<any, IState> {
 		this.openLinkItemContextMenuHandel = this.openLinkItemContextMenuHandel.bind(this);
 		this.openCategoryContextMenuHandel = this.openCategoryContextMenuHandel.bind(this);
 		this.tempCategoryReadyAddNameHandle = this.tempCategoryReadyAddNameHandle.bind(this);
-
+		this.createCategoryContextmenuHandle = this.createCategoryContextmenuHandle.bind(this);
+		this.tempCategoryReadyAddNameKeyDownHandle = this.tempCategoryReadyAddNameKeyDownHandle.bind(this);
 	}
 
 	public goBackNote() {
@@ -252,6 +256,11 @@ class BookMain extends React.Component<any, IState> {
 			state.linkList = linkList;
 			this.setState(state);
 			new VMessageService('Update link success', 'success', 3000).init();
+
+			if (updateLinkResponse.data.isExistNewTag) {
+				this.bookMarkCacheService.updateLocalTagCache();
+			}
+
 		});
 	}
 
@@ -329,6 +338,9 @@ class BookMain extends React.Component<any, IState> {
 		this.linkItemContextMenuInit();
 		// 初始化category 的右键菜单
 		this.categoryContextMenuInit();
+		//
+		console.log(666601);
+
 	}
 
 	// 添加link
@@ -345,6 +357,7 @@ class BookMain extends React.Component<any, IState> {
 
 			const response: AddLinkResponse = await this.addLink(cid, title, url, summary, tags);
 
+
 			if (!(response.messageCode === 2000)) {
 				new VMessageService(response.message, 'error', 3000).init();
 				return;
@@ -357,6 +370,10 @@ class BookMain extends React.Component<any, IState> {
 			state.linkList = linkList;
 			this.setState(state);
 			new VMessageService('Add a link success', 'success', 3000).init();
+
+			if (response.data.isExistNewTag) {
+				this.bookMarkCacheService.updateLocalTagCache();
+			}
 
 		});
 	}
@@ -459,7 +476,22 @@ class BookMain extends React.Component<any, IState> {
 		this.setState(state);
 	}
 
+	public createCategoryContextmenuHandle() {
+		// const state = this.state;
+		// state.categoryCreateMode = true;
+		// this.setState(state);
+		this.changeCategoryCreateModeHandle('in');
+	}
+
+	public tempCategoryReadyAddNameKeyDownHandle($event: React.KeyboardEvent<HTMLInputElement>) {
+		// key enter code
+		if ($event.keyCode === 13) {
+			this.categoryInputElementRef.current?.blur();
+		}
+	}
+
 	public tempCategoryReadyAddNameHandle($event: React.ChangeEvent<HTMLInputElement>) {
+		console.log('asdasda', $event);
 		const {name, value} = $event.target;
 		const state = this.state;
 		state[name] = value;
@@ -468,26 +500,38 @@ class BookMain extends React.Component<any, IState> {
 
 	public render() {
 		return (
-			<div id='book-mark-container'>
-				<div className='back-action' onClick={this.goBackNote}>
+			<div id="book-mark-container">
+				<div className="back-action" onClick={this.goBackNote}>
 					back note
 				</div>
-				<div className='main'>
-					<div className='category-group'>
-						<div className='category add-icon'>
-							<div className='icon-wrap'>
+				<div className="main">
+					<div className="category-group">
+						<div
+							className={`category add-icon ${this.state.categoryCreateMode ? 'selected' : ''}`}
+							onContextMenu={this.createCategoryContextmenuHandle}
+						>
+							<div className="icon-wrap">
 								<label onClick={this.changeCategoryCreateModeHandle.bind(this, 'in')}>
 									{
 										!this.state.categoryCreateMode &&
 										<>
-											<FontAwesomeIcon className="fa-icon" icon='plus'/>
+											<FontAwesomeIcon className="fa-icon" icon="plus"/>
 											<span>add a new category</span>
 										</>
 									}
 
 									{
 										this.state.categoryCreateMode &&
-										<input autoFocus={true} name={'tempCategoryReadyAddName'} onChange={this.tempCategoryReadyAddNameHandle} type='text' placeholder='please enter category name' onBlur={this.changeCategoryCreateModeHandle.bind(this, 'out')}/>
+										<input
+											type="text"
+											autoFocus={true}
+											ref={this.categoryInputElementRef}
+											onKeyDown={this.tempCategoryReadyAddNameKeyDownHandle}
+											name={'tempCategoryReadyAddName'}
+											onChange={this.tempCategoryReadyAddNameHandle}
+											placeholder="please enter category name"
+											onBlur={this.changeCategoryCreateModeHandle.bind(this, 'out')}
+										/>
 									}
 								</label>
 							</div>
@@ -500,16 +544,16 @@ class BookMain extends React.Component<any, IState> {
 							this.state.linkList.map((item, index) => {
 								return <div key={item.id}>
 									<div className={`category ${this.state.categorySelectState && this.selectedCategoryItemId === item.id ? 'selected' : ''}`} onContextMenu={this.openCategoryContextMenuHandel.bind(this, item.id)}>{item.name}</div>
-									<div className='link-group'>
+									<div className="link-group">
 										{
 											item.links &&
 											item.links.length > 0 &&
 											// 遍历链接
 											item.links.map((linkItem, linkIndex) => {
 												return (
-													<div className='item' key={linkItem.id} onContextMenu={this.openLinkItemContextMenuHandel.bind(this, linkItem.id)}>
-														<div className='link'><span onClick={this.openLink.bind(this, linkItem.url)}>{linkItem.title}</span></div>
-														<div className='tag'>
+													<div className="item" key={linkItem.id} onContextMenu={this.openLinkItemContextMenuHandel.bind(this, linkItem.id)}>
+														<div className="link"><span onClick={this.openLink.bind(this, linkItem.url)}>{linkItem.title}</span></div>
+														<div className="tag">
 															{
 																linkItem.tags &&
 																linkItem.tags.length > 0 &&

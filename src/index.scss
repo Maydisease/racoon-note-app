@@ -4,6 +4,10 @@
     -webkit-user-select: none;
 }
 
+html[is-window-blur="true"] {
+    opacity: 0.9;
+}
+
 li {
     list-style: none;
 }

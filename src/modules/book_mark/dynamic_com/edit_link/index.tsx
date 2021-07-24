@@ -1,5 +1,7 @@
 import * as React from 'react';
 import './index.scss';
+import Draggable from 'react-draggable';
+import {BookMarkCacheService} from '../../service';
 
 const md5 = require('blueimp-md5');
 import {ObserverEvent} from '../../../../services/observer.service';
@@ -23,6 +25,8 @@ interface IProps {
 interface IState {
 	tempTag: string;
 	currentSelectedTag: string;
+	tagUpdateLock: boolean;
+	searchTagList: any[];
 	form: {
 		linkId?: number | null;
 		cid?: number | null;
@@ -38,6 +42,8 @@ class EditLink extends React.Component<IProps, IState> {
 	public state: IState = {
 		tempTag: '',
 		currentSelectedTag: '',
+		tagUpdateLock: false,
+		searchTagList: [],
 		form: {
 			linkId: null,
 			cid: null,
@@ -49,6 +55,7 @@ class EditLink extends React.Component<IProps, IState> {
 	}
 
 	public tagContextMenu: any = undefined;
+	public bookMarkCacheService: BookMarkCacheService = new BookMarkCacheService();
 
 	public titleInputElementRef = React.createRef<HTMLInputElement>();
 	public urlInputElementRef = React.createRef<HTMLTextAreaElement>();
@@ -67,6 +74,7 @@ class EditLink extends React.Component<IProps, IState> {
 		this.tagInputKeyUpHandel = this.tagInputKeyUpHandel.bind(this);
 		this.baseFormInputHandles = this.baseFormInputHandles.bind(this);
 		this.tempTagInputHandel = this.tempTagInputHandel.bind(this);
+		this.useSearchTagResultHandle = this.useSearchTagResultHandle.bind(this);
 		this.openTagActionMenuHandel = this.openTagActionMenuHandel.bind(this);
 	}
 
@@ -140,11 +148,13 @@ class EditLink extends React.Component<IProps, IState> {
 			return;
 		}
 
+		console.log('this.state.form:', this.state.form);
+
 		this.props.comEvent({name: 'submit', data: this.state.form})
 		this.close();
 	}
 
-	public checkForm() {
+	public checkForm(): boolean | void {
 
 		// 必须填写标题
 		if (!this.state.form.title) {
@@ -162,13 +172,12 @@ class EditLink extends React.Component<IProps, IState> {
 			return;
 		}
 
-
-		// url url格式不对.
+		// url格式不对.
 		let isUrlFormat;
 
 		try {
-			new URL(this.state.form.url);
-			isUrlFormat = true;
+			const res = new URL(this.state.form.url);
+			isUrlFormat = !!res;
 		} catch (err) {
 			isUrlFormat = false;
 		}
@@ -210,6 +219,7 @@ class EditLink extends React.Component<IProps, IState> {
 	// 更新tags
 	public updateTags() {
 		const state = this.state;
+		state.searchTagList = [];
 		console.log('updateTags:state.tempTag:::', state.tempTag, state.form.tags);
 		if (this.checkTagsIsExist(state.tempTag)) {
 			return;
@@ -223,22 +233,62 @@ class EditLink extends React.Component<IProps, IState> {
 	public tagInputKeyUpHandel(event: React.KeyboardEvent<HTMLInputElement>) {
 		// keyCode enter === 13;
 		if (event.keyCode === 13) {
-			this.updateTags();
+			setTimeout(() => {
+				if (this.state.tagUpdateLock) {
+					const state = this.state;
+					state.tagUpdateLock = false;
+					state.tempTag = '';
+					this.setState(state);
+					console.log('跳过....');
+				} else {
+					this.updateTags();
+				}
+			}, 200)
 		}
 	}
 
 	// tag输入框的光标丢失事件.
 	public tagInputBlurHandel(event: React.FocusEvent<HTMLInputElement>) {
 		setTimeout(() => {
-			this.updateTags();
-		}, 100)
+			console.log('跳过....', this.state.tagUpdateLock);
+			if (this.state.tagUpdateLock) {
+				const state = this.state;
+				state.tagUpdateLock = false;
+				state.tempTag = '';
+				this.setState(state);
+			} else {
+				this.updateTags();
+			}
+		}, 200)
 	}
 
-	public tempTagInputHandel(event: React.ChangeEvent) {
+	public useSearchTagResultHandle(item: any) {
+		const state = this.state;
+		state.tagUpdateLock = true;
+		if (!state.form.tags.includes(item.name)) {
+			state.form.tags.push(item.name);
+		}
+		state.tempTag = '';
+		state.searchTagList = [];
+		this.setState(state);
+		console.log(item);
+	}
+
+	public async tempTagInputHandel(event: React.ChangeEvent) {
 		const element = event.target as HTMLInputElement;
 		const {name, value} = element;
 		const state = this.state;
 		state[name] = value;
+		this.setState(state);
+		const response = await this.bookMarkCacheService.searchLocalTagCache(value);
+
+		if (!value || value === '') {
+			state.searchTagList = [];
+			this.setState(state);
+			return;
+		}
+
+		state.searchTagList = response as any[];
 		this.setState(state);
 	}
 
@@ -251,61 +301,76 @@ class EditLink extends React.Component<IProps, IState> {
 
 	public render() {
 
-		return <div className='edit-link-dynamic-container'>
-			<div className='mask'/>
-			<div className='panel-wrap'>
-				<div className='panel'>
-					<div className='mode-name'>{this.props.edit ? 'update link' : 'add a link'}</div>
-					{/*{'链接标题'}*/}
-					<input
-						name='title'
-						ref={this.titleInputElementRef}
-						onChange={this.baseFormInputHandles}
-						placeholder='Title'
-						value={this.state.form.title}
-					/>
-					{/*{'链接URL'}*/}
-					<textarea
-						name='url'
-						ref={this.urlInputElementRef}
-						onChange={this.baseFormInputHandles}
-						placeholder='Link'
-						value={this.state.form.url}
-					/>
-					{/*{'链接摘要'}*/}
-					<textarea
-						name='summary'
-						ref={this.descInputElementRef}
-						onChange={this.baseFormInputHandles}
-						placeholder='Summary'
-						value={this.state.form.summary}
-					/>
-					{/*{'链接标签'}*/}
-					<div className='tag-container'>
-						{
-							this.state.form.tags.map((item, index) => {
-								return (<span onClick={this.openTagActionMenuHandel.bind(this, item)} key={`${item}`}>{item}</span>);
-							})
-						}
-						<label>
-							<FontAwesomeIcon className="fa-icon tags" icon="tags"/>
+		return <div className="edit-link-dynamic-container">
+			<div className="mask"/>
+			<Draggable
+				scale={1.1}
+				handle=".drag-handle"
+				bounds=".edit-link-dynamic-container"
+			>
+				<div className="panel-wrap">
+					<div className="panel">
+						<div className="mode-name drag-handle">{this.props.edit ? 'update link' : 'add a link'}</div>
+						<div className={'form-box'}>
+							{/*{'链接标题'}*/}
 							<input
-								name='tempTag'
-								className='block'
-								placeholder='tag...'
-								onChange={this.tempTagInputHandel}
-								onKeyUp={this.tagInputKeyUpHandel}
-								onBlur={this.tagInputBlurHandel}
-								value={this.state.tempTag}
+								name="title"
+								ref={this.titleInputElementRef}
+								onChange={this.baseFormInputHandles}
+								placeholder="Title"
+								value={this.state.form.title}
 							/>
-						</label>
-					</div>
-					<div className='action-bar'>
-						<button onClick={this.cancel}>cancel</button>
-						<button onClick={this.submit}>submit</button>
+							{/*{'链接URL'}*/}
+							<textarea
+								name="url"
+								ref={this.urlInputElementRef}
+								onChange={this.baseFormInputHandles}
+								placeholder="Link"
+								value={this.state.form.url}
+							/>
+							{/*{'链接摘要'}*/}
+							<textarea
+								name="summary"
+								ref={this.descInputElementRef}
+								onChange={this.baseFormInputHandles}
+								placeholder="Summary"
+								value={this.state.form.summary}
+							/>
+							{/*{'链接标签'}*/}
+							<div className="tag-container">
+								{
+									this.state.form.tags.map((item, index) => {
+										return (<span onClick={this.openTagActionMenuHandel.bind(this, item)} key={`${item}`}>{item}</span>);
+									})
+								}
+								<label>
+									<FontAwesomeIcon className="fa-icon tags" icon="tags"/>
+									<input
+										name="tempTag"
+										className="block"
+										placeholder="tag..."
+										onChange={this.tempTagInputHandel}
+										onKeyUp={this.tagInputKeyUpHandel}
+										onBlur={this.tagInputBlurHandel}
+										value={this.state.tempTag}
+									/>
+								</label>
+							</div>
+							<div className="tag-search-result-container">
+								{
+									this.state.searchTagList.map((item) => {
+										return <span onClick={this.useSearchTagResultHandle.bind(this, item)} key={item.id}>{item.name}</span>
+									})
+								}
+							</div>
+						</div>
+						<div className="action-bar">
+							<button onClick={this.cancel}>cancel</button>
+							<button onClick={this.submit}>submit</button>
+						</div>
 					</div>
 				</div>
-			</div>
+			</Draggable>
 		</div>;
 	}
 }
