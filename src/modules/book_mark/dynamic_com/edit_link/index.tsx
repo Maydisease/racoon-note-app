@@ -326,7 +326,7 @@ class EditLink extends React.Component<IProps, IState> {
 								ref={this.urlInputElementRef}
 								onChange={this.baseFormInputHandles}
 								placeholder="Link"
-								value={this.state.form.url}
+								value={this.state.form.url || ''}
 							/>
 							{/*{'链接摘要'}*/}
 							<textarea
@@ -334,7 +334,7 @@ class EditLink extends React.Component<IProps, IState> {
 								ref={this.descInputElementRef}
 								onChange={this.baseFormInputHandles}
 								placeholder="Summary"
-								value={this.state.form.summary}
+								value={this.state.form.summary || ''}
 							/>
 							{/*{'链接标签'}*/}
 							<div className="tag-container">

@@ -17,15 +17,21 @@
         position: absolute;
         left: 0;
         top: 0;
-        background: rgba(0, 0, 0, 0.5);
+        //animation: editMaskAnime .5s ease-out forwards;
+        //@keyframes editMaskAnime {
+        //    from {
+        //        background: rgba(0, 0, 0, 0);
+        //    }
+        //    to {
+        //        background: rgba(0, 0, 0, 0.5);
+        //    }
+        //}
     }
     
     .panel-wrap {
         width: 400px;
         position: relative;
         transform: translate3d(-50%, -50%, 0);
-        background: RGBA(34, 34, 34, 1);
-        box-shadow: 0 1px 10px RGBA(0, 0, 0, 1);
     }
     
     .panel {
@@ -39,6 +45,17 @@
         position: relative;
         font-family: Arial, sans-serif;
         flex-direction: column;
+        box-shadow: 0 1px 10px RGBA(0, 0, 0, 1);
+        //animation: editPanelOpenAnime .1s ease-out forwards;
+        //
+        //@keyframes editPanelOpenAnime {
+        //    from {
+        //        transform: scale(0.8);
+        //    }
+        //    to {
+        //        transform: scale(1);
+        //    }
+        //}
         
         .mode-name {
             width: 100%;

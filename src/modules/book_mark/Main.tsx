@@ -242,6 +242,8 @@ class BookMain extends React.Component<any, IState> {
 			const {data} = event;
 			const {title, url, summary, tags, cid} = data;
 
+			console.log('summary::', summary);
+
 			const updateLinkResponse = await this.updateLink(linkId, cid, title, url, summary, tags);
 
 			if (!(updateLinkResponse.messageCode === 2000)) {
