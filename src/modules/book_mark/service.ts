@@ -11,11 +11,8 @@ class BookMarkCacheService {
 
 	// 更新本地标签缓存
 	public async updateLocalTagCache() {
-		console.log('init');
 		const response = await request('links', 'getAllTag');
-		console.log('updateLocalTagCache::', response.data);
-		const removeAllLocalTagResponse = await this.removeAllLocalTagCache();
-		console.log('removeAllLocalTagResponse:', removeAllLocalTagResponse);
+		await this.removeAllLocalTagCache();
 		return await Service.ClientCache('/book_mark/linkTag').updateBookMarkTag(response.data);
 	}
 

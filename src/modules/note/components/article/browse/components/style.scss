@@ -1,0 +1,29 @@
+.search-state-tip {
+    height: 25px;
+    line-height: 25px;
+    padding: 0 8px 0 18px;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    color: #FFF;
+    font-size: 12px;
+    border-radius: 3px;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    background: RGBA(38, 154, 118, 1);
+    box-shadow: 1px 2px 5px RGBA(0, 0, 0, 0.3);
+    transform: translate3d(calc(100% + 20px), 0, 0);
+    transition: all, .3s;
+    z-index: 200;
+    cursor: pointer;
+    
+    &.open {
+        transform: translate3d(0, 0, 0);
+    }
+    
+    svg {
+        position: absolute;
+        left: 6px;
+        top: 6px;
+    }
+}

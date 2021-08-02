@@ -70,7 +70,6 @@ class Slider extends React.Component<ISliderProps, ISliderState> {
 
         // 设置移动到指定位置
         const setMoveTo = (value: number, maxMoveValue: number) => {
-            console.log(maxMoveValue);
             const newRate           = 100 / maxMoveValue;
             const moveTo            = !this.props.countMark ? value : newRate * value;
             const state             = this.state;
@@ -86,10 +85,6 @@ class Slider extends React.Component<ISliderProps, ISliderState> {
                 moveMin = min ? newRate * min : 0;
                 moveMax = max ? newRate * max : 100;
             }
-
-            console.log('moveMin', moveMin);
-            console.log('moveMax', moveMax);
-
         };
 
         setMoveTo(this.props.currentMark, countMark);
@@ -97,14 +92,12 @@ class Slider extends React.Component<ISliderProps, ISliderState> {
         // 绑定滑块上的鼠标按下事件[处理]
         const listenSlideBlockMouseDownEventHandel = () => {
             activeDocumentMoveFlag = true;
-            console.log('listenSlideBlockMouseDownEventHandel');
             listenDocumentMouseUpEvent();
             listenDocumentMouseMoveEvent();
         };
 
         // 绑定滑块上的鼠标按下事件
         const listenSlideBlockMouseDownEvent = () => {
-            console.log('listenSlideBlockMouseDownEvent');
             this.moveBlockElement.addEventListener('mousedown', listenSlideBlockMouseDownEventHandel);
         };
 
@@ -123,7 +116,6 @@ class Slider extends React.Component<ISliderProps, ISliderState> {
 
         // 绑定document上的鼠标移动事件[处理]
         const listenDocumentMouseMoveEventHandel = (event: MouseEvent) => {
-            console.log('activeDocumentMoveFlag', activeDocumentMoveFlag);
             if (!activeDocumentMoveFlag) {
                 return;
             }
@@ -139,12 +131,10 @@ class Slider extends React.Component<ISliderProps, ISliderState> {
             if (this.props.markChangeEvent) {
                 this.props.markChangeEvent({...this.state.slideBlock});
             }
-            console.log(moveTo);
         };
 
         // 绑定document上的鼠标移动事件
         const listenDocumentMouseMoveEvent = () => {
-            console.log('document.addEventListener(\'mousemove\', listenDocumentMouseMoveEventHandel)');
             document.addEventListener('mousemove', listenDocumentMouseMoveEventHandel);
         };
 

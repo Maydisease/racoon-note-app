@@ -50,7 +50,6 @@ class App extends React.Component {
 		Service.RenderToRender.subject('userOptions@userOptionsViewContentWidthChange', (event: any, params: any) => {
 			const viewContentWidth = params.moveTo;
 			store.dispatch({'type': `NOTE$UPDATE_VIEW_CONTENT_WIDTH`, playload: {viewContentWidth}});
-			console.log(store.getState().STORE_NOTE$USER_OPTIONS.viewContentWidth);
 		});
 
 		Service.IPCRenderer.on('windowKeyboard', (event: any, arg: any) => {

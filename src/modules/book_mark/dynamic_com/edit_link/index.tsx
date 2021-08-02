@@ -148,8 +148,6 @@ class EditLink extends React.Component<IProps, IState> {
 			return;
 		}
 
-		console.log('this.state.form:', this.state.form);
-
 		this.props.comEvent({name: 'submit', data: this.state.form})
 		this.close();
 	}
@@ -220,7 +218,6 @@ class EditLink extends React.Component<IProps, IState> {
 	public updateTags() {
 		const state = this.state;
 		state.searchTagList = [];
-		console.log('updateTags:state.tempTag:::', state.tempTag, state.form.tags);
 		if (this.checkTagsIsExist(state.tempTag)) {
 			return;
 		}
@@ -239,7 +236,6 @@ class EditLink extends React.Component<IProps, IState> {
 					state.tagUpdateLock = false;
 					state.tempTag = '';
 					this.setState(state);
-					console.log('跳过....');
 				} else {
 					this.updateTags();
 				}
@@ -250,7 +246,6 @@ class EditLink extends React.Component<IProps, IState> {
 	// tag输入框的光标丢失事件.
 	public tagInputBlurHandel(event: React.FocusEvent<HTMLInputElement>) {
 		setTimeout(() => {
-			console.log('跳过....', this.state.tagUpdateLock);
 			if (this.state.tagUpdateLock) {
 				const state = this.state;
 				state.tagUpdateLock = false;
@@ -271,7 +266,6 @@ class EditLink extends React.Component<IProps, IState> {
 		state.tempTag = '';
 		state.searchTagList = [];
 		this.setState(state);
-		console.log(item);
 	}
 
 	public async tempTagInputHandel(event: React.ChangeEvent) {

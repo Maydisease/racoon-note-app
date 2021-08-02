@@ -104,7 +104,6 @@ class TrashArticle extends React.Component {
 
         // todo 增加多选
         window.onkeydown = (e: KeyboardEvent) => {
-            console.log(e);
             if (e.code === 'ShiftLeft') {
                 this.keyboard.leftShift = true;
             }
@@ -112,7 +111,6 @@ class TrashArticle extends React.Component {
 
         // todo 增加多选
         window.onkeyup = (e: KeyboardEvent) => {
-            console.log(e);
             if (e.code === 'ShiftLeft') {
                 this.keyboard.leftShift = false;
             }

@@ -242,8 +242,6 @@ class BookMain extends React.Component<any, IState> {
 			const {data} = event;
 			const {title, url, summary, tags, cid} = data;
 
-			console.log('summary::', summary);
-
 			const updateLinkResponse = await this.updateLink(linkId, cid, title, url, summary, tags);
 
 			if (!(updateLinkResponse.messageCode === 2000)) {
@@ -340,15 +338,10 @@ class BookMain extends React.Component<any, IState> {
 		this.linkItemContextMenuInit();
 		// 初始化category 的右键菜单
 		this.categoryContextMenuInit();
-		//
-		console.log(666601);
-
 	}
 
 	// 添加link
 	public addLinkItem(cid: number) {
-
-		console.log(cid);
 
 		const comA: any = new DynamicComponent();
 		comA.init(import('./dynamic_com/edit_link'), {});
@@ -388,7 +381,6 @@ class BookMain extends React.Component<any, IState> {
 		this.selectedCategoryItemId = cid;
 		this.categoryContextMenu.popup({window: Service.getWindow('master')});
 		this.categoryContextMenu.once('menu-will-close', () => {
-			console.log('close');
 			state.categorySelectState = false;
 			this.setState(state);
 		});
@@ -479,21 +471,17 @@ class BookMain extends React.Component<any, IState> {
 	}
 
 	public createCategoryContextmenuHandle() {
-		// const state = this.state;
-		// state.categoryCreateMode = true;
-		// this.setState(state);
 		this.changeCategoryCreateModeHandle('in');
 	}
 
 	public tempCategoryReadyAddNameKeyDownHandle($event: React.KeyboardEvent<HTMLInputElement>) {
 		// key enter code
 		if ($event.keyCode === 13) {
-			this.categoryInputElementRef.current?.blur();
+			this.categoryInputElementRef.current && this.categoryInputElementRef.current!.blur()
 		}
 	}
 
 	public tempCategoryReadyAddNameHandle($event: React.ChangeEvent<HTMLInputElement>) {
-		console.log('asdasda', $event);
 		const {name, value} = $event.target;
 		const state = this.state;
 		state[name] = value;
