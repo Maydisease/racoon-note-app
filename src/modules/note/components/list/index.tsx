@@ -392,6 +392,18 @@ class ListComponent extends React.Component {
 			await this.UpdateArticleListDom(this.state.currentCid);
 		});
 
+		storeSubscribe('NOTE$UN_SEARCH_TAG', () => {
+			console.log('NOTE$UN_SEARCH_TAG');
+			console.log(this.state.quickSearchType);
+			if (this.state.quickSearchType === 1) {
+				const state = this.state;
+				state.from.searchKeys.value = '';
+				state.clearInputBtnState = false;
+				state.inputFocusState = false;
+				this.setState(state);
+			}
+		});
+
 		// 监听articleComponent传递过来的解锁日志事件
 		storeSubscribe('NOTE$UNLOCK_ARTICLE', (action: any) => {
 			this.unLockNote();

@@ -7,7 +7,8 @@ interface DefaultState {
 	html_content?: string
 	moveArticleId?: number
 	receiveCategoryId?: number
-	quickSearchKey?: string
+	quickSearchKey?: string;
+	searchResultCount?: number;
 }
 
 declare type Playload = DefaultState;
@@ -80,8 +81,10 @@ export class ArticleReducer {
 		return {...this.state, ...this.body};
 	}
 
-	public QUICK_SEARCH_RESULT(): DefaultState {
-		return {...this.state};
+	public QUICK_SEARCH_RESULT(count: number): DefaultState {
+		this.body = {};
+		this.body.searchResultCount = count;
+		return {...this.state, ...this.body};
 	}
 
 	public UN_SEARCH_TAG(): DefaultState {

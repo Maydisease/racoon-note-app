@@ -292,7 +292,7 @@ class BrowseComponent extends React.Component {
 					separateWordSearch: false,
 					acrossElements: true,
 					done: (count) => {
-						store.dispatch({type: 'NOTE$QUICK_SEARCH_RESULT'});
+						store.dispatch({type: 'NOTE$QUICK_SEARCH_RESULT', playload: {count}});
 					}
 				});
 			} catch (e) {

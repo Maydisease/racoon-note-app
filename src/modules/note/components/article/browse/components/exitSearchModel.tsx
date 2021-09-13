@@ -1,32 +1,40 @@
 import * as React from 'react';
 import './style.scss';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {storeSubscribe} from '../../../../../../store/middleware/storeActionEvent.middleware';
 import {store} from '../../../../../../store'
 
 interface IState {
 	isSearchModel: boolean;
+	count: number;
 }
 
 class ExitSearchModel extends React.Component<any, IState> {
 
+	public timer = 0;
+
 	public state = {
-		isSearchModel: false
+		isSearchModel: false,
+		count: 0
 	}
 
 	public componentDidMount() {
 
 		// 订阅快速搜索
 		storeSubscribe('NOTE$QUICK_SEARCH_RESULT', (action: any) => {
-			const state = this.state;
-			state.isSearchModel = true;
-			this.setState(state);
+			clearTimeout(this.timer);
+			this.timer = setTimeout(() => {
+				const state = this.state;
+				state.isSearchModel = true;
+				state.count = action.playload.count || 0;
+				this.setState(state);
+			})
 		});
 
 		// 订阅搜索高亮标签销毁
 		storeSubscribe('NOTE$UN_SEARCH_TAG', () => {
 			const state = this.state;
 			state.isSearchModel = false;
+			state.count = 0;
 			this.setState(state);
 		});
 	}
@@ -37,9 +45,8 @@ class ExitSearchModel extends React.Component<any, IState> {
 
 	public render() {
 		return (
-			<div className={`search-state-tip ${this.state.isSearchModel ? 'open' : ''}`} onClick={this.exitSearch}>
-				<FontAwesomeIcon className="fa-icon" icon="times"/>
-				Exit Search
+			<div className={`search-state-tip ${this.state.isSearchModel && this.state.count > 0 ? 'open' : ''}`} onClick={this.exitSearch}>
+				<span key={this.state.count}>{this.state.count} count</span>
 			</div>
 		)
 	}

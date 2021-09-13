@@ -476,8 +476,8 @@ class BookMain extends React.Component<any, IState> {
 
 	public tempCategoryReadyAddNameKeyDownHandle($event: React.KeyboardEvent<HTMLInputElement>) {
 		// key enter code
-		if ($event.keyCode === 13) {
-			this.categoryInputElementRef.current && this.categoryInputElementRef.current!.blur()
+		if ($event.keyCode === 13 && this.categoryInputElementRef.current) {
+			this.categoryInputElementRef.current!.blur();
 		}
 	}
 

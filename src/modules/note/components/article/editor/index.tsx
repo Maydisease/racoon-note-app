@@ -28,6 +28,7 @@ import 'prismjs/components/prism-textile';
 import 'prismjs/components/prism-dart';
 import 'prismjs/components/prism-yaml';
 import 'prismjs/components/prism-swift';
+import 'prismjs/components/prism-rust';
 
 const markdownItImsize = require('markdown-it-imsize');
 
